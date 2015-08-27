@@ -1,0 +1,36 @@
+{
+  "protocols": [
+    {
+      "type"     : "MODBUS_MASTER",
+      "name"     : "modbus_in",
+      "portName" : "/dev/ttyUSB0",
+      "baudRate" : 19200,
+      "databits" : 8,
+      "stopbits" : 1,
+      "parity"   : "none",
+      "encoding" : "rtu",
+      "echo"     : false,
+      "timePause": 100,
+      "slaves"   : [
+        {
+          "unitId"    : 1,
+          "mbFunc"    : "READ_COIL_REGS_1",
+          "mbRegType" : "BIT",
+          "offset"    : 0,
+          "length"    : 6,
+          "transDelay": 50,
+          "name"      : "slave1_1"
+        },
+        {
+          "unitId"    : 1,
+          "mbFunc"    : "READ_HOLDING_REGS_3",
+          "mbRegType" : "INT16",
+          "offset"    : 1,
+          "length"    : 3,
+          "transDelay": 50,
+          "name"      : "slave1_2"
+        }
+      ]
+    }
+  ]
+}
