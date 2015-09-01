@@ -5,15 +5,20 @@ import com.ghgande.j2mod.modbus.io.ModbusSerialTransaction;
 import com.ghgande.j2mod.modbus.msg.*;
 import com.ghgande.j2mod.modbus.net.SerialConnection;
 import com.ghgande.j2mod.modbus.procimg.Register;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.log4j.Logger;
+import ru.entel.datadealer.engine.MqttService;
 import ru.entel.protocols.modbus.ModbusFunction;
 import ru.entel.protocols.modbus.exception.ModbusIllegalRegTypeException;
 import ru.entel.protocols.modbus.exception.ModbusNoResponseException;
 import ru.entel.protocols.modbus.exception.ModbusRequestException;
 import ru.entel.protocols.registers.*;
+import ru.entel.protocols.service.DDPacket;
 import ru.entel.protocols.service.ProtocolSlave;
 import ru.entel.protocols.service.ProtocolSlaveParams;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,6 +31,16 @@ import java.util.Map;
  */
 public class ModbusSlaveRead extends ProtocolSlave {
     private static final Logger logger = Logger.getLogger(ModbusSlaveRead.class);
+
+    /**
+     * Объект gson для десериализации и отправки DDPacket по MQTT
+     */
+    private Gson gson;
+
+    /**
+     * Название топика в который отправляются по MQTT считанные регистры
+     */
+    private String DATA_TOPIC;
 
     /**
      * Объект для коммункации с COM-портом.
@@ -90,12 +105,13 @@ public class ModbusSlaveRead extends ProtocolSlave {
     public void init(ProtocolSlaveParams params) {
         if (params instanceof ModbusSlaveParams) {
             ModbusSlaveParams mbParams = (ModbusSlaveParams) params;
-            this.unitId = mbParams.getUnitId();
-            this.mbFunc = mbParams.getMbFunc();
-            this.mbRegType = mbParams.getMbRegType();
-            this.offset = mbParams.getOffset();
-            this.length = mbParams.getLength();
+            this.unitId     = mbParams.getUnitId();
+            this.mbFunc     = mbParams.getMbFunc();
+            this.mbRegType  = mbParams.getMbRegType();
+            this.offset     = mbParams.getOffset();
+            this.length     = mbParams.getLength();
             this.transDelay = mbParams.getTransDelay();
+            this.gson = new GsonBuilder().create();
         } else {
             String msg = "Modbus slave params not instance of ModbusSlaveParams by " + this.masterName + ":" + this.name;
             throw new IllegalArgumentException(msg);
@@ -104,6 +120,11 @@ public class ModbusSlaveRead extends ProtocolSlave {
 
     public void setMasterName(String masterName) {
         this.masterName = masterName;
+        setTopicName();
+    }
+
+    private void setTopicName() {
+        this.DATA_TOPIC = "smiu/DD/" + this.masterName + ":" + this.name + "/" + "data";
     }
 
     /**
@@ -117,6 +138,8 @@ public class ModbusSlaveRead extends ProtocolSlave {
      */
     @Override
     public synchronized void request() throws ModbusIllegalRegTypeException, ModbusRequestException, ModbusNoResponseException {
+        Date startTime = new Date();
+
         ModbusRequest req;
         logger.info("\"" + this.masterName + ":" + this.name + "\" sending request.");
         switch (mbFunc) {
@@ -139,11 +162,13 @@ public class ModbusSlaveRead extends ProtocolSlave {
             default:
                 throw new IllegalArgumentException("Modbus function incorrect by " + this.masterName + ":" + this.name);
         }
+
         req.setUnitID(this.unitId);
         req.setHeadless();
         ModbusSerialTransaction trans = new ModbusSerialTransaction(this.con);
         trans.setRequest(req);
         trans.setTransDelayMS(this.transDelay);
+
         switch (mbFunc) {
             case READ_COIL_REGS_1: {
                 if (this.mbRegType != RegType.BIT) {
@@ -161,6 +186,7 @@ public class ModbusSlaveRead extends ProtocolSlave {
                         BitRegister reg = new BitRegister(offset + i, resp.getCoils().getBit(i));
                         registers.put(offset + i, reg);
                     }
+                    sendData(false);
 //                    EventBusService.getModbusBus().post(new ModbusDataEvent(this.masterName, this.name, this.registers)).now();
                 } catch (ModbusException ex) {
                     throw new ModbusRequestException(ex.getMessage());
@@ -183,6 +209,7 @@ public class ModbusSlaveRead extends ProtocolSlave {
                         BitRegister reg = new BitRegister(offset + i, resp.getDiscretes().getBit(i));
                         registers.put(offset + i, reg);
                     }
+                    sendData(false);
 //                    EventBusService.getModbusBus().post(new ModbusDataEvent(this.masterName, this.name, this.registers)).now();
                 } catch (ModbusException ex) {
                     throw new ModbusRequestException(ex.getMessage());
@@ -209,24 +236,28 @@ public class ModbusSlaveRead extends ProtocolSlave {
                                 Int16Register reg = new Int16Register(this.offset + i, values[i].getValue());
                                 registers.put(this.offset + i, reg);
                             }
+                            sendData(false);
 //                            EventBusService.getModbusBus().post(new ModbusDataEvent(this.masterName, this.name, this.registers)).now();
                         } else if (this.mbRegType == RegType.INT16DIV100) {
                             for (int i = 0; i < values.length; i++) {
                                 Int16Div100Register reg = new Int16Div100Register(this.offset + i, values[i].getValue());
                                 registers.put(this.offset + i, reg);
                             }
+                            sendData(false);
 //                            EventBusService.getModbusBus().post(new ModbusDataEvent(this.masterName, this.name, this.registers)).now();
                         } else if(this.mbRegType == RegType.INT16DIV10) {
                             for (int i = 0; i < values.length; i++) {
                                 Int16Div10Register reg = new Int16Div10Register(this.offset + i, values[i].getValue());
                                 registers.put(this.offset + i, reg);
                             }
+                            sendData(false);
 //                            EventBusService.getModbusBus().post(new ModbusDataEvent(this.masterName, this.name, this.registers)).now();
                         } else if (this.mbRegType == RegType.FLOAT32) {
                             for (int i = 0; i < resp.getWordCount() - 1; i+=2) {
                                 Float32Register reg = new Float32Register(offset + i, values[i].getValue(), values[i + 1].getValue());
                                 registers.put(this.offset + i, reg);
                             }
+                            sendData(false);
 //                            EventBusService.getModbusBus().post(new ModbusDataEvent(this.masterName, this.name, this.registers)).now();
                         } else {
                             throw new ModbusIllegalRegTypeException("Illegal reg type for "
@@ -251,24 +282,28 @@ public class ModbusSlaveRead extends ProtocolSlave {
                             Int16Register reg = new Int16Register(this.offset + n, resp.getRegisterValue(n));
                             registers.put(offset + n, reg);
                         }
+                        sendData(false);
 //                        EventBusService.getModbusBus().post(new ModbusDataEvent(this.masterName, this.name, this.registers)).now();
                     } else if (this.mbRegType == RegType.FLOAT32) {
                         for (int i = 0; i < resp.getWordCount()-1; i+=2) {
                             Float32Register reg = new Float32Register(offset + i, resp.getRegisterValue(i), resp.getRegisterValue(i+1));
                             registers.put(this.offset + i, reg);
                         }
+                        sendData(false);
 //                        EventBusService.getModbusBus().post(new ModbusDataEvent(this.masterName, this.name, this.registers)).now();
                     } else if (this.mbRegType == RegType.INT16DIV10) {
                         for (int n = 0; n < resp.getWordCount(); n++) {
                             Int16Div10Register reg = new Int16Div10Register(this.offset + n, resp.getRegisterValue(n));
                             registers.put(offset + n, reg);
                         }
+                        sendData(false);
 //                        EventBusService.getModbusBus().post(new ModbusDataEvent(this.masterName, this.name, this.registers)).now();
                     } else if (this.mbRegType == RegType.INT16DIV100) {
                         for (int n = 0; n < resp.getWordCount(); n++) {
                             Int16Div100Register reg = new Int16Div100Register(this.offset + n, resp.getRegisterValue(n));
                             registers.put(offset + n, reg);
                         }
+                        sendData(false);
 //                        EventBusService.getModbusBus().post(new ModbusDataEvent(this.masterName, this.name, this.registers)).now();
                     } else {
                         throw new ModbusIllegalRegTypeException("Illegal reg type for "
@@ -280,7 +315,20 @@ public class ModbusSlaveRead extends ProtocolSlave {
                 break;
             }
         }
+
+        Date endTime = new Date();
+        System.out.println(endTime.getTime() - startTime.getTime());
         logger.info("\"" + this.masterName + ":" + this.name + "\" response registers " + this.registers);
+    }
+
+    private void sendData(boolean err) {
+        DDPacket packet = null;
+        if (err == true) {
+            packet = new DDPacket(true);
+        } else {
+            packet = new DDPacket(false, this.masterName, this.name, this.registers);
+        }
+        MqttService.publish(this.DATA_TOPIC, gson.toJson(packet));
     }
 
     public void setCon(SerialConnection con) {

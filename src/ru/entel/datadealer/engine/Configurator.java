@@ -94,7 +94,7 @@ public class Configurator implements MqttCallback {
                     ArrayList slaves = (ArrayList) protocolParams.get("slaves");
                     for (int j = 0; j < slaves.size(); j++) {
                         //Словарь хранящий информацию про конкретный Slave
-                        Map slaveParams = (Map)slaves.get(i);
+                        Map slaveParams = (Map)slaves.get(j);
 
                         ModbusFunction mbFunc = ModbusFunction.valueOf(String.valueOf(slaveParams.get("mbFunc")));
                         RegType regType       = RegType.valueOf(String.valueOf(slaveParams.get("mbRegType")));

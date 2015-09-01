@@ -31,7 +31,15 @@ public class Engine implements MqttCallback {
         }
         for (ProtocolMaster pm : protocolMasterMap.values()) {
             new Thread(pm).start();
+            System.out.println(pm.getName() + " started");
         }
+    }
+
+    public void stop() {
+        for (ProtocolMaster protocolMaster : protocolMasterMap.values()) {
+            protocolMaster.stop();
+        }
+        System.out.println(MqttService.count);
     }
 
     private void mqttInit() {
@@ -77,12 +85,11 @@ public class Engine implements MqttCallback {
         if (s.equals(ENGINE_TOPIC)) {
             switch (mqttMessage.toString()) {
                 case "run":
+                    System.out.println("DD run");
                     run();
-                    System.out.println("DD start");
                     break;
                 case "stop":
-
-                    System.out.println("DD stop");
+                    stop();
                     break;
             }
         }

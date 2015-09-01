@@ -3,14 +3,17 @@ package ru.entel.datadealer.engine;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
+import java.util.Date;
+
 /**
  * Класс MqttService - Статический класс для отправки сообщений
  */
 public class MqttService {
+    static int count = 0;
     /**
      * QOS - Quality of Service (0, 1, 2)
      */
-    public static final int QOS = 2;
+    public static final int QOS = 0;
 
     /**
      * BROKER_URL - Адрес и порт брокер-сервера MQTT
@@ -27,7 +30,7 @@ public class MqttService {
      */
     public static final boolean CLEAN_SESSION = false;
 
-    private static MqttClient client;
+    public static MqttClient client;
     private static MqttConnectOptions connectOptions;
 
     static {
@@ -35,6 +38,7 @@ public class MqttService {
             connectOptions = new MqttConnectOptions();
             connectOptions.setCleanSession(false);
             client = new MqttClient(BROKER_URL, CLIENT_ID, new MemoryPersistence());
+            client.connect(connectOptions);
         } catch (MqttException e) {
             e.printStackTrace();
         }
@@ -46,29 +50,27 @@ public class MqttService {
      * @param data сообщение
      */
     public static synchronized void publish(String topicName, String data) {
+        Date startTime = new Date();
         try {
-            client.connect(connectOptions);
-
             //Настройка топика и сообщения
             MqttTopic topic = client.getTopic(topicName);
             MqttMessage message = new MqttMessage(data.getBytes());
             message.setQos(QOS);
 
             //Отправка сообщения
-            System.out.println("[" + Thread.currentThread().getName() + "] Publish msg: " + data);
+//            System.out.println("[" + Thread.currentThread().getName() + "] Publish msg: " + data);
             MqttDeliveryToken token = topic.publish(message);
 
             //Ждем пока сервер подтвердит получение сообщения
             token.waitForCompletion();
         } catch (MqttException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                client.disconnect();
-            } catch (MqttException e) {
-                e.printStackTrace();
-            }
         }
-    }
+}
 
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        client.disconnect();
+    }
 }

@@ -8,6 +8,7 @@ package ru.entel.protocols.service;
  */
 public abstract class ProtocolMaster implements Runnable {
     protected ProtocolType type;
+
     /**
      * name название конкретного мастера протокола. Например: modbus_in, onewire
      */
@@ -33,4 +34,8 @@ public abstract class ProtocolMaster implements Runnable {
     public abstract void addSlave(ProtocolSlave slave);
 
     public abstract void init(ProtocolMasterParams params);
+
+    public String getName() {
+        return name;
+    }
 }
