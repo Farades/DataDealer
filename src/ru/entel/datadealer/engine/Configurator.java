@@ -38,9 +38,9 @@ public class Configurator implements MqttCallback {
     private final String CONFIG_TOPIC = "smiu/DD/updateConfig";
 
     /**
-     * Флаг, управляющий потоком слушателя MQTT
+     * Строковый идентификатор данного клиента
      */
-    private volatile boolean subscribeRunning = true;
+    private final String CLIEND_ID = "DD-config";
 
     /**
      * Основный конфиг. Хранится в формате JSON. Получается от MQTT сервера.
@@ -69,9 +69,9 @@ public class Configurator implements MqttCallback {
         ArrayList protocolsParams = (ArrayList) jsonParams.get("protocols");
 
         //Цикл по всем протоколам
-        for (int i = 0; i < protocolsParams.size(); i++) {
+        for (Object protocolParamsObj : protocolsParams) {
             //Словарь, хранящий информацию про конкретный i-ый ProtocolMaster
-            Map protocolParams = (Map)protocolsParams.get(i);
+            Map protocolParams = (Map)protocolParamsObj;
             String protocolType = (String) protocolParams.get("type");
 
             switch (protocolType) {
@@ -92,9 +92,9 @@ public class Configurator implements MqttCallback {
 
                     //Парсинг слейвов для ProtocolMaster'a
                     ArrayList slaves = (ArrayList) protocolParams.get("slaves");
-                    for (int j = 0; j < slaves.size(); j++) {
+                    for (Object slaveParamsObj : slaves) {
                         //Словарь хранящий информацию про конкретный Slave
-                        Map slaveParams = (Map)slaves.get(j);
+                        Map slaveParams = (Map)slaveParamsObj;
 
                         ModbusFunction mbFunc = ModbusFunction.valueOf(String.valueOf(slaveParams.get("mbFunc")));
                         RegType regType       = RegType.valueOf(String.valueOf(slaveParams.get("mbRegType")));
@@ -118,42 +118,20 @@ public class Configurator implements MqttCallback {
     }
 
     /**
-     * Инициализация MQTT клиента.
+     * Инициализация MQTT клиента. Подпись на ветку CONFIG_TOPIC
      */
     private void mqttInit() {
         try {
             connectOptions = new MqttConnectOptions();
-            connectOptions.setCleanSession(MqttService.CLEAN_SESSION);
-            client = new MqttClient(MqttService.BROKER_URL, "DD-config", new MemoryPersistence());
+            connectOptions.setCleanSession(true);
+            client = new MqttClient(MqttService.BROKER_URL, CLIEND_ID, new MemoryPersistence());
+
             client.setCallback(this);
-            subscribe();
+            client.connect(connectOptions);
+            client.subscribe(CONFIG_TOPIC, MqttService.QOS);
         } catch (MqttException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Подпись и постоянное прослушивание ветки CONFIG_TOPIC в отдельном потоке.
-     */
-    private void subscribe() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    client.connect();
-                    client.subscribe(CONFIG_TOPIC, MqttService.QOS);
-                    while (subscribeRunning);
-                } catch (MqttException e) {
-                    e.printStackTrace();
-                } finally {
-                    try {
-                        client.disconnect();
-                    } catch (MqttException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }).start();
     }
 
     /**
@@ -174,7 +152,7 @@ public class Configurator implements MqttCallback {
     /**
      * Перегруженный CallBack-метод интерфейса MqttCallback
      * Вызывается при потери соединения с MQTT сервером
-     * @param throwable
+     * @param throwable исключение
      */
     @Override
     public void connectionLost(Throwable throwable) {

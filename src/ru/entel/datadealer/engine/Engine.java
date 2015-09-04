@@ -45,10 +45,13 @@ public class Engine implements MqttCallback {
     private void mqttInit() {
         try {
             connectOptions = new MqttConnectOptions();
-            connectOptions.setCleanSession(MqttService.CLEAN_SESSION);
+            connectOptions.setCleanSession(true);
             client = new MqttClient(MqttService.BROKER_URL, "DD-engine", new MemoryPersistence());
+
             client.setCallback(this);
-            subscribe();
+            client.connect(connectOptions);
+            client.subscribe(ENGINE_TOPIC, 0);
+//            subscribe();
         } catch (MqttException e) {
             e.printStackTrace();
         }

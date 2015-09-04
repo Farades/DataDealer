@@ -28,7 +28,7 @@ public class MqttService {
     /**
      * Очистка сессии
      */
-    public static final boolean CLEAN_SESSION = false;
+    public static final boolean CLEAN_SESSION = true;
 
     public static MqttClient client;
     private static MqttConnectOptions connectOptions;
