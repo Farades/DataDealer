@@ -1,7 +1,7 @@
 package ru.entel.protocols.modbus.exception;
 
 /**
- * Created by farades on 07.05.2015.
+ * ModbusIllegalRegTypeException - исключение, выкидываемое при неправильном использовании типов регистров
  */
 public class ModbusIllegalRegTypeException extends Exception {
     public ModbusIllegalRegTypeException(String msg) {

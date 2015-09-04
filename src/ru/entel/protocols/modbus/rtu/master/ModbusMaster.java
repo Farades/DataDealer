@@ -126,11 +126,7 @@ public class ModbusMaster extends ProtocolMaster {
                         Thread.sleep(timePause);
                     } catch (InterruptedException ex) {
                         ex.printStackTrace();
-                    } catch (ModbusRequestException ex) {
-                        logger.error("\"" + slave + "\" " + ex.getMessage());
-                    } catch (ModbusIllegalRegTypeException ex) {
-                        logger.error("\"" + slave + "\" " + ex.getMessage());
-                    } catch (ModbusNoResponseException ex) {
+                    } catch (ModbusRequestException | ModbusIllegalRegTypeException | ModbusNoResponseException ex) {
                         logger.error("\"" + slave + "\" " + ex.getMessage());
                     }
                 }

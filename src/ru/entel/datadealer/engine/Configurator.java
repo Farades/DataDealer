@@ -24,13 +24,14 @@ import java.util.Map;
 /**
  * Configurator - Слушает MQTT (ветка smiu/DD/updateConfig), хранит конфигурацию в JSON.
  * По запросу парсит JSON конфиг и возвращает коллекцию объектов ProtocolMaster
+ * @author Мацепура Артем
+ * @version 0.2
  */
 public class Configurator implements MqttCallback {
     /**
-     * Переменные необходимые для работы с MQTT
+     * Основная переменная для работы с MQTT
      */
     private MqttClient client;
-    private MqttConnectOptions connectOptions;
 
     /**
      * Ветка, которую слушает MQTT client для обновления конфигов
@@ -40,7 +41,8 @@ public class Configurator implements MqttCallback {
     /**
      * Строковый идентификатор данного клиента
      */
-    private final String CLIEND_ID = "DD-config";
+    @SuppressWarnings("FieldCanBeLocal")
+    private final String CLIENT_ID = "DD-config";
 
     /**
      * Основный конфиг. Хранится в формате JSON. Получается от MQTT сервера.
@@ -64,7 +66,7 @@ public class Configurator implements MqttCallback {
         Map<String, ProtocolMaster> res = new HashMap<>();
 
         Gson gson = new GsonBuilder().registerTypeAdapter(Object.class, new JSONNaturalDeserializer()).create();
-        Map jsonParams = (Map) gson.fromJson(jsonConfig.toString(), Object.class);
+        Map jsonParams = (Map) gson.fromJson(jsonConfig, Object.class);
         //ArrayList, хранящий информацию обо всех протоколах (если их больше 1)
         ArrayList protocolsParams = (ArrayList) jsonParams.get("protocols");
 
@@ -122,9 +124,9 @@ public class Configurator implements MqttCallback {
      */
     private void mqttInit() {
         try {
-            connectOptions = new MqttConnectOptions();
+            MqttConnectOptions connectOptions = new MqttConnectOptions();
             connectOptions.setCleanSession(true);
-            client = new MqttClient(MqttService.BROKER_URL, CLIEND_ID, new MemoryPersistence());
+            client = new MqttClient(MqttService.BROKER_URL, CLIENT_ID, new MemoryPersistence());
 
             client.setCallback(this);
             client.connect(connectOptions);
@@ -185,5 +187,11 @@ public class Configurator implements MqttCallback {
     @Override
     public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
 
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        client.disconnect();
     }
 }

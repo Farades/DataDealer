@@ -3,13 +3,12 @@ package ru.entel.datadealer.engine;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
-import java.util.Date;
-
 /**
  * Класс MqttService - Статический класс для отправки сообщений
+ * @author Мацепура Артем
+ * @version 0.2
  */
 public class MqttService {
-    static int count = 0;
     /**
      * QOS - Quality of Service (0, 1, 2)
      */
@@ -21,22 +20,19 @@ public class MqttService {
     public static final String BROKER_URL = "tcp://localhost:1883";
 
     /**
-     * CLIENT_ID - ID клиента
+     * CLIENT_ID - ID клиента MqttService
      */
     public static final String CLIENT_ID = "DD-service";
 
     /**
-     * Очистка сессии
+     * Основной объект для работы с MQTT
      */
-    public static final boolean CLEAN_SESSION = true;
-
     public static MqttClient client;
-    private static MqttConnectOptions connectOptions;
 
     static {
         try {
-            connectOptions = new MqttConnectOptions();
-            connectOptions.setCleanSession(false);
+            MqttConnectOptions connectOptions = new MqttConnectOptions();
+            connectOptions.setCleanSession(true);
             client = new MqttClient(BROKER_URL, CLIENT_ID, new MemoryPersistence());
             client.connect(connectOptions);
         } catch (MqttException e) {
@@ -50,7 +46,6 @@ public class MqttService {
      * @param data сообщение
      */
     public static synchronized void publish(String topicName, String data) {
-        Date startTime = new Date();
         try {
             //Настройка топика и сообщения
             MqttTopic topic = client.getTopic(topicName);
