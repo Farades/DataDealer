@@ -89,3 +89,80 @@
 2015-09-05 19:05:19,739 [DEBUG][ Call: DD-engine][ java.datadealer.engine.Engine] - modbus_in started
 2015-09-05 19:05:19,739 [DEBUG][ Call: DD-engine][ java.datadealer.engine.Engine] - Data Dealer running.
 2015-09-05 19:05:19,756 [DEBUG][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in" open Com-port connection
+2015-09-05 20:05:38,361 [DEBUG][ Call: DD-config][datadealer.engine.Configurator] - Configurator update config
+2015-09-05 20:05:41,815 [DEBUG][ Call: DD-engine][modbus.rtu.master.ModbusMaster] - modbus_in initialize.
+2015-09-05 20:05:41,821 [DEBUG][ Call: DD-engine][ java.datadealer.engine.Engine] - modbus_in started
+2015-09-05 20:05:41,821 [DEBUG][ Call: DD-engine][ java.datadealer.engine.Engine] - Data Dealer running.
+2015-09-05 20:05:41,839 [DEBUG][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in" open Com-port connection
+2015-09-05 20:05:56,894 [DEBUG][ Call: DD-engine][ java.datadealer.engine.Engine] - Data Dealer stopping.
+2015-09-05 20:05:56,898 [DEBUG][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in" close Com-port connection
+2015-09-05 20:08:23,255 [DEBUG][ Call: DD-config][datadealer.engine.Configurator] - Configurator update config
+2015-09-05 20:08:32,198 [DEBUG][ Call: DD-engine][modbus.rtu.master.ModbusMaster] - modbus_in initialize.
+2015-09-05 20:08:32,198 [DEBUG][ Call: DD-engine][ java.datadealer.engine.Engine] - modbus_in started
+2015-09-05 20:08:32,199 [DEBUG][ Call: DD-engine][ java.datadealer.engine.Engine] - Data Dealer running.
+2015-09-05 20:08:32,206 [DEBUG][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in" open Com-port connection
+2015-09-05 20:17:37,324 [DEBUG][ Call: DD-config][datadealer.engine.Configurator] - Configurator update config
+2015-09-05 20:18:03,851 [DEBUG][ Call: DD-config][datadealer.engine.Configurator] - Configurator update config
+2015-09-05 20:18:07,344 [DEBUG][ Call: DD-config][datadealer.engine.Configurator] - Configurator update config
+2015-09-05 20:18:09,310 [DEBUG][ Call: DD-engine][modbus.rtu.master.ModbusMaster] - modbus_in initialize.
+2015-09-05 20:18:09,316 [DEBUG][ Call: DD-engine][ java.datadealer.engine.Engine] - modbus_in started
+2015-09-05 20:18:09,316 [DEBUG][ Call: DD-engine][ java.datadealer.engine.Engine] - Data Dealer running.
+2015-09-05 20:18:09,334 [DEBUG][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in" open Com-port connection
+2015-09-05 20:18:20,875 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O exception - failed to read
+2015-09-05 20:18:21,628 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O exception - failed to read
+2015-09-05 20:18:22,382 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O exception - failed to read
+2015-09-05 20:18:23,138 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O exception - failed to read
+2015-09-05 20:18:23,892 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O exception - failed to read
+2015-09-05 20:18:24,645 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O exception - failed to read
+2015-09-05 20:18:25,398 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O exception - failed to read
+2015-09-05 20:18:26,150 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O exception - failed to read
+2015-09-05 20:18:26,903 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O exception - failed to read
+2015-09-05 20:18:27,655 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O exception - failed to read
+2015-09-05 20:18:28,407 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O exception - failed to read
+2015-09-05 20:18:29,160 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O exception - failed to read
+2015-09-05 20:18:29,912 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O exception - failed to read
+2015-09-05 20:18:30,665 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O exception - failed to read
+2015-09-05 20:18:31,399 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O exception - failed to read
+2015-09-05 20:20:47,778 [DEBUG][ Call: DD-config][datadealer.engine.Configurator] - Configurator update config
+2015-09-05 20:20:49,296 [DEBUG][ Call: DD-engine][modbus.rtu.master.ModbusMaster] - modbus_in initialize.
+2015-09-05 20:20:49,303 [DEBUG][ Call: DD-engine][ java.datadealer.engine.Engine] - modbus_in started
+2015-09-05 20:20:49,303 [DEBUG][ Call: DD-engine][ java.datadealer.engine.Engine] - Data Dealer running.
+2015-09-05 20:20:49,321 [DEBUG][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in" open Com-port connection
+2015-09-05 20:20:55,194 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O exception - failed to read
+2015-09-05 20:20:55,948 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O exception - failed to read
+2015-09-05 20:20:56,700 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O exception - failed to read
+2015-09-05 20:20:57,453 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O exception - failed to read
+2015-09-05 20:20:58,208 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O exception - failed to read
+2015-09-05 20:20:58,961 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O exception - failed to read
+2015-09-05 20:20:59,714 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O exception - failed to read
+2015-09-05 20:27:55,206 [DEBUG][ Call: DD-config][datadealer.engine.Configurator] - Configurator update config
+2015-09-05 20:28:48,448 [DEBUG][ Call: DD-config][datadealer.engine.Configurator] - Configurator update config
+2015-09-05 20:30:44,812 [ERROR][ Call: DD-engine][ java.datadealer.engine.Engine] - Попытка запуска приложения до первоначального конфигурирования: null
+2015-09-05 20:30:44,812 [DEBUG][ Call: DD-config][datadealer.engine.Configurator] - Configurator update config
+2015-09-05 20:30:44,813 [DEBUG][ Call: DD-engine][ java.datadealer.engine.Engine] - Data Dealer running.
+2015-09-05 20:31:38,685 [ERROR][ Call: DD-engine][ java.datadealer.engine.Engine] - Попытка запуска приложения до первоначального конфигурирования: null
+2015-09-05 20:31:38,686 [DEBUG][ Call: DD-config][datadealer.engine.Configurator] - Configurator update config
+2015-09-05 20:32:17,273 [ERROR][ Call: DD-engine][ java.datadealer.engine.Engine] - DataDelaer running before update config: null
+2015-09-05 20:32:17,274 [DEBUG][ Call: DD-config][datadealer.engine.Configurator] - Configurator update config
+2015-09-05 20:32:30,567 [DEBUG][ Call: DD-engine][modbus.rtu.master.ModbusMaster] - modbus_in initialize.
+2015-09-05 20:32:30,574 [DEBUG][ Call: DD-engine][ java.datadealer.engine.Engine] - modbus_in started
+2015-09-05 20:32:30,575 [DEBUG][ Call: DD-engine][ java.datadealer.engine.Engine] - Data Dealer running.
+2015-09-05 20:32:30,592 [DEBUG][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in" open Com-port connection
+2015-09-05 20:44:17,992 [ERROR][ Call: DD-engine][ java.datadealer.engine.Engine] - DataDelaer running before update config: null
+2015-09-05 20:44:17,993 [DEBUG][ Call: DD-config][datadealer.engine.Configurator] - Configurator update config
+2015-09-05 20:44:29,296 [DEBUG][ Call: DD-engine][modbus.rtu.master.ModbusMaster] - modbus_in initialize.
+2015-09-05 20:44:29,312 [DEBUG][ Call: DD-engine][ java.datadealer.engine.Engine] - modbus_in started
+2015-09-05 20:44:29,312 [DEBUG][ Call: DD-engine][ java.datadealer.engine.Engine] - Data Dealer running.
+2015-09-05 20:44:29,340 [DEBUG][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in" open Com-port connection
+2015-09-05 20:44:55,054 [DEBUG][ Call: DD-engine][ java.datadealer.engine.Engine] - Data Dealer stopping.
+2015-09-05 20:44:55,409 [DEBUG][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in" close Com-port connection
+2015-09-05 20:45:03,316 [DEBUG][ Call: DD-engine][modbus.rtu.master.ModbusMaster] - modbus_in initialize.
+2015-09-05 20:45:03,317 [DEBUG][ Call: DD-engine][ java.datadealer.engine.Engine] - modbus_in started
+2015-09-05 20:45:03,317 [DEBUG][ Call: DD-engine][ java.datadealer.engine.Engine] - Data Dealer running.
+2015-09-05 20:45:03,323 [DEBUG][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in" open Com-port connection
+2015-09-05 20:45:24,288 [DEBUG][ Call: DD-engine][ java.datadealer.engine.Engine] - Data Dealer stopping.
+2015-09-05 20:45:24,315 [DEBUG][ Call: DD-config][datadealer.engine.Configurator] - Configurator update config
+2015-09-05 20:45:36,014 [DEBUG][ Call: DD-engine][modbus.rtu.master.ModbusMaster] - modbus_in initialize.
+2015-09-05 20:45:36,021 [DEBUG][ Call: DD-engine][ java.datadealer.engine.Engine] - modbus_in started
+2015-09-05 20:45:36,022 [DEBUG][ Call: DD-engine][ java.datadealer.engine.Engine] - Data Dealer running.
+2015-09-05 20:45:36,039 [DEBUG][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in" open Com-port connection

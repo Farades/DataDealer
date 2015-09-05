@@ -14,4 +14,8 @@ public abstract class ProtocolSlave {
     public abstract void request() throws Exception;
 
     public abstract void init(ProtocolSlaveParams params);
+
+    public String getName() {
+        return name;
+    }
 }

@@ -19,6 +19,7 @@ import ru.entel.java.protocols.registers.*;
 import ru.entel.java.protocols.service.DDPacket;
 import ru.entel.java.protocols.service.ProtocolSlave;
 import ru.entel.java.protocols.service.ProtocolSlaveParams;
+import ru.entel.java.utils.RegisterSerializer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -117,7 +118,7 @@ public class ModbusSlaveRead extends ProtocolSlave {
             this.offset     = mbParams.getOffset();
             this.length     = mbParams.getLength();
             this.transDelay = mbParams.getTransDelay();
-            this.gson = new GsonBuilder().create();
+            this.gson = new GsonBuilder().registerTypeAdapter(AbstractRegister.class, new RegisterSerializer()).create();
         } else {
             String msg = "Modbus slave params not instance of ModbusSlaveParams by " + this.masterName + ":" + this.name;
             throw new IllegalArgumentException(msg);
@@ -328,7 +329,7 @@ public class ModbusSlaveRead extends ProtocolSlave {
      * Отправка считанных регистров в MessageService
      */
     private void sendData() {
-        DDPacket packet = new DDPacket(false, this.masterName, this.name, this.registers);
+        DDPacket packet = new DDPacket(this.masterName, this.name, this.registers);
         messageService.send(this.DATA_TOPIC, gson.toJson(packet));
     }
 

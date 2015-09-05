@@ -137,8 +137,8 @@ public class ModbusMaster extends ProtocolMaster {
                             ex.printStackTrace();
                             logger.error("\"" + slave + "\" " + ex.getMessage());
                         } catch (ModbusRequestException ex) {
-                            //TODO
-                            messageService.send("dwa", "dwad");
+                            String topic = "smiu/DD" + this.name + ":" + slave.getName() + "/data";
+                            messageService.send(topic, "SlaveErr");
                             ex.printStackTrace();
                             logger.error("\"" + slave + "\" " + ex.getMessage());
                         }

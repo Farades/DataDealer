@@ -57,15 +57,20 @@ public class Engine implements MqttCallback {
     public void run() {
         try {
             protocolMasterMap = configurator.getProtocolMasters();
+            for (ProtocolMaster pm : protocolMasterMap.values()) {
+                new Thread(pm, pm.getName()).start();
+                logger.debug(pm.getName() + " started");
+            }
+            logger.debug("Data Dealer running.");
         } catch (InvalidProtocolTypeException | InvalidJSONException e) {
             logger.error("Ошибка при создании ProtocolMaster'ов в конфигураторе: " + e.getMessage());
             e.printStackTrace();
+        } catch (RuntimeException ex) {
+            logger.error("DataDelaer running before update config: " + ex.getMessage());
+            ex.printStackTrace();
         }
 
-        for (ProtocolMaster pm : protocolMasterMap.values()) {
-            new Thread(pm, pm.getName()).start();
-            logger.debug(pm.getName() + " started");
-        }
+
     }
 
     /**
@@ -119,7 +124,6 @@ public class Engine implements MqttCallback {
             switch (mqttMessage.toString()) {
                 case "run":
                     run();
-                    logger.debug("Data Dealer running.");
                     break;
                 case "stop":
                     stopEngine();
