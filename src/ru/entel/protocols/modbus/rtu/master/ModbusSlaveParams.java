@@ -5,14 +5,44 @@ import ru.entel.protocols.registers.RegType;
 import ru.entel.protocols.service.ProtocolSlaveParams;
 
 /**
- * Created by Артем on 08.05.2015.
+ * ModbusSlaveParams - наследник ProtocolSlaveParams.
+ * Хранит в себе настройки, необходимые для опроса конкретного слейва.
+ * @author Мацепура Артем
+ * @version 0.2
  */
 public class ModbusSlaveParams extends ProtocolSlaveParams {
+    /**
+     * ID устройства в Modbus сети
+     */
     private int unitId;
+
+    /**
+     * Код функции Modbus. Хранится в enum'e ModbusFunction
+     * Подробнее https://ru.wikipedia.org/wiki/Modbus
+     * @see ru.entel.protocols.modbus.ModbusFunction
+     */
     private ModbusFunction mbFunc;
+
+    /**
+     * Тип регистра Modbus
+     * Подробнее https://ru.wikipedia.org/wiki/Modbus
+     * @see ru.entel.protocols.registers.RegType
+     */
     private RegType mbRegType;
+
+    /**
+     * Адрес первого регистра для чтения
+     */
     private int offset;
+
+    /**
+     * Количество считываемых регистров
+     */
     private int length;
+
+    /**
+     * Время ожидания ответа
+     */
     private int transDelay;
 
     public ModbusSlaveParams(int unitId, ModbusFunction mbFunc, RegType mbRegType, int offset, int length, int transDelay) {

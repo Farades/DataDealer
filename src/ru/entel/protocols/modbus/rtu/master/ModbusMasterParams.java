@@ -3,16 +3,50 @@ package ru.entel.protocols.modbus.rtu.master;
 import ru.entel.protocols.service.ProtocolMasterParams;
 
 /**
- * Created by Артем on 08.05.2015.
+ * ModbusMasterParams - наследник ProtocolMasterParams.
+ * Хранит в себе настройки для ModbusMaster'a (в основном настройки COM-порта)
+ * @author Мацепура Артем
+ * @version 0.2
  */
 public class ModbusMasterParams extends ProtocolMasterParams {
+    /**
+     * Имя COM-порта (напр. COM3, /dev/ttyUSB0)
+     */
     private String portName;
+
+    /**
+     * Скорость соединения (9600, 19200)
+     */
     private int baudRate;
+
+    /**
+     * Количество данных (Обычно 8)
+     */
     private int dataBits;
+
+    /**
+     * Четность (Обычно none)
+     */
     private String parity;
+
+    /**
+     * Количество стоповых бит (Обычно 1)
+     */
     private int stopbits;
+
+    /**
+     * Типа Modbus (RTU, ASCII)
+     */
     private String encoding;
+
+    /**
+     * Эхо (Обычно false)
+     */
     private boolean echo;
+
+    /**
+     * Пауза между запросами в мс
+     */
     private int timePause;
 
     public ModbusMasterParams(String portName, int baudRate, int dataBits, String parity, int stopbits, String encoding, boolean echo, int timePause) {

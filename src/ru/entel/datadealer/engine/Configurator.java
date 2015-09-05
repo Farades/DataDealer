@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import ru.entel.datadealer.msg.MqttService;
 import ru.entel.protocols.modbus.ModbusFunction;
 import ru.entel.protocols.modbus.rtu.master.ModbusMaster;
 import ru.entel.protocols.modbus.rtu.master.ModbusMasterParams;

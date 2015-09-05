@@ -8,7 +8,9 @@ import com.ghgande.j2mod.modbus.procimg.Register;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.log4j.Logger;
-import ru.entel.datadealer.engine.MqttService;
+import ru.entel.datadealer.msg.MessageService;
+import ru.entel.datadealer.msg.MessageServiceFactory;
+import ru.entel.datadealer.msg.MessageServiceType;
 import ru.entel.protocols.modbus.ModbusFunction;
 import ru.entel.protocols.modbus.exception.ModbusIllegalRegTypeException;
 import ru.entel.protocols.modbus.exception.ModbusNoResponseException;
@@ -18,14 +20,13 @@ import ru.entel.protocols.service.DDPacket;
 import ru.entel.protocols.service.ProtocolSlave;
 import ru.entel.protocols.service.ProtocolSlaveParams;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Класс ModbusSlaveRead - потомок ProtocolSlave.
  * Отвечает за составление запросов, обработку и отправку
- * в EventBus полученной информации от Slave устройств
+ * в MessageService полученной информации от Slave устройств
  * @author Мацепура Артем
  * @version 0.2
  */
@@ -36,6 +37,11 @@ public class ModbusSlaveRead extends ProtocolSlave {
      * Объект gson для десериализации и отправки DDPacket по MQTT
      */
     private Gson gson;
+
+    /**
+     * Объект messageService предназначен для отправки данных, полученных от Modbus слейвов
+     */
+    private MessageService messageService = MessageServiceFactory.getMessageService(MessageServiceType.MQTT);
 
     /**
      * Название топика в который отправляются по MQTT считанные регистры
@@ -85,7 +91,7 @@ public class ModbusSlaveRead extends ProtocolSlave {
     /**
      * Коллекция в которой хранятся последние значения обработанных регистров
      */
-    private Map<Integer, AbstractRegister> registers = new HashMap<Integer, AbstractRegister>();
+    private Map<Integer, AbstractRegister> registers = new HashMap<>();
 
     /**
      * Конструктор
@@ -130,7 +136,7 @@ public class ModbusSlaveRead extends ProtocolSlave {
     /**
      * request() - переопределенный метод родительского класса ProtocolSlave.
      * Является основным для ModbusSlaveRead. Этот метод инициирует запрос данных с помощью объекта SerialConnection
-     * по протоколу ModBus, обрабатывает полученные в ответ данные и пересылает их в программную шину EventBus.
+     * по протоколу ModBus, обрабатывает полученные в ответ данные и пересылает их в MessageService
      * Метод синхронизирован для потокобезопасности.
      * @throws ModbusIllegalRegTypeException Неверный тип регистров.
      * @throws ModbusRequestException Сбой запроса. Например: неверный адрес, illegal data type, failed to read, ...
@@ -138,10 +144,10 @@ public class ModbusSlaveRead extends ProtocolSlave {
      */
     @Override
     public synchronized void request() throws ModbusIllegalRegTypeException, ModbusRequestException, ModbusNoResponseException {
-        Date startTime = new Date();
-
         ModbusRequest req;
         logger.info("\"" + this.masterName + ":" + this.name + "\" sending request.");
+
+        //Создание объекта ModbusRequest в соответствии с кодом функции Modbus
         switch (mbFunc) {
             case READ_COIL_REGS_1: {
                 req = new ReadCoilsRequest(offset, length);
@@ -316,8 +322,6 @@ public class ModbusSlaveRead extends ProtocolSlave {
             }
         }
 
-        Date endTime = new Date();
-        System.out.println(endTime.getTime() - startTime.getTime());
         logger.info("\"" + this.masterName + ":" + this.name + "\" response registers " + this.registers);
     }
 
@@ -328,7 +332,7 @@ public class ModbusSlaveRead extends ProtocolSlave {
         } else {
             packet = new DDPacket(false, this.masterName, this.name, this.registers);
         }
-        MqttService.publish(this.DATA_TOPIC, gson.toJson(packet));
+        messageService.send(this.DATA_TOPIC, gson.toJson(packet));
     }
 
     public void setCon(SerialConnection con) {

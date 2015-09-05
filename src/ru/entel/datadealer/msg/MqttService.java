@@ -1,14 +1,19 @@
-package ru.entel.datadealer.engine;
+package ru.entel.datadealer.msg;
 
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 /**
- * Класс MqttService - Статический класс для отправки сообщений
+ * Класс MqttService - Класс-синглтон для отправки сообщений по MQTT
  * @author Мацепура Артем
- * @version 0.2
+ * @version 0.3
  */
-public class MqttService {
+public class MqttService implements MessageService {
+    /**
+     * Единственный объект класса MqttService
+     */
+    private static MqttService instance;
+
     /**
      * QOS - Quality of Service (0, 1, 2)
      */
@@ -27,9 +32,20 @@ public class MqttService {
     /**
      * Основной объект для работы с MQTT
      */
-    public static MqttClient client;
+    public MqttClient client;
 
-    static {
+    /**
+     * Реализация паттерна Синглтон
+     * @return Единственный объект класса MqttService
+     */
+    public static synchronized MqttService getInstance() {
+        if (instance == null) {
+            instance = new MqttService();
+        }
+        return instance;
+    }
+
+    private MqttService() {
         try {
             MqttConnectOptions connectOptions = new MqttConnectOptions();
             connectOptions.setCleanSession(true);
@@ -45,7 +61,8 @@ public class MqttService {
      * @param topicName ветка
      * @param data сообщение
      */
-    public static synchronized void publish(String topicName, String data) {
+    @Override
+    public void send(String topicName, String data) {
         try {
             //Настройка топика и сообщения
             MqttTopic topic = client.getTopic(topicName);
@@ -61,11 +78,13 @@ public class MqttService {
         } catch (MqttException e) {
             e.printStackTrace();
         }
-}
+    }
 
     @Override
     protected void finalize() throws Throwable {
         super.finalize();
         client.disconnect();
     }
+
+
 }

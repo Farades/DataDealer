@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import ru.entel.protocols.modbus.exception.ModbusIllegalRegTypeException;
 import ru.entel.protocols.modbus.exception.ModbusNoResponseException;
 import ru.entel.protocols.modbus.exception.ModbusRequestException;
+import ru.entel.protocols.modbus.exception.OpenComPortException;
 import ru.entel.protocols.service.ProtocolMaster;
 import ru.entel.protocols.service.ProtocolMasterParams;
 import ru.entel.protocols.service.ProtocolSlave;
@@ -20,7 +21,7 @@ import java.util.HashSet;
  * Отвечает за добавление, хранение и управление
  * объектами класса ModbusSlaveRead в отдельном потоке.
  * @author Мацепура Артем
- * @version 0.1
+ * @version 0.2
  */
 public class ModbusMaster extends ProtocolMaster {
     private static final Logger logger = Logger.getLogger(ModbusMaster.class);
@@ -38,7 +39,7 @@ public class ModbusMaster extends ProtocolMaster {
     /**
      * Коллекция в которой хранятся все объекты ModbusSlaveRead для данного мастера
      */
-    private HashSet<ModbusSlaveRead> slaves = new HashSet<ModbusSlaveRead>();
+    private HashSet<ModbusSlaveRead> slaves = new HashSet<>();
 
     /**
      * Флаг для остановки отдельного потока опроса объектов ModbusSlaveRead
@@ -54,7 +55,6 @@ public class ModbusMaster extends ProtocolMaster {
     public ModbusMaster(String name, ModbusMasterParams params) {
         super(name, params);
         this.type = ProtocolType.MODBUS_MASTER;
-        logger.debug(this.name + " initialize.");
     }
 
     @Override
@@ -72,8 +72,9 @@ public class ModbusMaster extends ProtocolMaster {
             SerialParams.setEcho(mbParams.getEcho());
             this.timePause = mbParams.getTimePause();
             con = new SerialConnection(SerialParams);
+            logger.debug(this.name + " initialize.");
         } else {
-            //TODO добавить исключение
+            logger.error("Объект параметров не является объектом класса ModbusMasterParams");
         }
     }
 
@@ -93,13 +94,12 @@ public class ModbusMaster extends ProtocolMaster {
     /**
      * Метод, открывающий соединение с COM-портом
      */
-    public void openPort() {
+    public void openPort() throws OpenComPortException {
         try {
             this.con.open();
-            logger.info("\"" + this.name + "\" open Com-port connection");
+            logger.debug("\"" + this.name + "\" open Com-port connection");
         } catch (Exception ex) {
-            ex.printStackTrace();
-            logger.error("\"" + this.name + "\" unable to connect to Com-port");
+            throw new OpenComPortException("Невозможно установить соединение с Com-портом");
         }
     }
 
@@ -118,23 +118,31 @@ public class ModbusMaster extends ProtocolMaster {
     public void run() {
         running = true;
         if (slaves.size() != 0) {
-            openPort();
-            while(running) {
-                for (ModbusSlaveRead slave : slaves) {
-                    try {
-                        slave.request();
-                        Thread.sleep(timePause);
-                    } catch (InterruptedException ex) {
-                        ex.printStackTrace();
-                    } catch (ModbusRequestException | ModbusIllegalRegTypeException | ModbusNoResponseException ex) {
-                        logger.error("\"" + slave + "\" " + ex.getMessage());
+            try {
+                openPort();
+                while(running) {
+                    for (ModbusSlaveRead slave : slaves) {
+                        try {
+                            slave.request();
+                            Thread.sleep(timePause);
+                        } catch (InterruptedException | ModbusRequestException | ModbusIllegalRegTypeException | ModbusNoResponseException ex) {
+                            ex.printStackTrace();
+                            logger.error("\"" + slave + "\" " + ex.getMessage());
+                        }
                     }
                 }
+            } catch (OpenComPortException e) {
+                e.printStackTrace();
+                logger.error("\"" + this.name + "\" Невозможно установить соединение с COM-портом");
+            } finally {
+                closePort();
             }
-            closePort();
         }
     }
 
+    /**
+     * Останавливает поток опроса слейвов
+     */
     @Override
     public synchronized void stop() {
         running = false;

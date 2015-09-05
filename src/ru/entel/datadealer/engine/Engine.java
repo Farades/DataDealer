@@ -2,6 +2,7 @@ package ru.entel.datadealer.engine;
 
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import ru.entel.datadealer.msg.MqttService;
 import ru.entel.protocols.service.InvalidProtocolTypeException;
 import ru.entel.protocols.service.ProtocolMaster;
 import ru.entel.utils.InvalidJSONException;
