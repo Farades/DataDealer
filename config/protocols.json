@@ -10,7 +10,7 @@
       "parity"   : "none",
       "encoding" : "rtu",
       "echo"     : false,
-      "timePause": 500,
+      "timePause": 10,
       "slaves"   : [
         {
           "unitId"    : 1,
