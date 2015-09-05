@@ -29,7 +29,7 @@ public abstract class ProtocolMaster implements Runnable {
 
     }
 
-    public abstract void stop();
+    public abstract void stopInterview();
 
     public abstract void addSlave(ProtocolSlave slave);
 

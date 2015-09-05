@@ -71,8 +71,11 @@ public class Engine implements MqttCallback {
     /**
      * Остановка опроса всех ProtocolMaster'ов
      */
-    public void stop() {
-        protocolMasterMap.forEach((k, v) -> v.stop());
+    public void stopEngine() {
+        if (protocolMasterMap != null) {
+            protocolMasterMap.forEach((k, v) -> v.stopInterview());
+            protocolMasterMap = null;
+        }
     }
 
     /**
@@ -119,7 +122,7 @@ public class Engine implements MqttCallback {
                     logger.debug("Data Dealer running.");
                     break;
                 case "stop":
-                    stop();
+                    stopEngine();
                     logger.debug("Data Dealer stopping.");
                     break;
             }

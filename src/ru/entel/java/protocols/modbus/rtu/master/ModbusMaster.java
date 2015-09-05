@@ -52,7 +52,7 @@ public class ModbusMaster extends ProtocolMaster {
     /**
      * Флаг для остановки отдельного потока опроса объектов ModbusSlaveRead
      */
-    public volatile boolean running = true;
+    private volatile boolean interviewRun = true;
 
     /**
      * Конструктор
@@ -124,11 +124,11 @@ public class ModbusMaster extends ProtocolMaster {
      */
     @Override
     public void run() {
-        running = true;
+        interviewRun = true;
         if (slaves.size() != 0) {
             try {
                 openPort();
-                while(running) {
+                while(interviewRun) {
                     for (ModbusSlaveRead slave : slaves) {
                         try {
                             slave.request();
@@ -157,7 +157,7 @@ public class ModbusMaster extends ProtocolMaster {
      * Останавливает поток опроса слейвов
      */
     @Override
-    public synchronized void stop() {
-        running = false;
+    public synchronized void stopInterview() {
+        this.interviewRun = false;
     }
 }
