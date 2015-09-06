@@ -166,3 +166,170 @@
 2015-09-05 20:45:36,021 [DEBUG][ Call: DD-engine][ java.datadealer.engine.Engine] - modbus_in started
 2015-09-05 20:45:36,022 [DEBUG][ Call: DD-engine][ java.datadealer.engine.Engine] - Data Dealer running.
 2015-09-05 20:45:36,039 [DEBUG][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in" open Com-port connection
+2015-09-06 15:03:49,844 [DEBUG][ Call: DD-engine][ java.datadealer.engine.Engine] - Data Dealer stopping.
+2015-09-06 15:03:49,875 [DEBUG][ Call: DD-config][datadealer.engine.Configurator] - Configurator update config
+2015-09-06 15:04:01,950 [DEBUG][ Call: DD-engine][modbus.rtu.master.ModbusMaster] - modbus_in initialize.
+2015-09-06 15:04:01,957 [DEBUG][ Call: DD-engine][ java.datadealer.engine.Engine] - modbus_in started
+2015-09-06 15:04:01,957 [DEBUG][ Call: DD-engine][ java.datadealer.engine.Engine] - Data Dealer running.
+2015-09-06 15:04:01,976 [DEBUG][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in" open Com-port connection
+2015-09-06 15:04:02,735 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O exception - failed to read
+2015-09-06 15:04:03,489 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O exception - failed to read
+2015-09-06 15:04:04,241 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O exception - failed to read
+2015-09-06 15:04:04,994 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O exception - failed to read
+2015-09-06 15:04:05,747 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O exception - failed to read
+2015-09-06 15:04:06,499 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O exception - failed to read
+2015-09-06 15:04:07,252 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O exception - failed to read
+2015-09-06 15:04:08,005 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O exception - failed to read
+2015-09-06 15:04:08,757 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O exception - failed to read
+2015-09-06 15:04:09,510 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O exception - failed to read
+2015-09-06 15:04:10,262 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O exception - failed to read
+2015-09-06 15:04:11,015 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O exception - failed to read
+2015-09-06 15:04:11,769 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O exception - failed to read
+2015-09-06 15:04:12,521 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O exception - failed to read
+2015-09-06 15:04:13,275 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O exception - failed to read
+2015-09-06 15:04:14,028 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O exception - failed to read
+2015-09-06 15:04:14,781 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O exception - failed to read
+2015-09-06 15:04:15,533 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O exception - failed to read
+2015-09-06 15:04:16,286 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O exception - failed to read
+2015-09-06 15:04:17,038 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O exception - failed to read
+2015-09-06 15:04:17,791 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O exception - failed to read
+2015-09-06 15:04:18,543 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O exception - failed to read
+2015-09-06 15:04:19,300 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O exception - failed to read
+2015-09-06 15:04:20,052 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O exception - failed to read
+2015-09-06 15:04:20,805 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O exception - failed to read
+2015-09-06 15:04:21,557 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O exception - failed to read
+2015-09-06 15:04:22,309 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O exception - failed to read
+2015-09-06 15:04:23,062 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O exception - failed to read
+2015-09-06 16:25:06,709 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:06,860 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:07,010 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:07,161 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:07,312 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:07,463 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:07,614 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:07,764 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:07,915 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:08,066 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:08,217 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:08,367 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:08,518 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:08,669 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:08,819 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:08,970 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:09,121 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:09,272 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:09,423 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:09,573 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:09,724 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:09,875 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:10,026 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:10,177 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:10,327 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:10,478 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:10,629 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:10,780 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:10,930 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:11,092 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:11,243 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:11,394 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:11,544 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:11,695 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:11,846 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:11,996 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:12,147 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:12,298 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:12,449 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:12,600 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:12,751 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:12,901 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:13,052 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:13,203 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:13,354 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:13,504 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:13,655 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:13,806 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:13,956 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:14,107 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:14,258 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:14,409 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:14,559 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:14,710 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:14,861 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:15,012 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:15,162 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:15,313 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:15,464 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:15,615 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:15,765 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:15,916 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:16,067 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:16,227 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:16,377 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:16,528 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:16,679 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:16,830 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:16,980 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:17,131 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:17,282 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:17,432 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:17,584 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:17,734 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:17,885 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:18,036 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:18,186 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:18,337 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:18,488 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:18,639 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:18,789 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:18,940 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:19,091 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:19,241 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:19,392 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:19,543 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:19,694 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:19,844 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:19,995 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:20,146 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:20,296 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:20,447 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:20,598 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:20,748 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:20,899 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:21,050 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:21,201 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:21,351 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:21,502 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:21,652 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:21,803 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:21,954 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:22,104 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:22,255 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:22,406 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:22,556 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:22,707 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:22,858 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:23,008 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:23,159 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:23,310 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:23,460 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:23,611 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:23,762 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:23,912 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:24,063 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:24,214 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:24,364 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:24,515 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:24,666 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:24,816 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:24,967 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:25,118 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:25,268 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:25,419 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:25,570 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:25,720 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:25,871 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:26,022 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:26,173 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:26,323 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-06 16:25:26,474 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
+2015-09-06 16:25:26,625 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
