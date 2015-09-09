@@ -1,0 +1,6 @@
+logs/
+target/
+out/
+/DataDealer.iml
+/dependency-reduced-pom.xml
+/.idea/
