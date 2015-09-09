@@ -333,3 +333,11 @@
 2015-09-06 16:25:26,323 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
 2015-09-06 16:25:26,474 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_2" I/O failed to write
 2015-09-06 16:25:26,625 [ERROR][modbus_in       ][modbus.rtu.master.ModbusMaster] - "modbus_in:slave1_1" I/O failed to write
+2015-09-09 11:56:07,698 [DEBUG][ Call: DD-engine][ java.datadealer.engine.Engine] - Data Dealer stopping.
+2015-09-09 11:56:07,745 [DEBUG][ Call: DD-config][datadealer.engine.Configurator] - Configurator update config
+2015-09-09 12:01:21,882 [DEBUG][ Call: DD-engine][ java.datadealer.engine.Engine] - Data Dealer stopping.
+2015-09-09 12:01:21,911 [DEBUG][ Call: DD-config][datadealer.engine.Configurator] - Configurator update config
+2015-09-09 12:06:17,778 [DEBUG][ Call: DD-engine][ java.datadealer.engine.Engine] - Data Dealer stopping.
+2015-09-09 12:06:17,816 [DEBUG][ Call: DD-config][datadealer.engine.Configurator] - Configurator update config
+2015-09-09 12:09:41,694 [DEBUG][ Call: DD-engine][ java.datadealer.engine.Engine] - Data Dealer stopping.
+2015-09-09 12:09:41,713 [DEBUG][ Call: DD-config][datadealer.engine.Configurator] - Configurator update config
