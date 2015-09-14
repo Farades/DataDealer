@@ -77,7 +77,7 @@
                             <transformers>
                                 <!-- add Main-Class to manifest file -->
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>ru.entel.java.Main</mainClass>
+                                    <mainClass>ru.entel.Main</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>
