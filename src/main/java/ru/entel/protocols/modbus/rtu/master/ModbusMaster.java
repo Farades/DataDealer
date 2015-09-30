@@ -16,7 +16,9 @@ import ru.entel.protocols.service.ProtocolMasterParams;
 import ru.entel.protocols.service.ProtocolSlave;
 import ru.entel.protocols.service.ProtocolType;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 /**
  * Класс ModbusMaster - потомок ProtocolMaster.
@@ -28,11 +30,6 @@ import java.util.HashSet;
  */
 public class ModbusMaster extends ProtocolMaster {
     private static final Logger logger = Logger.getLogger(ModbusMaster.class);
-
-    /**
-     * Объект MessageService предназначен для отправки данных
-     */
-    private MessageService messageService = MessageServiceFactory.getMessageService(MessageServiceType.MQTT);
 
     /**
      * Объект для коммункации с COM-портом. Передается каждому ModbusSlaveRead при добавлении
@@ -47,7 +44,7 @@ public class ModbusMaster extends ProtocolMaster {
     /**
      * Коллекция в которой хранятся все объекты ModbusSlaveRead для данного мастера
      */
-    private HashSet<ModbusSlaveRead> slaves = new HashSet<>();
+    private Map<String, ProtocolSlave> slaves = new HashMap<>();
 
     /**
      * Флаг для остановки отдельного потока опроса объектов ModbusSlaveRead
@@ -95,7 +92,7 @@ public class ModbusMaster extends ProtocolMaster {
         ModbusSlaveRead mbSlave = (ModbusSlaveRead) slave;
         mbSlave.setMasterName(this.name);
         mbSlave.setCon(this.con);
-        slaves.add(mbSlave);
+        slaves.put(slave.getName(), slave);
         logger.trace("Add slave: " + slave);
     }
 
@@ -129,7 +126,8 @@ public class ModbusMaster extends ProtocolMaster {
             try {
                 openPort();
                 while(interviewRun) {
-                    for (ModbusSlaveRead slave : slaves) {
+                    for (Map.Entry<String, ProtocolSlave> entry : slaves.entrySet()) {
+                        ProtocolSlave slave = entry.getValue();
                         try {
                             slave.request();
                             Thread.sleep(timePause);
@@ -137,8 +135,12 @@ public class ModbusMaster extends ProtocolMaster {
                             ex.printStackTrace();
                             logger.error("\"" + slave + "\" " + ex.getMessage());
                         } catch (ModbusRequestException ex) {
-                            String topic = "smiu/DD" + this.name + ":" + slave.getName() + "/data";
-                            messageService.send(topic, "SlaveErr");
+                            //TODO
+//                            String topic = "smiu/DD" + this.name + ":" + slave.getName() + "/data";
+//                            messageService.send(topic, "SlaveErr");
+//                            ex.printStackTrace();
+//                            logger.error("\"" + slave + "\" " + ex.getMessage());
+                        } catch (Exception ex) {
                             ex.printStackTrace();
                             logger.error("\"" + slave + "\" " + ex.getMessage());
                         }
@@ -151,6 +153,11 @@ public class ModbusMaster extends ProtocolMaster {
                 closePort();
             }
         }
+    }
+
+    @Override
+    public Map<String, ProtocolSlave> getSlaves() {
+        return this.slaves;
     }
 
     /**

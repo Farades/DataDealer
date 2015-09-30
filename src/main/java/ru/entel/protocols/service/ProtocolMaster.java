@@ -1,5 +1,7 @@
 package ru.entel.protocols.service;
 
+import java.util.Map;
+
 /**
  * ProtocolMaster - абстрактный класс, наследуемый от интерфейса Runnable.
  * Является потомком для всех мастеров протоколов. Необходим в качестве полимфорного типа.
@@ -28,6 +30,8 @@ public abstract class ProtocolMaster implements Runnable {
     public void run() {
 
     }
+
+    public abstract Map<String, ProtocolSlave> getSlaves();
 
     public abstract void stopInterview();
 

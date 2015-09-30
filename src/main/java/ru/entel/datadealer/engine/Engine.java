@@ -1,12 +1,21 @@
 package ru.entel.datadealer.engine;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import ru.entel.datadealer.msg.MessageService;
+import ru.entel.datadealer.msg.MessageServiceFactory;
+import ru.entel.datadealer.msg.MessageServiceType;
 import ru.entel.datadealer.msg.MqttService;
+import ru.entel.protocols.registers.AbstractRegister;
+import ru.entel.protocols.service.DDPacket;
 import ru.entel.protocols.service.InvalidProtocolTypeException;
 import ru.entel.protocols.service.ProtocolMaster;
+import ru.entel.protocols.service.ProtocolSlave;
 import ru.entel.utils.InvalidJSONException;
+import ru.entel.utils.RegisterSerializer;
 
 import java.util.Map;
 
@@ -19,6 +28,12 @@ import java.util.Map;
  */
 public class Engine implements MqttCallback {
     private static final Logger logger = Logger.getLogger(Engine.class);
+
+
+    /**
+     * Объект MessageService предназначен для отправки данных
+     */
+    private MessageService messageService = MessageServiceFactory.getMessageService(MessageServiceType.MQTT);
 
     /**
      * Основной объект для работы с MQTT
@@ -37,6 +52,21 @@ public class Engine implements MqttCallback {
     private final String ENGINE_TOPIC = "smiu/DD/engine";
 
     /**
+     * Ветка, которую слушает MQTT client для отдачи данных
+     */
+    private final String ENGINE_DATA = "smiu/DD/engine/data";
+
+    /**
+     * Ветка в которую Engine возвращает данные по конкретному DevID
+     */
+    private final String ENGINE_OUT = "smiu/DD/engine/out";
+
+    /**
+     * Объект gson для десериализации и отправки DDPacket по MQTT
+     */
+    private Gson gson;
+
+    /**
      * Словарь, содержащий все ProtocolMaster'ы, готовые к запуску
      */
     private Map<String, ProtocolMaster> protocolMasterMap;
@@ -49,6 +79,7 @@ public class Engine implements MqttCallback {
     public Engine() {
         configurator = new Configurator();
         mqttInit();
+        this.gson = new GsonBuilder().registerTypeAdapter(AbstractRegister.class, new RegisterSerializer()).create();
     }
 
     /**
@@ -95,10 +126,27 @@ public class Engine implements MqttCallback {
             client.setCallback(this);
             client.connect(connectOptions);
             client.subscribe(ENGINE_TOPIC, 0);
+            client.subscribe(ENGINE_DATA, 0);
         } catch (MqttException e) {
             logger.error("Ошибка в функции mqttInit(): " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    private void sendDataByDevID(String devID) {
+        try {
+            String nodeStr = devID.split("\\.")[0];
+            String devStr = devID.split("\\.")[1];
+
+            ProtocolMaster node = protocolMasterMap.get(nodeStr);
+            ProtocolSlave  dev = node.getSlaves().get(devStr);
+
+            DDPacket packet = new DDPacket(devID, dev.getData());
+            messageService.send(this.ENGINE_OUT, gson.toJson(packet));
+        } catch (RuntimeException ex) {
+            ex.printStackTrace();
+        }
+
     }
 
     /**
@@ -130,6 +178,8 @@ public class Engine implements MqttCallback {
                     logger.debug("Data Dealer stopping.");
                     break;
             }
+        } else if (s.equals(ENGINE_DATA)) {
+            sendDataByDevID(mqttMessage.toString());
         }
     }
 
