@@ -59,6 +59,7 @@ public class Engine implements MqttCallback {
     /**
      * Ветка в которую Engine возвращает данные по конкретному DevID
      */
+    @SuppressWarnings("FieldCanBeLocal")
     private final String ENGINE_OUT = "smiu/DD/engine/out";
 
     /**
