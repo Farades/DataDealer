@@ -5,6 +5,9 @@ import com.google.gson.GsonBuilder;
 import org.apache.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import ru.entel.datadealer.db.entity.DeviceBlank;
+import ru.entel.datadealer.db.entity.Protocol;
+import ru.entel.datadealer.db.entity.TagBlank;
 import ru.entel.datadealer.devices.Binding;
 import ru.entel.datadealer.devices.DevType;
 import ru.entel.datadealer.devices.Device;
@@ -71,60 +74,65 @@ public class Configurator implements MqttCallback {
      * @throws InvalidProtocolTypeException Неизвестный типа протокола
      */
     public synchronized Map<String, ProtocolMaster> getProtocolMasters() throws InvalidJSONException, InvalidProtocolTypeException {
-        if (!JSONUtils.isJSONValid(jsonConfig))
-            throw new InvalidJSONException("Invalid json");
-
         Map<String, ProtocolMaster> res = new HashMap<>();
 
+        List<Protocol> protocols = DataHelper.getInstance().getAllProtocols();
         Gson gson = new GsonBuilder().registerTypeAdapter(Object.class, new JSONNaturalDeserializer()).create();
-        Map jsonParams = (Map) gson.fromJson(jsonConfig, Object.class);
-        //ArrayList, хранящий информацию обо всех протоколах (если их больше 1)
-        ArrayList protocolsParams = (ArrayList) jsonParams.get("protocols");
 
-        //Цикл по всем протоколам
-        for (Object protocolParamsObj : protocolsParams) {
-            //Словарь, хранящий информацию про конкретный i-ый ProtocolMaster
-            Map protocolParams = (Map)protocolParamsObj;
-            String protocolType = (String) protocolParams.get("type");
+        for (Protocol protocol : protocols) {
+            String jsonConfig = protocol.getProtocolSettings();
+            if (!JSONUtils.isJSONValid(jsonConfig))
+                throw new InvalidJSONException("Invalid json");
 
-            switch (protocolType) {
-                case "MODBUS_MASTER":
-                    String masterName = (String) protocolParams.get("name");
-                    String portName   = (String) protocolParams.get("portName");
-                    String encoding   = (String) protocolParams.get("encoding");
-                    String parity     = (String) protocolParams.get("parity");
+            Map protocolParams = (Map) gson.fromJson(jsonConfig, Object.class);
+
+            switch (protocol.getType()) {
+                case "MODBUS_RTU_MASTER":
+                    String masterName = protocol.getName();
+                    String portName = (String) protocolParams.get("portName");
+                    String encoding = "rtu";
+                    String parity = (String) protocolParams.get("parity");
                     int baudRate      = ((Double)protocolParams.get("baudRate")).intValue();
                     int databits      = ((Double)protocolParams.get("databits")).intValue();
                     int stopbits      = ((Double)protocolParams.get("stopbits")).intValue();
                     int timePause     = ((Double)protocolParams.get("timePause")).intValue();
-                    boolean echo      = (Boolean) protocolParams.get("echo");
+                    boolean echo = false;
 
                     ModbusMasterParams masterParams = new ModbusMasterParams(portName, baudRate, databits, parity,
                             stopbits, encoding, echo, timePause);
                     ModbusMaster master = new ModbusMaster(masterName, masterParams);
 
-                    //Парсинг слейвов для ProtocolMaster'a
-                    ArrayList slaves = (ArrayList) protocolParams.get("slaves");
-                    for (Object slaveParamsObj : slaves) {
-                        //Словарь хранящий информацию про конкретный Slave
-                        Map slaveParams = (Map)slaveParamsObj;
+                    for (ru.entel.datadealer.db.entity.Device device : protocol.getDevices()) {
+                        String jsonDevConf = device.getDeviceSettings();
+                        if (!JSONUtils.isJSONValid(jsonDevConf))
+                            throw new InvalidJSONException("Invalid json");
 
-                        ModbusFunction mbFunc = ModbusFunction.valueOf(String.valueOf(slaveParams.get("mbFunc")));
-                        RegType regType       = RegType.valueOf(String.valueOf(slaveParams.get("mbRegType")));
-                        int offset            = ((Double)slaveParams.get("offset")).intValue();
-                        int length            = ((Double)slaveParams.get("length")).intValue();
-                        int unitID            = ((Double)slaveParams.get("unitId")).intValue();
-                        int transDelay        = ((Double)slaveParams.get("transDelay")).intValue();
-                        String slaveName      = String.valueOf(slaveParams.get("name"));
+                        Map slaveParams = (Map) gson.fromJson(jsonDevConf, Object.class);
 
-                        ModbusSlaveParams sp = new ModbusSlaveParams(unitID, mbFunc, regType, offset,
-                                length, transDelay);
-                        master.addSlave(new ModbusSlaveRead(slaveName, sp));
+                        int unitID = ((Double)slaveParams.get("unitId")).intValue();
+                        DeviceBlank deviceBlank = device.getDeviceBlank();
+                        for (TagBlank tagBlank : deviceBlank.getTagBlanks()) {
+                            String tagParams[] = tagBlank.getTagId().split(":");
+                            ModbusFunction mbFunc = ModbusFunction.valueOf(String.valueOf(tagParams[0]));
+                            RegType regType       = RegType.valueOf(String.valueOf(tagParams[1]));
+                            int offset            = Integer.valueOf(tagParams[2]);
+                            int length = 1;
+                            int transDelay        = tagBlank.getDelay();
+                            String slaveName      = tagBlank.getTagName();
+
+                            ModbusSlaveParams sp = new ModbusSlaveParams(unitID, mbFunc, regType, offset,
+                                    length, transDelay);
+                            master.addSlave(new ModbusSlaveRead(slaveName, sp));
+                            System.out.println();
+                        }
+
+                        System.out.println(unitID);
                     }
                     res.put(masterName, master);
                     break;
+
                 default:
-                    throw new InvalidProtocolTypeException("Invalid protocol type - " + protocolType);
+                    throw new InvalidProtocolTypeException("Invalid protocol type - " + protocol.getType());
             }
         }
         return res;

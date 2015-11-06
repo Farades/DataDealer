@@ -123,19 +123,19 @@ public class Device extends AbstractDevice implements Serializable {
 
     @Override
     public void run() {
-        interviewRun = true;
-        while (interviewRun) {
-            try {
-                Thread.sleep(500);
-                try {
-                    updateValues();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+//        interviewRun = true;
+//        while (interviewRun) {
+//            try {
+//                Thread.sleep(500);
+//                try {
+//                    updateValues();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
     }
 
     public synchronized void updateValues() throws Exception {

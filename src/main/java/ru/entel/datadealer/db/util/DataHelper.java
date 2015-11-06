@@ -5,7 +5,11 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import ru.entel.datadealer.db.entity.Properties;
+import ru.entel.datadealer.db.entity.Protocol;
 import ru.entel.datadealer.db.entity.Values;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DataHelper {
     private SessionFactory sessionFactory = null;
@@ -47,6 +51,21 @@ public class DataHelper {
         session.save(values);
         session.flush();
         session.close();
+    }
+
+    public synchronized List<Protocol> getAllProtocols() {
+        Session session = getSession();
+        List<Protocol> res = new ArrayList<>(0);
+        try {
+            res = session.createCriteria(Protocol.class).list();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            if (session!= null && session.isOpen()) {
+                session.close();
+            }
+        }
+        return res;
     }
 
 //

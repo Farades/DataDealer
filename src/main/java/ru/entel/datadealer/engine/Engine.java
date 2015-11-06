@@ -96,16 +96,16 @@ public class Engine implements MqttCallback {
      */
     public void run() {
         try {
-            deviceMap = configurator.getDevices();
+//            deviceMap = configurator.getDevices();
             protocolMasterMap = configurator.getProtocolMasters();
             for (ProtocolMaster pm : protocolMasterMap.values()) {
                 new Thread(pm, pm.getName()).start();
                 logger.debug(pm.getName() + " started");
             }
-            for (Device device : deviceMap.values()) {
-                new Thread(device, device.getName()).start();
-                logger.debug(device.getName() + " started");
-            }
+//            for (Device device : deviceMap.values()) {
+//                new Thread(device, device.getName()).start();
+//                logger.debug(device.getName() + " started");
+//            }
             logger.debug("Data Dealer running.");
         } catch (InvalidProtocolTypeException | InvalidJSONException e) {
             logger.error("Ошибка при создании ProtocolMaster'ов в конфигураторе: " + e.getMessage());

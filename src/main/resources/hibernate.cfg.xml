@@ -16,6 +16,9 @@
         <mapping class="ru.entel.datadealer.db.entity.Properties"/>
         <mapping class="ru.entel.datadealer.db.entity.DeviceBlank"/>
         <mapping class="ru.entel.datadealer.db.entity.Values"/>
+        <mapping class="ru.entel.datadealer.db.entity.Protocol"/>
+        <mapping class="ru.entel.datadealer.db.entity.Device"/>
+        <mapping class="ru.entel.datadealer.db.entity.TagBlank"/>
 
     </session-factory>
 </hibernate-configuration>

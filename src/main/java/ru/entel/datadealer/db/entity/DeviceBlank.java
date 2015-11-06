@@ -1,6 +1,8 @@
 package ru.entel.datadealer.db.entity;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by farades on 06.11.15.
@@ -11,6 +13,8 @@ public class DeviceBlank {
     private int id;
     private String deviceType;
     private String protocolType;
+    private Set<Device> devices = new HashSet<>(0);
+    private Set<TagBlank> tagBlanks = new HashSet<>(0);
 
     @Id
     @Column(name = "id", nullable = false, insertable = true, updatable = true)
@@ -42,6 +46,24 @@ public class DeviceBlank {
         this.protocolType = protocolType;
     }
 
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "deviceBlank")
+    public Set<Device> getDevices() {
+        return devices;
+    }
+
+    public void setDevices(Set<Device> devices) {
+        this.devices = devices;
+    }
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "deviceBlank")
+    public Set<TagBlank> getTagBlanks() {
+        return tagBlanks;
+    }
+
+    public void setTagBlanks(Set<TagBlank> tagBlanks) {
+        this.tagBlanks = tagBlanks;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -62,5 +84,14 @@ public class DeviceBlank {
         result = 31 * result + (deviceType != null ? deviceType.hashCode() : 0);
         result = 31 * result + (protocolType != null ? protocolType.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "DeviceBlank{" +
+                "tagBlanks=" + tagBlanks +
+                ", protocolType='" + protocolType + '\'' +
+                ", deviceType='" + deviceType + '\'' +
+                '}';
     }
 }
