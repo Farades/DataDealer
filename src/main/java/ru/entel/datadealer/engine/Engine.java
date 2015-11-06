@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import org.apache.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import ru.entel.datadealer.devices.Device;
 import ru.entel.datadealer.msg.MessageService;
 import ru.entel.datadealer.msg.MessageServiceFactory;
 import ru.entel.datadealer.msg.MessageServiceType;
@@ -73,14 +74,21 @@ public class Engine implements MqttCallback {
     private Map<String, ProtocolMaster> protocolMasterMap;
 
     /**
+     * Словарь, содержащий все устройства
+     */
+    private Map<String, Device> deviceMap;
+
+    /**
      * Объект, занимающийся конфигурированием словаря protocolMasterMap. Получает данные от MQTT сервера.
      */
     private Configurator configurator;
 
     public Engine() {
-        configurator = new Configurator();
+        configurator = new Configurator(this);
         mqttInit();
         this.gson = new GsonBuilder().registerTypeAdapter(AbstractRegister.class, new RegisterSerializer()).create();
+
+
     }
 
     /**
@@ -88,10 +96,15 @@ public class Engine implements MqttCallback {
      */
     public void run() {
         try {
+            deviceMap = configurator.getDevices();
             protocolMasterMap = configurator.getProtocolMasters();
             for (ProtocolMaster pm : protocolMasterMap.values()) {
                 new Thread(pm, pm.getName()).start();
                 logger.debug(pm.getName() + " started");
+            }
+            for (Device device : deviceMap.values()) {
+                new Thread(device, device.getName()).start();
+                logger.debug(device.getName() + " started");
             }
             logger.debug("Data Dealer running.");
         } catch (InvalidProtocolTypeException | InvalidJSONException e) {
@@ -112,6 +125,10 @@ public class Engine implements MqttCallback {
         if (protocolMasterMap != null) {
             protocolMasterMap.forEach((k, v) -> v.stopInterview());
             protocolMasterMap = null;
+        }
+        if (deviceMap != null) {
+            deviceMap.forEach((k, v) -> v.stopInterview());
+            deviceMap = null;
         }
     }
 
@@ -134,20 +151,21 @@ public class Engine implements MqttCallback {
         }
     }
 
-    private void sendDataByDevID(String devID) {
+    public DDPacket sendDataByDevID(String devID) {
+        DDPacket packet = null;
         try {
-            String nodeStr = devID.split("\\.")[0];
-            String devStr = devID.split("\\.")[1];
+            String nodeStr = devID.split(":")[0];
+            String devStr = devID.split(":")[1];
 
             ProtocolMaster node = protocolMasterMap.get(nodeStr);
             ProtocolSlave  dev = node.getSlaves().get(devStr);
 
-            DDPacket packet = new DDPacket(devID, dev.getData());
-            messageService.send(this.ENGINE_OUT, gson.toJson(packet));
+            packet = new DDPacket(devID, dev.getData());
+//            messageService.send(this.ENGINE_OUT, gson.toJson(packet));
         } catch (RuntimeException ex) {
             ex.printStackTrace();
         }
-
+        return packet;
     }
 
     /**
@@ -172,6 +190,7 @@ public class Engine implements MqttCallback {
         if (s.equals(ENGINE_TOPIC)) {
             switch (mqttMessage.toString()) {
                 case "run":
+                    configurator.updateConfig();
                     run();
                     break;
                 case "stop":

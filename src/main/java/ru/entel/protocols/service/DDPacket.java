@@ -17,4 +17,20 @@ public class DDPacket implements Serializable {
         this.devID = devID;
         this.registers = registers;
     }
+
+    public String getDevID() {
+        return devID;
+    }
+
+    public Map<Integer, AbstractRegister> getRegisters() {
+        return registers;
+    }
+
+    @Override
+    public String toString() {
+        return "DDPacket{" +
+                "devID='" + devID + '\'' +
+                ", registers=" + registers +
+                '}';
+    }
 }

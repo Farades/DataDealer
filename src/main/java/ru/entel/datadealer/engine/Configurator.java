@@ -5,6 +5,11 @@ import com.google.gson.GsonBuilder;
 import org.apache.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import ru.entel.datadealer.devices.Binding;
+import ru.entel.datadealer.devices.DevType;
+import ru.entel.datadealer.devices.Device;
+import ru.entel.datadealer.db.util.DataHelper;
+import ru.entel.datadealer.devices.DeviceException;
 import ru.entel.datadealer.msg.MqttService;
 import ru.entel.protocols.modbus.ModbusFunction;
 import ru.entel.protocols.modbus.rtu.master.ModbusMaster;
@@ -18,9 +23,7 @@ import ru.entel.utils.InvalidJSONException;
 import ru.entel.utils.JSONNaturalDeserializer;
 import ru.entel.utils.JSONUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Configurator - Слушает MQTT (ветка smiu/DD/updateConfig), хранит конфигурацию в JSON.
@@ -30,6 +33,8 @@ import java.util.Map;
  */
 public class Configurator implements MqttCallback {
     private static final Logger logger = Logger.getLogger(Configurator.class);
+
+    private Engine engine;
 
     /**
      * Основная переменная для работы с MQTT
@@ -52,7 +57,10 @@ public class Configurator implements MqttCallback {
      */
     private String jsonConfig = "";
 
-    public Configurator() {
+    private String deviceConfig = "";
+
+    public Configurator(Engine engine) {
+        this.engine = engine;
         mqttInit();
     }
 
@@ -62,7 +70,7 @@ public class Configurator implements MqttCallback {
      * @throws InvalidJSONException Невалидный JSON
      * @throws InvalidProtocolTypeException Неизвестный типа протокола
      */
-    public Map<String, ProtocolMaster> getProtocolMasters() throws InvalidJSONException, InvalidProtocolTypeException {
+    public synchronized Map<String, ProtocolMaster> getProtocolMasters() throws InvalidJSONException, InvalidProtocolTypeException {
         if (!JSONUtils.isJSONValid(jsonConfig))
             throw new InvalidJSONException("Invalid json");
 
@@ -122,6 +130,64 @@ public class Configurator implements MqttCallback {
         return res;
     }
 
+    public synchronized Map<String, Device> getDevices() throws InvalidJSONException {
+        if (!JSONUtils.isJSONValid(this.deviceConfig))
+            throw new InvalidJSONException("Invalid json");
+
+
+        Gson gson = new GsonBuilder().registerTypeAdapter(Object.class, new JSONNaturalDeserializer()).create();
+        Map jsonParams = (Map) gson.fromJson(deviceConfig, Object.class);
+
+        Map<String, Device> res = new HashMap<String, Device>();
+
+        ArrayList jsonDevices = (ArrayList)jsonParams.get("devices");
+        for (Object device : jsonDevices) {
+            Map deviceParam = (Map)device;
+            String devName = String.valueOf(deviceParam.get("name"));
+            String devDescr = String.valueOf(deviceParam.get("description"));
+            DevType devtype = DevType.valueOf(String.valueOf(deviceParam.get("devType")));
+            //Десереализация params binding'ов
+            ArrayList jsonBindings = (ArrayList)deviceParam.get("bindings");
+            HashMap<String, Binding> bindings = new HashMap<String, Binding>();
+            for (Object binding : jsonBindings) {
+                Map jsonBinding = (Map)binding;
+                String varName = String.valueOf(jsonBinding.get("varName"));
+                String protocolMasterName = String.valueOf(jsonBinding.get("protocolMasterName"));
+                String channelName = String.valueOf(jsonBinding.get("channelName"));
+                int regNumb = ((Double)jsonBinding.get("regNumb")).intValue();
+                Binding newBinding = new Binding(protocolMasterName, channelName, regNumb);
+                bindings.put(varName, newBinding);
+            }
+            //Десереализация device exception'ов
+            ArrayList jsonExceptions = (ArrayList)deviceParam.get("exceptions");
+            Set<DeviceException> alarms = new HashSet<DeviceException>();
+            for (Object exception : jsonExceptions) {
+                Map jsonException = (Map)exception;
+                String varOwnerName = String.valueOf(jsonException.get("varOwnerName"));
+                String condition = String.valueOf(jsonException.get("condition"));
+                String description = String.valueOf(jsonException.get("description"));
+                DeviceException deviceException = new DeviceException(varOwnerName, devDescr, condition, description);
+//                if (exceptions.containsKey(varOwnerName)) {
+//                    exceptions.get(varOwnerName).add(deviceException);
+//                } else {
+//                    ArrayList<DeviceException> deviceExceptionArrayList = new ArrayList<DeviceException>();
+//                    deviceExceptionArrayList.add(deviceException);
+//                    exceptions.put(varOwnerName, deviceExceptionArrayList);
+//                }
+                alarms.add(deviceException);
+            }
+            try {
+                Device newDevice = new Device(devName, devDescr, devtype, bindings, alarms, engine);
+                res.put(devName, newDevice);
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.exit(1);
+            }
+        }
+        return res;
+    }
+
+
     /**
      * Инициализация MQTT клиента. Подпись на ветку CONFIG_TOPIC
      */
@@ -140,18 +206,21 @@ public class Configurator implements MqttCallback {
         }
     }
 
-    /**
-     * Метод, вызываемый при получении нового конфига по MQTT.
-     * @param jsonConfig новый конфиг в JSON
-     * @throws InvalidJSONException Невалидный JSON
-     */
-    private void updateConfig(String jsonConfig) throws InvalidJSONException {
-        if (JSONUtils.isJSONValid(jsonConfig)) {
-            this.jsonConfig = jsonConfig;
-            logger.debug("Configurator update config");
+
+    public void updateConfig() throws InvalidJSONException {
+        logger.debug("Configurator update config");
+        String jsonConfigTmp = DataHelper.getInstance().getProperty("dd_config");
+        String deviceConfigTmp = DataHelper.getInstance().getProperty("device_config");
+
+        if (JSONUtils.isJSONValid(jsonConfigTmp) && JSONUtils.isJSONValid(deviceConfigTmp)) {
+            this.jsonConfig = jsonConfigTmp;
+            this.deviceConfig = deviceConfigTmp;
         } else {
             throw new InvalidJSONException("Invalid json");
         }
+
+        System.out.println(this.deviceConfig);
+        System.out.println(this.jsonConfig);
      }
 
     /**
@@ -174,7 +243,7 @@ public class Configurator implements MqttCallback {
     @Override
     public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
         if (s.equals(CONFIG_TOPIC)) {
-            updateConfig(mqttMessage.toString());
+            updateConfig();
         }
     }
 
