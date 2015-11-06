@@ -5,9 +5,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import ru.entel.datadealer.db.entity.Properties;
-
-import java.util.ArrayList;
-import java.util.List;
+import ru.entel.datadealer.db.entity.Values;
 
 public class DataHelper {
     private SessionFactory sessionFactory = null;
@@ -24,11 +22,11 @@ public class DataHelper {
         return dataHelper;
     }
 
-    private Session getSession() {
+    private synchronized Session getSession() {
         return sessionFactory.openSession();
     }
 
-    public String getProperty(String value) {
+    public synchronized String getProperty(String value) {
         Session session = getSession();
         String res = "";
         try {
@@ -43,6 +41,14 @@ public class DataHelper {
         }
         return res;
     }
+
+    public synchronized void saveValues(Values values) {
+        Session session = getSession();
+        session.save(values);
+        session.flush();
+        session.close();
+    }
+
 //
 //    public List<Protocol> getAllProtocols() {
 //        Session session = sessionFactory.openSession();

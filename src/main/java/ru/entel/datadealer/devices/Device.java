@@ -1,6 +1,8 @@
 package ru.entel.datadealer.devices;
 
 import org.apache.log4j.Logger;
+import ru.entel.datadealer.db.entity.Values;
+import ru.entel.datadealer.db.util.DataHelper;
 import ru.entel.datadealer.engine.Engine;
 import ru.entel.protocols.registers.AbstractRegister;
 import ru.entel.protocols.registers.ZeroRegister;
@@ -153,7 +155,16 @@ public class Device extends AbstractDevice implements Serializable {
                     throw new Exception("No register for binding: " + cbEntrySet.getValue());
                 }
             }
-            logger.debug("\"" + this.name +"\" update values: " + this.values);
+            logger.debug("\"" + this.name + "\" update values: " + this.values);
+        }
+        saveValuesToDb();
+
+    }
+
+    public synchronized void saveValuesToDb() {
+        for (Map.Entry<String, AbstractRegister> entry : values.entrySet()) {
+            Values values = new Values(entry.getKey(), entry.getValue().getValue().toString(), this.name);
+            DataHelper.getInstance().saveValues(values);
         }
     }
 
