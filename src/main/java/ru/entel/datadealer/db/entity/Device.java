@@ -1,6 +1,7 @@
 package ru.entel.datadealer.db.entity;
 
 import javax.persistence.*;
+import java.util.Set;
 
 /**
  * Created by farades on 06.11.15.
@@ -13,6 +14,7 @@ public class Device {
     private String name;
     private Protocol protocol;
     private DeviceBlank deviceBlank;
+    private Set<Tag> tags;
 
     @Id
     @Column(name = "id", nullable = false, insertable = true, updatable = true)
@@ -54,7 +56,7 @@ public class Device {
         this.protocol = protocol;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "device_blank_id")
     public DeviceBlank getDeviceBlank() {
         return deviceBlank;
@@ -62,6 +64,15 @@ public class Device {
 
     public void setDeviceBlank(DeviceBlank deviceBlank) {
         this.deviceBlank = deviceBlank;
+    }
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "device")
+    public Set<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
     }
 
     @Override

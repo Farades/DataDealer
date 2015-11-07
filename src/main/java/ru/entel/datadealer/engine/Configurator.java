@@ -8,11 +8,7 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import ru.entel.datadealer.db.entity.DeviceBlank;
 import ru.entel.datadealer.db.entity.Protocol;
 import ru.entel.datadealer.db.entity.TagBlank;
-import ru.entel.datadealer.devices.Binding;
-import ru.entel.datadealer.devices.DevType;
-import ru.entel.datadealer.devices.Device;
 import ru.entel.datadealer.db.util.DataHelper;
-import ru.entel.datadealer.devices.DeviceException;
 import ru.entel.datadealer.msg.MqttService;
 import ru.entel.protocols.modbus.ModbusFunction;
 import ru.entel.protocols.modbus.rtu.master.ModbusMaster;
@@ -116,7 +112,7 @@ public class Configurator implements MqttCallback {
 
                             ModbusSlaveParams sp = new ModbusSlaveParams(unitID, mbFunc, regType, offset,
                                     length, transDelay);
-                            master.addSlave(new ModbusSlaveRead(slaveName, sp));
+                            master.addSlave(new ModbusSlaveRead(slaveName, sp, device, tagBlank));
                             System.out.println();
                         }
 

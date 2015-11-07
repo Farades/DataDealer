@@ -4,9 +4,6 @@ import com.ghgande.j2mod.modbus.ModbusCoupler;
 import com.ghgande.j2mod.modbus.net.SerialConnection;
 import com.ghgande.j2mod.modbus.util.SerialParameters;
 import org.apache.log4j.Logger;
-import ru.entel.datadealer.msg.MessageService;
-import ru.entel.datadealer.msg.MessageServiceFactory;
-import ru.entel.datadealer.msg.MessageServiceType;
 import ru.entel.protocols.modbus.exception.ModbusIllegalRegTypeException;
 import ru.entel.protocols.modbus.exception.ModbusNoResponseException;
 import ru.entel.protocols.modbus.exception.ModbusRequestException;
@@ -17,7 +14,6 @@ import ru.entel.protocols.service.ProtocolSlave;
 import ru.entel.protocols.service.ProtocolType;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -90,9 +86,10 @@ public class ModbusMaster extends ProtocolMaster {
     @Override
     public void addSlave(ProtocolSlave slave) {
         ModbusSlaveRead mbSlave = (ModbusSlaveRead) slave;
-        mbSlave.setMasterName(this.name);
+        mbSlave.setProtocolName(this.name);
         mbSlave.setCon(this.con);
-        slaves.put(slave.getName(), slave);
+        String channelName = this.name + "." + slave.getDevice().getId() + "." + slave.getName();
+        slaves.put(channelName, slave);
         logger.trace("Add slave: " + slave);
     }
 

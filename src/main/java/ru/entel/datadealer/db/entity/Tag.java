@@ -1,19 +1,22 @@
 package ru.entel.datadealer.db.entity;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import java.sql.Date;
+import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Created by farades on 07.11.15.
  */
 @Entity
+@Table(name = "tag", schema = "", catalog = "smiu")
 public class Tag {
     private int id;
     private String value;
+
+    @Temporal(TemporalType.TIMESTAMP)
     private Date tagTime;
+
+    private Device device;
+    private TagBlank tagBlank;
 
     @Id
     @Column(name = "id", nullable = false, insertable = true, updatable = true)
@@ -43,6 +46,26 @@ public class Tag {
 
     public void setTagTime(Date tagTime) {
         this.tagTime = tagTime;
+    }
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "device_id")
+    public Device getDevice() {
+        return device;
+    }
+
+    public void setDevice(Device device) {
+        this.device = device;
+    }
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "tag_blank_id")
+    public TagBlank getTagBlank() {
+        return tagBlank;
+    }
+
+    public void setTagBlank(TagBlank tagBlank) {
+        this.tagBlank = tagBlank;
     }
 
     @Override

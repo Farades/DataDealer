@@ -113,10 +113,8 @@ public class Engine implements MqttCallback {
             for (Protocol protocol : Configurator.protocols) {
                 for (Device device : protocol.getDevices()) {
                     DeviceScheduler deviceScheduler = new DeviceScheduler(device);
-                    new Thread(deviceScheduler).start();
                 }
             }
-            System.out.println();
 
             logger.debug("Data Dealer running.");
         } catch (InvalidProtocolTypeException | InvalidJSONException e) {

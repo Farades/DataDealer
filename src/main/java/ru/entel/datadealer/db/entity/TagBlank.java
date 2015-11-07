@@ -1,6 +1,7 @@
 package ru.entel.datadealer.db.entity;
 
 import javax.persistence.*;
+import java.util.Set;
 
 /**
  * Created by farades on 06.11.15.
@@ -14,6 +15,7 @@ public class TagBlank {
     private String tagId;
     private int delay;
     private DeviceBlank deviceBlank;
+    private Set<Tag> tags;
 
     @Id
     @Column(name = "id", nullable = false, insertable = true, updatable = true)
@@ -73,6 +75,15 @@ public class TagBlank {
 
     public void setDeviceBlank(DeviceBlank deviceBlank) {
         this.deviceBlank = deviceBlank;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "tagBlank")
+    public Set<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
     }
 
     @Override

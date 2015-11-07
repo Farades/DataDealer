@@ -5,10 +5,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
-import ru.entel.datadealer.db.entity.Device;
-import ru.entel.datadealer.db.entity.Properties;
-import ru.entel.datadealer.db.entity.Protocol;
-import ru.entel.datadealer.db.entity.Values;
+import ru.entel.datadealer.db.entity.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,11 +65,13 @@ public class DataHelper {
         return res;
     }
 
-    public synchronized List<Device> getAllDevices() {
+    public synchronized void saveTag(Tag tag) {
         Session session = getSession();
-        List<Device> res = new ArrayList<>(0);
+
         try {
-            res = session.createCriteria(Device.class).list();
+            session.beginTransaction();
+            session.save(tag);
+            session.getTransaction().commit();
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
@@ -80,8 +79,5 @@ public class DataHelper {
                 session.close();
             }
         }
-        System.out.println();
-        return res;
-
     }
 }
