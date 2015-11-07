@@ -1,5 +1,8 @@
 package ru.entel.datadealer.db.entity;
 
+import org.hibernate.FetchMode;
+import org.hibernate.annotations.Fetch;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;

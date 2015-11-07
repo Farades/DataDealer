@@ -54,7 +54,7 @@ public class Device {
         this.protocol = protocol;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "device_blank_id")
     public DeviceBlank getDeviceBlank() {
         return deviceBlank;
@@ -74,9 +74,8 @@ public class Device {
         if (id != device.id) return false;
         if (deviceSettings != null ? !deviceSettings.equals(device.deviceSettings) : device.deviceSettings != null)
             return false;
-        if (name != null ? !name.equals(device.name) : device.name != null) return false;
+        return !(name != null ? !name.equals(device.name) : device.name != null);
 
-        return true;
     }
 
     @Override

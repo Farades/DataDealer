@@ -164,7 +164,6 @@ public class Device extends AbstractDevice implements Serializable {
     public synchronized void saveValuesToDb() {
         for (Map.Entry<String, AbstractRegister> entry : values.entrySet()) {
             Values values = new Values(entry.getKey(), entry.getValue().getValue().toString(), this.name);
-            DataHelper.getInstance().saveValues(values);
         }
     }
 

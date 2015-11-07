@@ -10,7 +10,6 @@ public class HibernateUtil {
         try {
             //creates the session factory from hibernate.cfg.xml
             sessionFactory = new Configuration().configure().buildSessionFactory();
-//            Configuration().configure().buildSessionFactory();
         } catch (Exception e) {
             e.printStackTrace();
         }

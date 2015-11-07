@@ -73,9 +73,8 @@ public class DeviceBlank {
 
         if (id != that.id) return false;
         if (deviceType != null ? !deviceType.equals(that.deviceType) : that.deviceType != null) return false;
-        if (protocolType != null ? !protocolType.equals(that.protocolType) : that.protocolType != null) return false;
+        return !(protocolType != null ? !protocolType.equals(that.protocolType) : that.protocolType != null);
 
-        return true;
     }
 
     @Override

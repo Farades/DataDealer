@@ -5,7 +5,10 @@ import com.google.gson.GsonBuilder;
 import org.apache.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-import ru.entel.datadealer.devices.Device;
+import ru.entel.datadealer.db.entity.Device;
+import ru.entel.datadealer.db.entity.Protocol;
+import ru.entel.datadealer.db.util.DataHelper;
+import ru.entel.datadealer.devices.DeviceScheduler;
 import ru.entel.datadealer.msg.MessageService;
 import ru.entel.datadealer.msg.MessageServiceFactory;
 import ru.entel.datadealer.msg.MessageServiceType;
@@ -18,7 +21,10 @@ import ru.entel.protocols.service.ProtocolSlave;
 import ru.entel.utils.InvalidJSONException;
 import ru.entel.utils.RegisterSerializer;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Класс Engine - основной класс приложения DataDealer
@@ -74,9 +80,11 @@ public class Engine implements MqttCallback {
     private Map<String, ProtocolMaster> protocolMasterMap;
 
     /**
-     * Словарь, содержащий все устройства
+     * Словарь, содержащий все устройства из базы данных
      */
-    private Map<String, Device> deviceMap;
+    private List<ru.entel.datadealer.db.entity.Device> devices;
+
+    private Set<DeviceScheduler> deviceSchedulers = new HashSet<>();
 
     /**
      * Объект, занимающийся конфигурированием словаря protocolMasterMap. Получает данные от MQTT сервера.
@@ -96,16 +104,20 @@ public class Engine implements MqttCallback {
      */
     public void run() {
         try {
-//            deviceMap = configurator.getDevices();
             protocolMasterMap = configurator.getProtocolMasters();
             for (ProtocolMaster pm : protocolMasterMap.values()) {
                 new Thread(pm, pm.getName()).start();
                 logger.debug(pm.getName() + " started");
             }
-//            for (Device device : deviceMap.values()) {
-//                new Thread(device, device.getName()).start();
-//                logger.debug(device.getName() + " started");
-//            }
+
+            for (Protocol protocol : Configurator.protocols) {
+                for (Device device : protocol.getDevices()) {
+                    DeviceScheduler deviceScheduler = new DeviceScheduler(device);
+                    new Thread(deviceScheduler).start();
+                }
+            }
+            System.out.println();
+
             logger.debug("Data Dealer running.");
         } catch (InvalidProtocolTypeException | InvalidJSONException e) {
             logger.error("Ошибка при создании ProtocolMaster'ов в конфигураторе: " + e.getMessage());
@@ -125,10 +137,6 @@ public class Engine implements MqttCallback {
         if (protocolMasterMap != null) {
             protocolMasterMap.forEach((k, v) -> v.stopInterview());
             protocolMasterMap = null;
-        }
-        if (deviceMap != null) {
-            deviceMap.forEach((k, v) -> v.stopInterview());
-            deviceMap = null;
         }
     }
 
@@ -161,7 +169,6 @@ public class Engine implements MqttCallback {
             ProtocolSlave  dev = node.getSlaves().get(devStr);
 
             packet = new DDPacket(devID, dev.getData());
-//            messageService.send(this.ENGINE_OUT, gson.toJson(packet));
         } catch (RuntimeException ex) {
             ex.printStackTrace();
         }
