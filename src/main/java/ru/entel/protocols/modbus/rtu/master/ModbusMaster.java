@@ -129,10 +129,12 @@ public class ModbusMaster extends ProtocolMaster {
                             slave.request();
                             Thread.sleep(timePause);
                         } catch (InterruptedException | ModbusIllegalRegTypeException | ModbusNoResponseException ex) {
+                            System.out.println("test");
                             ex.printStackTrace();
                             logger.error("\"" + slave + "\" " + ex.getMessage());
                         } catch (ModbusRequestException ex) {
                             //TODO
+                            logger.error("\"" + slave + "\" " + ex.getMessage());
 //                            String topic = "smiu/DD" + this.name + ":" + slave.getName() + "/data";
 //                            messageService.send(topic, "SlaveErr");
 //                            ex.printStackTrace();

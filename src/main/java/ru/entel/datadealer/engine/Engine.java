@@ -5,10 +5,6 @@ import com.google.gson.GsonBuilder;
 import org.apache.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-import ru.entel.datadealer.db.entity.Device;
-import ru.entel.datadealer.db.entity.Protocol;
-import ru.entel.datadealer.db.util.DataHelper;
-import ru.entel.datadealer.devices.DeviceScheduler;
 import ru.entel.datadealer.msg.MessageService;
 import ru.entel.datadealer.msg.MessageServiceFactory;
 import ru.entel.datadealer.msg.MessageServiceType;
@@ -21,10 +17,7 @@ import ru.entel.protocols.service.ProtocolSlave;
 import ru.entel.utils.InvalidJSONException;
 import ru.entel.utils.RegisterSerializer;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Класс Engine - основной класс приложения DataDealer
@@ -84,7 +77,8 @@ public class Engine implements MqttCallback {
      */
     private List<ru.entel.datadealer.db.entity.Device> devices;
 
-    private Set<DeviceScheduler> deviceSchedulers = new HashSet<>();
+    private DataSaver ds;
+    private Timer timer;
 
     /**
      * Объект, занимающийся конфигурированием словаря protocolMasterMap. Получает данные от MQTT сервера.
@@ -96,7 +90,8 @@ public class Engine implements MqttCallback {
         mqttInit();
         this.gson = new GsonBuilder().registerTypeAdapter(AbstractRegister.class, new RegisterSerializer()).create();
 
-
+        System.out.println("DataDealer started! Wait for command by MQTT.");;
+        System.out.println("Topic: \"smiu/DD/engine\"");
     }
 
     /**
@@ -110,11 +105,9 @@ public class Engine implements MqttCallback {
                 logger.debug(pm.getName() + " started");
             }
 
-            for (Protocol protocol : Configurator.protocols) {
-                for (Device device : protocol.getDevices()) {
-                    DeviceScheduler deviceScheduler = new DeviceScheduler(device);
-                }
-            }
+            timer = new Timer();
+            ds = new DataSaver(protocolMasterMap);
+            timer.schedule(ds, 1000, 1000);
 
             logger.debug("Data Dealer running.");
         } catch (InvalidProtocolTypeException | InvalidJSONException e) {
@@ -135,6 +128,12 @@ public class Engine implements MqttCallback {
         if (protocolMasterMap != null) {
             protocolMasterMap.forEach((k, v) -> v.stopInterview());
             protocolMasterMap = null;
+        }
+        if (ds != null && timer != null) {
+            timer.cancel();
+            timer.purge();
+            ds = null;
+            timer = null;
         }
     }
 

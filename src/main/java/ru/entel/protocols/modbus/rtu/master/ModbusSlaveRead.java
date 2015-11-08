@@ -334,14 +334,15 @@ public class ModbusSlaveRead extends ProtocolSlave {
         //Переделать этот кусок кода
         //После рефакторинга значение всегда одно
         //Не имеет смысла хранить словарь registers
-        Tag tag = new Tag();
-        tag.setTagTime(new Date());
-        tag.setDevice(this.device);
-        tag.setTagBlank(this.tagBlank);
-        for (AbstractRegister register : this.registers.values()) {
-            tag.setValue(register.toString());
-        }
-        DataHelper.getInstance().saveTag(tag);
+//        Tag tag = new Tag();
+//        tag.setTagTime(new Date());
+//        tag.setDevice(this.device);
+//        tag.setTagBlank(this.tagBlank);
+//        for (AbstractRegister register : this.registers.values()) {
+//            tag.setValue(register.toString());
+//        }
+//        DataHelper.getInstance().saveTag(tag);
+//        System.out.println(this.name + " - " + this.registers.values());
     }
 
     public void setCon(SerialConnection con) {

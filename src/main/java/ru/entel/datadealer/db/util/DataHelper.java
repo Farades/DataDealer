@@ -25,7 +25,7 @@ public class DataHelper {
         return dataHelper;
     }
 
-    private synchronized Session getSession() {
+    public synchronized Session getSession() {
         return sessionFactory.openSession();
     }
 

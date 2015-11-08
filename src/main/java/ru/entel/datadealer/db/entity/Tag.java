@@ -1,5 +1,7 @@
 package ru.entel.datadealer.db.entity;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -20,6 +22,8 @@ public class Tag {
 
     @Id
     @Column(name = "id", nullable = false, insertable = true, updatable = true)
+    @GenericGenerator(name="kaugen" , strategy="increment")
+    @GeneratedValue(generator="kaugen")
     public int getId() {
         return id;
     }
@@ -75,18 +79,15 @@ public class Tag {
 
         Tag tag = (Tag) o;
 
-        if (id != tag.id) return false;
-        if (value != null ? !value.equals(tag.value) : tag.value != null) return false;
-        if (tagTime != null ? !tagTime.equals(tag.tagTime) : tag.tagTime != null) return false;
+        if (device != null ? !device.equals(tag.device) : tag.device != null) return false;
+        return !(tagBlank != null ? !tagBlank.equals(tag.tagBlank) : tag.tagBlank != null);
 
-        return true;
     }
 
     @Override
     public int hashCode() {
-        int result = id;
-        result = 31 * result + (value != null ? value.hashCode() : 0);
-        result = 31 * result + (tagTime != null ? tagTime.hashCode() : 0);
+        int result = device != null ? device.hashCode() : 0;
+        result = 31 * result + (tagBlank != null ? tagBlank.hashCode() : 0);
         return result;
     }
 }

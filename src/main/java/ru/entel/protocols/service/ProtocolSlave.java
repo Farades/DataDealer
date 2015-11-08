@@ -27,6 +27,10 @@ public abstract class ProtocolSlave {
         return device;
     }
 
+    public TagBlank getTagBlank() {
+        return tagBlank;
+    }
+
     public abstract void request() throws Exception;
 
     public abstract void init(ProtocolSlaveParams params);

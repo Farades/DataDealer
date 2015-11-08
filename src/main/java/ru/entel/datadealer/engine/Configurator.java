@@ -113,10 +113,8 @@ public class Configurator implements MqttCallback {
                             ModbusSlaveParams sp = new ModbusSlaveParams(unitID, mbFunc, regType, offset,
                                     length, transDelay);
                             master.addSlave(new ModbusSlaveRead(slaveName, sp, device, tagBlank));
-                            System.out.println();
                         }
 
-                        System.out.println(unitID);
                     }
                     res.put(masterName, master);
                     break;
