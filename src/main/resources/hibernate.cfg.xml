@@ -12,13 +12,13 @@
         <property name="hibernate.connection.password">qwplzx123</property>
         <property name="show_sql">false</property>
 
-        <mapping class="ru.entel.datadealer.db.entity.Properties"/>
-        <mapping class="ru.entel.datadealer.db.entity.DeviceBlank"/>
-        <mapping class="ru.entel.datadealer.db.entity.Values"/>
-        <mapping class="ru.entel.datadealer.db.entity.Protocol"/>
-        <mapping class="ru.entel.datadealer.db.entity.Device"/>
-        <mapping class="ru.entel.datadealer.db.entity.TagBlank"/>
-        <mapping class="ru.entel.datadealer.db.entity.Tag"/>
+        <mapping class="ru.entel.smiu.datadealer.db.entity.Properties"/>
+        <mapping class="ru.entel.smiu.datadealer.db.entity.DeviceBlank"/>
+        <mapping class="ru.entel.smiu.datadealer.db.entity.Values"/>
+        <mapping class="ru.entel.smiu.datadealer.db.entity.Protocol"/>
+        <mapping class="ru.entel.smiu.datadealer.db.entity.Device"/>
+        <mapping class="ru.entel.smiu.datadealer.db.entity.TagBlank"/>
+        <mapping class="ru.entel.smiu.datadealer.db.entity.Tag"/>
 
     </session-factory>
 </hibernate-configuration>
