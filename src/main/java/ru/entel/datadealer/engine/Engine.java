@@ -107,7 +107,7 @@ public class Engine implements MqttCallback {
 
             timer = new Timer();
             ds = new DataSaver(protocolMasterMap);
-            timer.schedule(ds, 1000, 1000);
+            timer.schedule(ds, 1000, 5000);
 
             logger.debug("Data Dealer running.");
         } catch (InvalidProtocolTypeException | InvalidJSONException e) {
