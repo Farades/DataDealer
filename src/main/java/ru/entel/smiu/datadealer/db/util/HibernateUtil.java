@@ -6,16 +6,16 @@ import org.hibernate.cfg.Configuration;
 public class HibernateUtil {
     private static SessionFactory sessionFactory;
 
-    static {
-        try {
-            //creates the session factory from hibernate.cfg.xml
-            sessionFactory = new Configuration().configure().buildSessionFactory();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    public static  synchronized SessionFactory getSessionFactory() {
+        if (sessionFactory == null) {
+            try {
+                //creates the session factory from hibernate.cfg.xml
+                sessionFactory = new Configuration().configure().buildSessionFactory();
 
-    public static SessionFactory getSessionFactory() {
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         return sessionFactory;
     }
 }

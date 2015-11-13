@@ -1,6 +1,7 @@
 package ru.entel.smiu.datadealer.db.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Set;
 
 /**
@@ -8,13 +9,15 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "device", schema = "", catalog = "smiu")
-public class Device {
+public class Device implements Serializable {
     private int id;
     private String deviceSettings;
     private String name;
     private Protocol protocol;
     private DeviceBlank deviceBlank;
     private Set<Tag> tags;
+    private Integer selectId;
+    private String deviceSystemName;
 
     @Id
     @Column(name = "id", nullable = false, insertable = true, updatable = true)
@@ -46,6 +49,16 @@ public class Device {
         this.name = name;
     }
 
+    @Basic
+    @Column(name = "device_system_name", nullable = false, length = 45)
+    public String getDeviceSystemName() {
+        return deviceSystemName;
+    }
+
+    public void setDeviceSystemName(String deviceSystemName) {
+        this.deviceSystemName = deviceSystemName;
+    }
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "protocol_id")
     public Protocol getProtocol() {
@@ -75,6 +88,15 @@ public class Device {
         this.tags = tags;
     }
 
+    @Transient
+    public int getSelectId() {
+        return selectId;
+    }
+
+    public void setSelectId(int selectId) {
+        this.selectId = selectId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -100,9 +122,8 @@ public class Device {
     @Override
     public String toString() {
         return "Device{" +
-                "deviceBlank=" + deviceBlank +
-                ", name='" + name + '\'' +
-                ", deviceSettings='" + deviceSettings + '\'' +
+                "name='" + name + '\'' +
+                ", deviceBlank=" + deviceBlank +
                 '}';
     }
 }

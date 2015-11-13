@@ -19,6 +19,7 @@
         <mapping class="ru.entel.smiu.datadealer.db.entity.Device"/>
         <mapping class="ru.entel.smiu.datadealer.db.entity.TagBlank"/>
         <mapping class="ru.entel.smiu.datadealer.db.entity.Tag"/>
+        <mapping class="ru.entel.smiu.datadealer.db.entity.AlarmBlank"/>
 
     </session-factory>
 </hibernate-configuration>

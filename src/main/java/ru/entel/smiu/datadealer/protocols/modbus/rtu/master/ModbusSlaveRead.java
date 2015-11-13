@@ -10,7 +10,7 @@ import com.google.gson.GsonBuilder;
 import org.apache.log4j.Logger;
 import ru.entel.smiu.datadealer.db.entity.Device;
 import ru.entel.smiu.datadealer.db.entity.TagBlank;
-import ru.entel.smiu.datadealer.msg.*;
+import ru.entel.smiu.msg.*;
 import ru.entel.smiu.datadealer.protocols.modbus.ModbusFunction;
 import ru.entel.smiu.datadealer.protocols.modbus.exception.ModbusIllegalRegTypeException;
 import ru.entel.smiu.datadealer.protocols.modbus.exception.ModbusNoResponseException;
@@ -19,9 +19,6 @@ import ru.entel.smiu.datadealer.protocols.registers.*;
 import ru.entel.smiu.datadealer.protocols.service.ProtocolSlave;
 import ru.entel.smiu.datadealer.protocols.service.ProtocolSlaveParams;
 import ru.entel.smiu.datadealer.utils.RegisterSerializer;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Класс ModbusSlaveRead - потомок ProtocolSlave.
@@ -91,7 +88,7 @@ public class ModbusSlaveRead extends ProtocolSlave {
     /**
      * Коллекция в которой хранятся последние значения обработанных регистров
      */
-    private Map<Integer, AbstractRegister> registers = new HashMap<>();
+    private AbstractRegister register;
 
     /**
      * Конструктор
@@ -134,8 +131,8 @@ public class ModbusSlaveRead extends ProtocolSlave {
     }
 
     @Override
-    public synchronized Map<Integer, AbstractRegister> getData() {
-        return this.registers;
+    public synchronized AbstractRegister getData() {
+        return this.register;
     }
 
     /**
@@ -195,7 +192,8 @@ public class ModbusSlaveRead extends ProtocolSlave {
                     }
                     for (int i = 0; i < this.length; i++) {
                         BitRegister reg = new BitRegister(offset + i, resp.getCoils().getBit(i));
-                        registers.put(offset + i, reg);
+//                        registers.put(offset + i, reg);
+                        register = reg;
                     }
                     sendData();
                 } catch (ModbusException ex) {
@@ -217,7 +215,8 @@ public class ModbusSlaveRead extends ProtocolSlave {
                     }
                     for (int i = 0; i < this.length; i++) {
                         BitRegister reg = new BitRegister(offset + i, resp.getDiscretes().getBit(i));
-                        registers.put(offset + i, reg);
+//                        registers.put(offset + i, reg);
+                        register = reg;
                     }
                     sendData();
                 } catch (ModbusException ex) {
@@ -243,25 +242,29 @@ public class ModbusSlaveRead extends ProtocolSlave {
                         if (this.mbRegType == RegType.INT16) {
                             for (int i = 0; i < values.length; i++) {
                                 Int16Register reg = new Int16Register(this.offset + i, values[i].getValue());
-                                registers.put(this.offset + i, reg);
+//                                registers.put(this.offset + i, reg);
+                                register = reg;
                             }
                             sendData();
                         } else if (this.mbRegType == RegType.INT16DIV100) {
                             for (int i = 0; i < values.length; i++) {
                                 Int16Div100Register reg = new Int16Div100Register(this.offset + i, values[i].getValue());
-                                registers.put(this.offset + i, reg);
+//                                registers.put(this.offset + i, reg);
+                                register = reg;
                             }
                             sendData();
                         } else if(this.mbRegType == RegType.INT16DIV10) {
                             for (int i = 0; i < values.length; i++) {
                                 Int16Div10Register reg = new Int16Div10Register(this.offset + i, values[i].getValue());
-                                registers.put(this.offset + i, reg);
+//                                registers.put(this.offset + i, reg);
+                                register = reg;
                             }
                             sendData();
                         } else if (this.mbRegType == RegType.FLOAT32) {
                             for (int i = 0; i < resp.getWordCount() - 1; i+=2) {
                                 Float32Register reg = new Float32Register(offset + i, values[i].getValue(), values[i + 1].getValue());
-                                registers.put(this.offset + i, reg);
+//                                registers.put(this.offset + i, reg);
+                                register = reg;
                             }
                             sendData();
                         } else {
@@ -285,25 +288,29 @@ public class ModbusSlaveRead extends ProtocolSlave {
                     if (this.mbRegType == RegType.INT16) {
                         for (int n = 0; n < resp.getWordCount(); n++) {
                             Int16Register reg = new Int16Register(this.offset + n, resp.getRegisterValue(n));
-                            registers.put(offset + n, reg);
+//                            registers.put(offset + n, reg);
+                            register = reg;
                         }
                         sendData();
                     } else if (this.mbRegType == RegType.FLOAT32) {
                         for (int i = 0; i < resp.getWordCount()-1; i+=2) {
                             Float32Register reg = new Float32Register(offset + i, resp.getRegisterValue(i), resp.getRegisterValue(i+1));
-                            registers.put(this.offset + i, reg);
+//                            registers.put(this.offset + i, reg);
+                            register = reg;
                         }
                         sendData();
                     } else if (this.mbRegType == RegType.INT16DIV10) {
                         for (int n = 0; n < resp.getWordCount(); n++) {
                             Int16Div10Register reg = new Int16Div10Register(this.offset + n, resp.getRegisterValue(n));
-                            registers.put(offset + n, reg);
+//                            registers.put(offset + n, reg);
+                            register = reg;
                         }
                         sendData();
                     } else if (this.mbRegType == RegType.INT16DIV100) {
                         for (int n = 0; n < resp.getWordCount(); n++) {
                             Int16Div100Register reg = new Int16Div100Register(this.offset + n, resp.getRegisterValue(n));
-                            registers.put(offset + n, reg);
+//                            registers.put(offset + n, reg);
+                            register = reg;
                         }
                         sendData();
                     } else {
@@ -317,7 +324,7 @@ public class ModbusSlaveRead extends ProtocolSlave {
             }
         }
 
-        logger.trace("\"" + this.protocolName + ":" + this.name + "\" response registers " + this.registers);
+        logger.trace("\"" + this.protocolName + ":" + this.name + "\" response register " + this.register);
     }
 
     /**

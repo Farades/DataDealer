@@ -1,4 +1,4 @@
-package ru.entel.smiu.datadealer.msg;
+package ru.entel.smiu.msg;
 
 /**
  * MessageService - интерфейс сервиса отправки сообщений

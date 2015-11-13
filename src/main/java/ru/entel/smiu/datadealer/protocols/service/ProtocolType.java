@@ -5,5 +5,6 @@ package ru.entel.smiu.datadealer.protocols.service;
  */
 public enum ProtocolType {
     MODBUS_MASTER,
+    MODBUS_TEST_MASTER,
     ONEWIRE
 }

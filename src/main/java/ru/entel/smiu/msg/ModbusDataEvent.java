@@ -1,4 +1,4 @@
-package ru.entel.smiu.datadealer.msg;
+package ru.entel.smiu.msg;
 
 import ru.entel.smiu.datadealer.protocols.registers.AbstractRegister;
 

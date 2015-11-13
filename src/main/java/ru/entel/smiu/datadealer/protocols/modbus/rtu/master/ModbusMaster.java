@@ -97,9 +97,10 @@ public class ModbusMaster extends ProtocolMaster {
      * Метод, открывающий соединение с COM-портом
      */
     public void openPort() throws OpenComPortException {
+        logger.debug("\"" + this.name + "\" open Com-port connection start");
         try {
             this.con.open();
-            logger.debug("\"" + this.name + "\" open Com-port connection");
+            logger.debug("\"" + this.name + "\" open Com-port connection. OK.");
         } catch (Exception ex) {
             throw new OpenComPortException("Невозможно установить соединение с Com-портом: " + ex.getMessage());
         }
@@ -129,7 +130,6 @@ public class ModbusMaster extends ProtocolMaster {
                             slave.request();
                             Thread.sleep(timePause);
                         } catch (InterruptedException | ModbusIllegalRegTypeException | ModbusNoResponseException ex) {
-                            System.out.println("test");
                             ex.printStackTrace();
                             logger.error("\"" + slave + "\" " + ex.getMessage());
                         } catch (ModbusRequestException ex) {

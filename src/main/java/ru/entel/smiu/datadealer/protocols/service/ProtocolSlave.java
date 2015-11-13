@@ -21,7 +21,7 @@ public abstract class ProtocolSlave {
         init(params);
     }
 
-    public abstract Map<Integer, AbstractRegister> getData();
+    public abstract AbstractRegister getData();
 
     public Device getDevice() {
         return device;
@@ -37,5 +37,16 @@ public abstract class ProtocolSlave {
 
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "ProtocolSlave{" +
+                "name='" + name + '\'' +
+                '}';
     }
 }

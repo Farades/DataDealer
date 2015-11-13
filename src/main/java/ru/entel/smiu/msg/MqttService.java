@@ -1,4 +1,4 @@
-package ru.entel.smiu.datadealer.msg;
+package ru.entel.smiu.msg;
 
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;

@@ -5,10 +5,10 @@ import com.google.gson.GsonBuilder;
 import org.apache.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-import ru.entel.smiu.datadealer.msg.MessageService;
-import ru.entel.smiu.datadealer.msg.MessageServiceFactory;
-import ru.entel.smiu.datadealer.msg.MessageServiceType;
-import ru.entel.smiu.datadealer.msg.MqttService;
+import ru.entel.smiu.msg.MessageService;
+import ru.entel.smiu.msg.MessageServiceFactory;
+import ru.entel.smiu.msg.MessageServiceType;
+import ru.entel.smiu.msg.MqttService;
 import ru.entel.smiu.datadealer.protocols.registers.AbstractRegister;
 import ru.entel.smiu.datadealer.protocols.service.DDPacket;
 import ru.entel.smiu.datadealer.protocols.service.InvalidProtocolTypeException;
@@ -28,7 +28,6 @@ import java.util.*;
  */
 public class Engine implements MqttCallback {
     private static final Logger logger = Logger.getLogger(Engine.class);
-
 
     /**
      * Объект MessageService предназначен для отправки данных
@@ -72,13 +71,14 @@ public class Engine implements MqttCallback {
      */
     private Map<String, ProtocolMaster> protocolMasterMap;
 
-    /**
-     * Словарь, содержащий все устройства из базы данных
-     */
-    private List<ru.entel.smiu.datadealer.db.entity.Device> devices;
+    private MqttEngine handler;
 
     private DataSaver ds;
-    private Timer timer;
+    private AlarmsChecker alarmsChecker;
+    private MqttEngine mqttEngine;
+    private Timer dataSaverTimer;
+    private Timer alarmsCheckerTimer;
+    private Timer messageTimer;
 
     /**
      * Объект, занимающийся конфигурированием словаря protocolMasterMap. Получает данные от MQTT сервера.
@@ -92,55 +92,112 @@ public class Engine implements MqttCallback {
 
         System.out.println("DataDealer started! Wait for command by MQTT.");;
         System.out.println("Topic: \"smiu/DD/engine\"");
+
+    }
+
+    public Map<String, ProtocolMaster> getProtocolMasterMap() {
+        return protocolMasterMap;
     }
 
     /**
      * Запуск опроса всех ProtocolMaster'ов в отдельных потоках
      */
-    public void run() {
+    public synchronized void run() {
         try {
-            protocolMasterMap = configurator.getProtocolMasters();
+//            configure();
             for (ProtocolMaster pm : protocolMasterMap.values()) {
                 new Thread(pm, pm.getName()).start();
                 logger.debug(pm.getName() + " started");
             }
 
-            timer = new Timer();
+            dataSaverTimer = new Timer();
             ds = new DataSaver(protocolMasterMap);
-            timer.schedule(ds, 1000, 5000);
+            dataSaverTimer.schedule(ds, 5000, 5000);
+
+            alarmsCheckerTimer = new Timer();
+            alarmsChecker = new AlarmsChecker(this);
+            alarmsCheckerTimer.schedule(alarmsChecker, 3000, 1000);
+
+            messageTimer = new Timer();
+            mqttEngine = new MqttEngine(this);
+            messageTimer.schedule(mqttEngine, 3000, 1000);
 
             logger.debug("Data Dealer running.");
-        } catch (InvalidProtocolTypeException | InvalidJSONException e) {
-            logger.error("Ошибка при создании ProtocolMaster'ов в конфигураторе: " + e.getMessage());
-            e.printStackTrace();
         } catch (RuntimeException ex) {
             logger.error("DataDelaer running before update config: " + ex.getMessage());
             ex.printStackTrace();
         }
+    }
 
-
+    public synchronized void configure() {
+        try {
+            protocolMasterMap = configurator.getProtocolMasters();
+        } catch (InvalidProtocolTypeException | InvalidJSONException e) {
+            logger.error("Ошибка при создании ProtocolMaster'ов в конфигураторе: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     /**
      * Остановка опроса всех ProtocolMaster'ов
      */
-    public void stopEngine() {
+    public synchronized void stopEngine() {
+        if (ds != null && dataSaverTimer != null) {
+            dataSaverTimer.cancel();
+            dataSaverTimer.purge();
+            ds = null;
+            dataSaverTimer = null;
+        }
+
+        if (alarmsChecker != null && alarmsCheckerTimer != null) {
+            alarmsCheckerTimer.cancel();
+            alarmsCheckerTimer.purge();
+            alarmsChecker = null;
+            alarmsCheckerTimer = null;
+        }
+        if (mqttEngine != null && messageTimer != null) {
+            messageTimer.cancel();
+            messageTimer.purge();
+            try {
+                mqttEngine.finalize();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
+            }
+            mqttEngine = null;
+            messageTimer = null;
+        }
+        if (protocolMasterMap != null) {
+            protocolMasterMap.forEach((k, v) -> v.stopInterview());
+        }
+        logger.debug("Data Dealer stopping.");
+    }
+
+    public synchronized void reConfigure() {
         if (protocolMasterMap != null) {
             protocolMasterMap.forEach((k, v) -> v.stopInterview());
             protocolMasterMap = null;
         }
-        if (ds != null && timer != null) {
-            timer.cancel();
-            timer.purge();
+        if (ds != null && dataSaverTimer != null) {
+            dataSaverTimer.cancel();
+            dataSaverTimer.purge();
             ds = null;
-            timer = null;
+            dataSaverTimer = null;
         }
+
+        if (alarmsChecker != null && alarmsCheckerTimer != null) {
+            alarmsCheckerTimer.cancel();
+            alarmsCheckerTimer.purge();
+            alarmsChecker = null;
+            alarmsCheckerTimer = null;
+        }
+        configure();
+        logger.debug("Data Dealer reconfigure.");
     }
 
     /**
      * Инициализация MQTT клиента. Подпись на ветку ENGINE_TOPIC
      */
-    private void mqttInit() {
+    private synchronized void mqttInit() {
         try {
             MqttConnectOptions connectOptions = new MqttConnectOptions();
             connectOptions.setCleanSession(true);
@@ -156,6 +213,10 @@ public class Engine implements MqttCallback {
         }
     }
 
+    public AlarmsChecker getAlarmsChecker() {
+        return alarmsChecker;
+    }
+
     public DDPacket sendDataByDevID(String devID) {
         DDPacket packet = null;
         try {
@@ -165,7 +226,7 @@ public class Engine implements MqttCallback {
             ProtocolMaster node = protocolMasterMap.get(nodeStr);
             ProtocolSlave  dev = node.getSlaves().get(devStr);
 
-            packet = new DDPacket(devID, dev.getData());
+//            packet = new DDPacket(devID, dev.getData());
         } catch (RuntimeException ex) {
             ex.printStackTrace();
         }

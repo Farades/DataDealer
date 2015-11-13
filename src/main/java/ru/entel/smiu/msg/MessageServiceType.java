@@ -1,4 +1,4 @@
-package ru.entel.smiu.datadealer.msg;
+package ru.entel.smiu.msg;
 
 /**
  * Created by farades on 05.09.15.

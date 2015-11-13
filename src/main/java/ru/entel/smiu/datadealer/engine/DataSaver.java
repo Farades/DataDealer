@@ -5,7 +5,6 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import ru.entel.smiu.datadealer.db.entity.Tag;
 import ru.entel.smiu.datadealer.db.util.DataHelper;
-import ru.entel.smiu.datadealer.protocols.registers.AbstractRegister;
 import ru.entel.smiu.datadealer.protocols.service.ProtocolMaster;
 import ru.entel.smiu.datadealer.protocols.service.ProtocolSlave;
 
@@ -27,7 +26,7 @@ public class DataSaver extends TimerTask {
     }
 
     @Override
-    public void run() {
+    public synchronized void run() {
         Date start = new Date();
 
         Session session = DataHelper.getInstance().getSession();
@@ -43,9 +42,7 @@ public class DataSaver extends TimerTask {
                     tag.setTagTime(new Date());
                     tag.setDevice(protocolSlave.getDevice());
                     tag.setTagBlank(protocolSlave.getTagBlank());
-                    for (AbstractRegister register : protocolSlave.getData().values()) {
-                        tag.setValue(register.toString());
-                    }
+                    tag.setValue(protocolSlave.getData().toString());
 
                     session.save(tag);
                     if (count % 20 == 0 ) { //20, same as the JDBC batch size

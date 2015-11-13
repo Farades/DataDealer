@@ -1,4 +1,4 @@
-package ru.entel.smiu.datadealer.msg;
+package ru.entel.smiu.msg;
 
 import net.engio.mbassy.bus.MBassador;
 

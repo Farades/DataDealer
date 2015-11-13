@@ -27,9 +27,7 @@ public abstract class ProtocolMaster implements Runnable {
     }
 
     @Override
-    public void run() {
-
-    }
+    public abstract void run();
 
     public abstract Map<String, ProtocolSlave> getSlaves();
 
