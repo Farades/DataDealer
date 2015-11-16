@@ -10,6 +10,8 @@ import ru.entel.smiu.datadealer.db.entity.DeviceBlank;
 import ru.entel.smiu.datadealer.db.entity.Protocol;
 import ru.entel.smiu.datadealer.db.entity.TagBlank;
 import ru.entel.smiu.datadealer.db.util.DataHelper;
+import ru.entel.smiu.msg.ConfigData;
+import ru.entel.smiu.msg.DeviceConfPackage;
 import ru.entel.smiu.msg.MqttService;
 import ru.entel.smiu.datadealer.protocols.modbus.ModbusFunction;
 import ru.entel.smiu.datadealer.protocols.modbus.rtu.master.ModbusMaster;
@@ -49,8 +51,20 @@ public class Configurator implements MqttCallback {
     /**
      * Ветка, которую слушает MQTT client для обновления конфигов
      */
-    private final String CONFIG_TOPIC = "smiu/DD/updateConfig";
+    private final String CONFIG_TOPIC = "smiu/DD/config/update";
 
+    /**
+     * Ветка, которую слушает MQTT client для обновления конфигов
+     */
+    private final String GET_CONFIG_TOPIC = "smiu/DD/config/get";
+
+    /**
+     * Ветка, которую слушает MQTT client для обновления конфигов
+     */
+    private final String OUT_CONFIG_TOPIC = "smiu/DD/config/out";
+
+
+    private Gson gson;
     /**
      * Строковый идентификатор данного клиента
      */
@@ -60,6 +74,8 @@ public class Configurator implements MqttCallback {
     public Configurator(Engine engine) {
         this.engine = engine;
         mqttInit();
+        GsonBuilder builder = new GsonBuilder();
+        gson = builder.create();
     }
 
     /**
@@ -170,6 +186,19 @@ public class Configurator implements MqttCallback {
         logger.debug("Configurator update config");
      }
 
+    public void sendConfig() {
+        List<Device> devices = DataHelper.getInstance().getAllDevices();
+        Map<String, String> resProperties = new HashMap<>();
+        Set<DeviceConfPackage> resDevices = new HashSet<>();
+        for (Device device : devices) {
+            DeviceConfPackage dcp = new DeviceConfPackage(device.getName(), device.getDeviceBlank().getDeviceType());
+            resDevices.add(dcp);
+        }
+        ConfigData configData = new ConfigData(resProperties, resDevices);
+        String outJson = gson.toJson(configData);
+        MqttService.getInstance().send(OUT_CONFIG_TOPIC, outJson);
+    }
+
     /**
      * Перегруженный CallBack-метод интерфейса MqttCallback
      * Вызывается при потери соединения с MQTT сервером
@@ -191,6 +220,8 @@ public class Configurator implements MqttCallback {
     public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
         if (s.equals(CONFIG_TOPIC)) {
             updateConfig();
+        } else if (s.equals(GET_CONFIG_TOPIC)) {
+            sendConfig();
         }
     }
 
