@@ -27,6 +27,11 @@ public class ModbusTestSlave extends ProtocolSlave {
     }
 
     @Override
+    public void setNoResponse() {
+        this.register = new ErrRegister("NR");
+    }
+
+    @Override
     public synchronized void request() throws Exception {
         int rand = ThreadLocalRandom.current().nextInt(1600, 2800 + 1);
 

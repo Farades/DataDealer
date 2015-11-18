@@ -5,9 +5,6 @@ import ru.entel.smiu.datadealer.db.entity.AlarmBlank;
 
 import java.util.Date;
 
-/**
- * Created by farades on 12.11.15.
- */
 public class Alarm {
     private AlarmBlank alarmBlank;
     private Date startTime;
@@ -37,11 +34,15 @@ public class Alarm {
         Alarm alarm = (Alarm) o;
 
         return !(alarmBlank != null ? !alarmBlank.equals(alarm.alarmBlank) : alarm.alarmBlank != null);
-
     }
 
     @Override
     public int hashCode() {
         return alarmBlank != null ? alarmBlank.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return getDescription() + " " + startTime;
     }
 }

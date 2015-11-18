@@ -2,6 +2,7 @@ package ru.entel.smiu.datadealer.engine;
 
 import ru.entel.smiu.datadealer.db.entity.AlarmBlank;
 import ru.entel.smiu.datadealer.db.entity.Device;
+import ru.entel.smiu.datadealer.protocols.registers.ErrRegister;
 import ru.entel.smiu.datadealer.protocols.service.ProtocolMaster;
 import ru.entel.smiu.datadealer.protocols.service.ProtocolSlave;
 
@@ -28,6 +29,8 @@ public class AlarmsChecker extends TimerTask {
                 for (ProtocolSlave slave : protocolMaster.getSlaves().values()) {
                     Set<Alarm> deviceAlarms = new HashSet<>();
                     for (AlarmBlank alarmBlank : slave.getTagBlank().getAlarmBlanks()) {
+                        if (slave.getData() instanceof ErrRegister)
+                            continue;
                         StringBuilder sb = new StringBuilder();
                         sb.append(slave.getData().toString());
                         sb.append(alarmBlank.getCondition());
@@ -48,7 +51,7 @@ public class AlarmsChecker extends TimerTask {
                 }
             }
         }
-//        System.out.println(activeAlarms);
+        System.out.println(activeAlarms);
     }
 
     public synchronized Map<Device, Set<Alarm>> getActiveAlarms() {

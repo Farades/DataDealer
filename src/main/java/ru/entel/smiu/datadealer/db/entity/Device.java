@@ -123,7 +123,6 @@ public class Device implements Serializable {
     public String toString() {
         return "Device{" +
                 "name='" + name + '\'' +
-                ", deviceBlank=" + deviceBlank +
                 '}';
     }
 }

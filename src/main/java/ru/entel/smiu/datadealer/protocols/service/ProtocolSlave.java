@@ -23,6 +23,8 @@ public abstract class ProtocolSlave {
 
     public abstract AbstractRegister getData();
 
+    public abstract void setNoResponse();
+
     public Device getDevice() {
         return device;
     }

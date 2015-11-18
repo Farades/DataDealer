@@ -135,6 +135,11 @@ public class ModbusSlaveRead extends ProtocolSlave {
         return this.register;
     }
 
+    @Override
+    public void setNoResponse() {
+        this.register = new ErrRegister("NR");
+    }
+
     /**
      * request() - переопределенный метод родительского класса ProtocolSlave.
      * Является основным для ModbusSlaveRead. Этот метод инициирует запрос данных с помощью объекта SerialConnection
@@ -331,22 +336,7 @@ public class ModbusSlaveRead extends ProtocolSlave {
      * Отправка считанных регистров в MessageService
      */
     private void sendData() {
-//        DDPacket packet = new DDPacket(this.protocolName, this.name, this.registers);
-//        messageService.send(this.DATA_TOPIC, gson.toJson(packet));
 
-        //TODO
-        //Переделать этот кусок кода
-        //После рефакторинга значение всегда одно
-        //Не имеет смысла хранить словарь registers
-//        Tag tag = new Tag();
-//        tag.setTagTime(new Date());
-//        tag.setDevice(this.device);
-//        tag.setTagBlank(this.tagBlank);
-//        for (AbstractRegister register : this.registers.values()) {
-//            tag.setValue(register.toString());
-//        }
-//        DataHelper.getInstance().saveTag(tag);
-//        System.out.println(this.name + " - " + this.registers.values());
     }
 
     public void setCon(SerialConnection con) {

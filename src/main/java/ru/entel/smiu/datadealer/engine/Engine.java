@@ -110,11 +110,11 @@ public class Engine implements MqttCallback {
                 logger.debug(pm.getName() + " started");
             }
 
-            dataSaverTimer = new Timer();
+            dataSaverTimer = new Timer("Data Saver");
             ds = new DataSaver(protocolMasterMap);
             dataSaverTimer.schedule(ds, 5000, 5000);
 
-            alarmsCheckerTimer = new Timer();
+            alarmsCheckerTimer = new Timer("Alarms Checker");
             alarmsChecker = new AlarmsChecker(this);
             alarmsCheckerTimer.schedule(alarmsChecker, 3000, 1000);
 

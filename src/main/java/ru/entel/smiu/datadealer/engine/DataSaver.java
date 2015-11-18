@@ -12,9 +12,6 @@ import java.util.Date;
 import java.util.Map;
 import java.util.TimerTask;
 
-/**
- * Created by farades on 08.11.15.
- */
 public class DataSaver extends TimerTask {
     private static final Logger logger = Logger.getLogger(DataSaver.class);
 

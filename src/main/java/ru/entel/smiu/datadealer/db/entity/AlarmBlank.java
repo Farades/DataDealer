@@ -2,9 +2,6 @@ package ru.entel.smiu.datadealer.db.entity;
 
 import javax.persistence.*;
 
-/**
- * Created by farades on 12.11.15.
- */
 @Entity
 @Table(name = "alarm_blank", schema = "", catalog = "smiu")
 public class AlarmBlank {

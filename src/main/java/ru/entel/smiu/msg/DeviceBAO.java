@@ -12,7 +12,6 @@ public class DeviceBAO implements Serializable {
     private Map<String, String> channelsValue = new HashMap<>();
     private Set<String> activeAlarms = new HashSet<>();
 
-
     public DeviceBAO() {
 
     }
