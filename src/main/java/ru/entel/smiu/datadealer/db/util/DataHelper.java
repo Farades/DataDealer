@@ -8,7 +8,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import ru.entel.smiu.datadealer.db.entity.Device;
-import ru.entel.smiu.datadealer.db.entity.Protocol;
+import ru.entel.smiu.datadealer.db.entity.ProtocolEntity;
 import ru.entel.smiu.datadealer.db.entity.Tag;
 import ru.entel.smiu.datadealer.db.entity.TagBlank;
 
@@ -118,13 +118,13 @@ public class DataHelper {
         return res;
     }
 
-    public synchronized List<Protocol> getAllProtocols() {
+    public synchronized List<ProtocolEntity> getAllProtocols() {
         Session session = getSession();
-        List<Protocol> res = new ArrayList<>(0);
+        List<ProtocolEntity> res = new ArrayList<>(0);
         try {
             //TODO
             //Исправить баг с дупликатами
-            Criteria criteria = session.createCriteria(Protocol.class);
+            Criteria criteria = session.createCriteria(ProtocolEntity.class);
             criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
             res = criteria.list();
         } catch (Exception ex) {

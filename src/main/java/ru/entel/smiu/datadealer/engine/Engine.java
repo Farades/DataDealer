@@ -9,11 +9,9 @@ import ru.entel.smiu.msg.MessageService;
 import ru.entel.smiu.msg.MessageServiceFactory;
 import ru.entel.smiu.msg.MessageServiceType;
 import ru.entel.smiu.msg.MqttService;
-import ru.entel.smiu.datadealer.protocols.registers.AbstractRegister;
-import ru.entel.smiu.datadealer.protocols.service.DDPacket;
-import ru.entel.smiu.datadealer.protocols.service.InvalidProtocolTypeException;
-import ru.entel.smiu.datadealer.protocols.service.ProtocolMaster;
-import ru.entel.smiu.datadealer.protocols.service.ProtocolSlave;
+import ru.entel.smiu.datadealer.hardware_engine.protocols.registers.AbstractRegister;
+import ru.entel.smiu.datadealer.hardware_engine.protocols.service.InvalidProtocolTypeException;
+import ru.entel.smiu.datadealer.hardware_engine.protocols.service.ProtocolMaster;
 import ru.entel.smiu.datadealer.utils.InvalidJSONException;
 import ru.entel.smiu.datadealer.utils.RegisterSerializer;
 
@@ -217,22 +215,6 @@ public class Engine implements MqttCallback {
         return alarmsChecker;
     }
 
-    public DDPacket sendDataByDevID(String devID) {
-        DDPacket packet = null;
-        try {
-            String nodeStr = devID.split(":")[0];
-            String devStr = devID.split(":")[1];
-
-            ProtocolMaster node = protocolMasterMap.get(nodeStr);
-            ProtocolSlave  dev = node.getSlaves().get(devStr);
-
-//            packet = new DDPacket(devID, dev.getData());
-        } catch (RuntimeException ex) {
-            ex.printStackTrace();
-        }
-        return packet;
-    }
-
     /**
      * Перегруженный CallBack-метод интерфейса MqttCallback
      * Вызывается при потери соединения с MQTT сервером
@@ -263,8 +245,6 @@ public class Engine implements MqttCallback {
                     logger.debug("Data Dealer stopping.");
                     break;
             }
-        } else if (s.equals(ENGINE_DATA)) {
-            sendDataByDevID(mqttMessage.toString());
         }
     }
 

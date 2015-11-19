@@ -1,13 +1,13 @@
 package ru.entel.smiu.msg;
 
-import ru.entel.smiu.datadealer.protocols.registers.AbstractRegister;
+import ru.entel.smiu.datadealer.hardware_engine.protocols.registers.AbstractRegister;
 
 import java.time.LocalDateTime;
 import java.util.Map;
 
 /**
  * Класс ModbusDataEvent - потом класса Event.
- * Служит дял передачи информации из ModbusSlaveRead в EventBusService.
+ * Служит дял передачи информации из ModbusChannel в EventBusService.
  * В последующем обрабатываются handler в объектах конечных устройств.
  * @author Мацепура Артем
  * @version 0.3

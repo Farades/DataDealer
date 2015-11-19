@@ -2,9 +2,9 @@ package ru.entel.smiu.datadealer.engine;
 
 import ru.entel.smiu.datadealer.db.entity.AlarmBlank;
 import ru.entel.smiu.datadealer.db.entity.Device;
-import ru.entel.smiu.datadealer.protocols.registers.ErrRegister;
-import ru.entel.smiu.datadealer.protocols.service.ProtocolMaster;
-import ru.entel.smiu.datadealer.protocols.service.ProtocolSlave;
+import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.rtu.master.ProtocolSlave;
+import ru.entel.smiu.datadealer.hardware_engine.protocols.registers.ErrRegister;
+import ru.entel.smiu.datadealer.hardware_engine.protocols.service.ProtocolMaster;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;

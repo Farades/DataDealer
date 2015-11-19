@@ -1,7 +1,7 @@
 package ru.entel.smiu.datadealer.utils;
 
 import com.google.gson.*;
-import ru.entel.smiu.datadealer.protocols.registers.AbstractRegister;
+import ru.entel.smiu.datadealer.hardware_engine.protocols.registers.AbstractRegister;
 
 import java.lang.reflect.Type;
 

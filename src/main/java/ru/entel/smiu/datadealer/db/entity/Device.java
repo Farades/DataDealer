@@ -13,7 +13,6 @@ public class Device implements Serializable {
     private int id;
     private String deviceSettings;
     private String name;
-    private Protocol protocol;
     private DeviceBlank deviceBlank;
     private Set<Tag> tags;
     private Integer selectId;
@@ -57,16 +56,6 @@ public class Device implements Serializable {
 
     public void setDeviceSystemName(String deviceSystemName) {
         this.deviceSystemName = deviceSystemName;
-    }
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "protocol_id")
-    public Protocol getProtocol() {
-        return protocol;
-    }
-
-    public void setProtocol(Protocol protocol) {
-        this.protocol = protocol;
     }
 
     @ManyToOne(fetch = FetchType.EAGER)

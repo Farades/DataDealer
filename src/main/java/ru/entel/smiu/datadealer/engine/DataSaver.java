@@ -5,11 +5,10 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import ru.entel.smiu.datadealer.db.entity.Tag;
 import ru.entel.smiu.datadealer.db.util.DataHelper;
-import ru.entel.smiu.datadealer.protocols.service.ProtocolMaster;
-import ru.entel.smiu.datadealer.protocols.service.ProtocolSlave;
+import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.rtu.master.ProtocolSlave;
+import ru.entel.smiu.datadealer.hardware_engine.protocols.service.ProtocolMaster;
 
 import java.util.Date;
-import java.util.Map;
 import java.util.TimerTask;
 
 public class DataSaver extends TimerTask {

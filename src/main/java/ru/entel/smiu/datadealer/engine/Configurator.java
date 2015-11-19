@@ -7,28 +7,27 @@ import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import ru.entel.smiu.datadealer.db.entity.Device;
 import ru.entel.smiu.datadealer.db.entity.DeviceBlank;
-import ru.entel.smiu.datadealer.db.entity.Protocol;
+import ru.entel.smiu.datadealer.db.entity.ProtocolEntity;
 import ru.entel.smiu.datadealer.db.entity.TagBlank;
 import ru.entel.smiu.datadealer.db.util.DataHelper;
-import ru.entel.smiu.datadealer.protocols.modbus.tcp.master.ModbusTCPMaster;
-import ru.entel.smiu.datadealer.protocols.modbus.tcp.master.ModbusTCPMasterParams;
-import ru.entel.smiu.datadealer.protocols.modbus.tcp.master.ModbusTCPSlave;
-import ru.entel.smiu.datadealer.protocols.modbus.tcp.master.ModbusTCPSlaveParams;
+import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.tcp.master.ModbusTCPMaster;
+import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.tcp.master.ModbusTCPMasterParams;
+import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.tcp.master.ModbusTCPSlave;
+import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.tcp.master.ModbusTCPSlaveParams;
 import ru.entel.smiu.msg.ConfigData;
 import ru.entel.smiu.msg.DeviceConfPackage;
 import ru.entel.smiu.msg.MqttService;
-import ru.entel.smiu.datadealer.protocols.modbus.ModbusFunction;
-import ru.entel.smiu.datadealer.protocols.modbus.rtu.master.ModbusMaster;
-import ru.entel.smiu.datadealer.protocols.modbus.rtu.master.ModbusMasterParams;
-import ru.entel.smiu.datadealer.protocols.modbus.rtu.master.ModbusSlaveParams;
-import ru.entel.smiu.datadealer.protocols.modbus.rtu.master.ModbusSlaveRead;
-import ru.entel.smiu.datadealer.protocols.modbus_test.ModbusTestMaster;
-import ru.entel.smiu.datadealer.protocols.modbus_test.ModbusTestSlave;
-import ru.entel.smiu.datadealer.protocols.modbus_test.ModbusTestSlaveParams;
-import ru.entel.smiu.datadealer.protocols.registers.RegType;
-import ru.entel.smiu.datadealer.protocols.service.InvalidProtocolTypeException;
-import ru.entel.smiu.datadealer.protocols.service.ProtocolMaster;
-import ru.entel.smiu.datadealer.protocols.service.ProtocolMasterParams;
+import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.ModbusFunction;
+import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.rtu.master.ModbusMaster;
+import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.rtu.master.ModbusMasterParams;
+import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.rtu.master.ModbusChannelParams;
+import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus_test.ModbusTestMaster;
+import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus_test.ModbusTestSlave;
+import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus_test.ModbusTestSlaveParams;
+import ru.entel.smiu.datadealer.hardware_engine.protocols.registers.RegType;
+import ru.entel.smiu.datadealer.hardware_engine.protocols.service.InvalidProtocolTypeException;
+import ru.entel.smiu.datadealer.hardware_engine.protocols.service.ProtocolMaster;
+import ru.entel.smiu.datadealer.hardware_engine.protocols.service.ProtocolMasterParams;
 import ru.entel.smiu.datadealer.utils.InvalidJSONException;
 import ru.entel.smiu.datadealer.utils.JSONNaturalDeserializer;
 import ru.entel.smiu.datadealer.utils.JSONUtils;
@@ -43,7 +42,7 @@ import java.util.*;
  */
 public class Configurator implements MqttCallback {
     private static final Logger logger = Logger.getLogger(Configurator.class);
-    public static List<Protocol> protocols;
+    public static List<ProtocolEntity> protocolEntities;
 
     private Engine engine;
 
@@ -91,19 +90,19 @@ public class Configurator implements MqttCallback {
     public synchronized Map<String, ProtocolMaster> getProtocolMasters() throws InvalidJSONException, InvalidProtocolTypeException {
         Map<String, ProtocolMaster> res = new HashMap<>();
 
-        protocols = DataHelper.getInstance().getAllProtocols();
+        protocolEntities = DataHelper.getInstance().getAllProtocols();
         Gson gson = new GsonBuilder().registerTypeAdapter(Object.class, new JSONNaturalDeserializer()).create();
 
-        for (Protocol protocol : protocols) {
-            String jsonConfig = protocol.getProtocolSettings();
+        for (ProtocolEntity protocolEntity : protocolEntities) {
+            String jsonConfig = protocolEntity.getProtocolSettings();
             if (!JSONUtils.isJSONValid(jsonConfig))
                 throw new InvalidJSONException("Invalid json");
 
             Map protocolParams = (Map) gson.fromJson(jsonConfig, Object.class);
 
-            switch (protocol.getType()) {
+            switch (protocolEntity.getType()) {
                 case "MODBUS_RTU_MASTER": {
-                    String masterName = protocol.getName();
+                    String masterName = protocolEntity.getName();
                     String portName = (String) protocolParams.get("portName");
                     String encoding = "rtu";
                     String parity = (String) protocolParams.get("parity");
@@ -117,51 +116,51 @@ public class Configurator implements MqttCallback {
                             stopbits, encoding, echo, timePause);
                     ModbusMaster master = new ModbusMaster(masterName, masterParams);
 
-                    for (Device device : protocol.getDevices()) {
-                        String jsonDevConf = device.getDeviceSettings();
-                        if (!JSONUtils.isJSONValid(jsonDevConf))
-                            throw new InvalidJSONException("Invalid json");
-
-                        Map slaveParams = (Map) gson.fromJson(jsonDevConf, Object.class);
-
-                        int unitID = ((Double) slaveParams.get("unitId")).intValue();
-                        DeviceBlank deviceBlank = device.getDeviceBlank();
-                        for (TagBlank tagBlank : deviceBlank.getTagBlanks()) {
-                            String tagParams[] = tagBlank.getTagId().split(":");
-                            ModbusFunction mbFunc = ModbusFunction.valueOf(String.valueOf(tagParams[0]));
-                            RegType regType = RegType.valueOf(String.valueOf(tagParams[1]));
-                            int offset = Integer.valueOf(tagParams[2]);
-                            int length = 1;
-                            int transDelay = tagBlank.getDelay();
-                            String slaveName = tagBlank.getTagName();
-
-                            ModbusSlaveParams sp = new ModbusSlaveParams(unitID, mbFunc, regType, offset,
-                                    length, transDelay);
-                            master.addSlave(new ModbusSlaveRead(slaveName, sp, device, tagBlank));
-                        }
-
-                    }
-                    res.put(masterName, master);
+//                    for (Device device : protocolEntity.getDevices()) {
+//                        String jsonDevConf = device.getDeviceSettings();
+//                        if (!JSONUtils.isJSONValid(jsonDevConf))
+//                            throw new InvalidJSONException("Invalid json");
+//
+//                        Map slaveParams = (Map) gson.fromJson(jsonDevConf, Object.class);
+//
+//                        int unitID = ((Double) slaveParams.get("unitId")).intValue();
+//                        DeviceBlank deviceBlank = device.getDeviceBlank();
+//                        for (TagBlank tagBlank : deviceBlank.getTagBlanks()) {
+//                            String tagParams[] = tagBlank.getTagId().split(":");
+//                            ModbusFunction mbFunc = ModbusFunction.valueOf(String.valueOf(tagParams[0]));
+//                            RegType regType = RegType.valueOf(String.valueOf(tagParams[1]));
+//                            int offset = Integer.valueOf(tagParams[2]);
+//                            int length = 1;
+//                            int transDelay = tagBlank.getDelay();
+//                            String slaveName = tagBlank.getTagName();
+//
+//                            ModbusChannelParams sp = new ModbusChannelParams(unitID, mbFunc, regType, offset,
+//                                    length, transDelay);
+////                            master.addSlave(new ModbusChannel(slaveName, sp, device, tagBlank));
+//                        }
+//
+//                    }
+//                    res.put(masterName, master);
                     break;
                 }
                 case "MODBUS_TEST": {
-                    String protocolName = protocol.getName();
-                    ProtocolMasterParams masterParams = null;
-                    ModbusTestMaster testMaster = new ModbusTestMaster(protocolName, masterParams);
-                    for (Device device : protocol.getDevices()) {
-                        DeviceBlank deviceBlank = device.getDeviceBlank();
-                        for (TagBlank tagBlank : deviceBlank.getTagBlanks()) {
-                            String slaveName = tagBlank.getTagName();
-                            ModbusTestSlaveParams sp = new ModbusTestSlaveParams();
-                            testMaster.addSlave(new ModbusTestSlave(slaveName, sp, device, tagBlank));
-                        }
-                    }
+//                    String protocolName = protocolEntity.getName();
+//                    ProtocolMasterParams masterParams = null;
+//                    ModbusTestMaster testMaster = new ModbusTestMaster(protocolName, masterParams);
+//                    for (Device device : protocolEntity.getDevices()) {
+//                        DeviceBlank deviceBlank = device.getDeviceBlank();
+//                        for (TagBlank tagBlank : deviceBlank.getTagBlanks()) {
+//                            String slaveName = tagBlank.getTagName();
+//                            ModbusTestSlaveParams sp = new ModbusTestSlaveParams();
+//                            testMaster.addSlave(new ModbusTestSlave(slaveName, sp, device, tagBlank));
+//                        }
+//                    }
                     System.out.println();
-                    res.put(protocolName, testMaster);
+//                    res.put(protocolName, testMaster);
                     break;
                 }
                 case "MODBUS_TCP_MASTER": {
-                    String masterName = protocol.getName();
+                    String masterName = protocolEntity.getName();
                     String ipAddress = (String) protocolParams.get("addr");
                     int port = ((Double) protocolParams.get("port")).intValue();
                     int timePause = ((Double) protocolParams.get("timePause")).intValue();
@@ -169,35 +168,35 @@ public class Configurator implements MqttCallback {
                     ModbusTCPMasterParams masterParams = new ModbusTCPMasterParams(ipAddress, port, timePause);
                     ModbusTCPMaster master = new ModbusTCPMaster(masterName, masterParams);
 
-                    for (Device device : protocol.getDevices()) {
-                        String jsonDevConf = device.getDeviceSettings();
-                        if (!JSONUtils.isJSONValid(jsonDevConf))
-                            throw new InvalidJSONException("Invalid json");
-
-                        Map slaveParams = (Map) gson.fromJson(jsonDevConf, Object.class);
-
-                        DeviceBlank deviceBlank = device.getDeviceBlank();
-                        for (TagBlank tagBlank : deviceBlank.getTagBlanks()) {
-                            String tagParams[] = tagBlank.getTagId().split(":");
-                            ModbusFunction mbFunc = ModbusFunction.valueOf(String.valueOf(tagParams[0]));
-                            RegType regType = RegType.valueOf(String.valueOf(tagParams[1]));
-                            int offset = Integer.valueOf(tagParams[2]);
-                            int length = 1;
-                            String slaveName = tagBlank.getTagName();
-
-                            ModbusTCPSlaveParams sp = new ModbusTCPSlaveParams(mbFunc, regType, offset,
-                                    length);
-                            master.addSlave(new ModbusTCPSlave(slaveName, sp, device, tagBlank));
-                        }
-
-                    }
+//                    for (Device device : protocolEntity.getDevices()) {
+//                        String jsonDevConf = device.getDeviceSettings();
+//                        if (!JSONUtils.isJSONValid(jsonDevConf))
+//                            throw new InvalidJSONException("Invalid json");
+//
+//                        Map slaveParams = (Map) gson.fromJson(jsonDevConf, Object.class);
+//
+//                        DeviceBlank deviceBlank = device.getDeviceBlank();
+//                        for (TagBlank tagBlank : deviceBlank.getTagBlanks()) {
+//                            String tagParams[] = tagBlank.getTagId().split(":");
+//                            ModbusFunction mbFunc = ModbusFunction.valueOf(String.valueOf(tagParams[0]));
+//                            RegType regType = RegType.valueOf(String.valueOf(tagParams[1]));
+//                            int offset = Integer.valueOf(tagParams[2]);
+//                            int length = 1;
+//                            String slaveName = tagBlank.getTagName();
+//
+//                            ModbusTCPSlaveParams sp = new ModbusTCPSlaveParams(mbFunc, regType, offset,
+//                                    length);
+//                            master.addSlave(new ModbusTCPSlave(slaveName, sp, device, tagBlank));
+//                        }
+//
+//                    }
 
                     res.put(masterName, master);
 
                     break;
                 }
                 default:
-                    throw new InvalidProtocolTypeException("Invalid protocol type - " + protocol.getType());
+                    throw new InvalidProtocolTypeException("Invalid protocolEntity type - " + protocolEntity.getType());
             }
         }
         return res;
