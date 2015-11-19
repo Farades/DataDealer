@@ -9,6 +9,7 @@ import ru.entel.smiu.datadealer.protocols.service.ProtocolSlave;
 import ru.entel.smiu.datadealer.protocols.service.ProtocolType;
 
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,6 +23,8 @@ public class ModbusTCPMaster extends ProtocolMaster {
 
     private Map<String, ProtocolSlave> slaves = new HashMap<>();
 
+    private int timePause;
+
     private volatile boolean interviewRun = true;
 
 
@@ -32,10 +35,17 @@ public class ModbusTCPMaster extends ProtocolMaster {
 
     @Override
     public void init(ProtocolMasterParams params) {
-//        addr = InetAddress.getByName("192.168.10.189");
-//        con = new TCPMasterConnection(addr);
-//        con.setPort(502);
-//        con.connect();
+        if (params instanceof ModbusTCPMasterParams) {
+            ModbusTCPMasterParams masterParams = (ModbusTCPMasterParams) params;
+            try {
+                InetAddress address = InetAddress.getByName(masterParams.getIpAddress());
+                con = new TCPMasterConnection(address);
+                con.setPort(masterParams.getPort());
+                this.timePause = masterParams.getTimePause();
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void openPort() throws TCPConnectException {
@@ -46,19 +56,53 @@ public class ModbusTCPMaster extends ProtocolMaster {
         }
     }
 
+    private void closePort() {
+        this.con.close();
+    }
+
     @Override
     public void run() {
-
+        interviewRun = true;
+        if (slaves.size() != 0) {
+            try {
+                openPort();
+                while(interviewRun) {
+                    for (Map.Entry<String, ProtocolSlave> entry : slaves.entrySet()) {
+                        ProtocolSlave slave = entry.getValue();
+                        try {
+                            slave.request();
+                            Thread.sleep(timePause);
+//                        } catch (ModbusRequestException ex) {
+//                            //TODO
+//                            slave.setNoResponse();
+//                            logger.error("\"" + slave + "\" " + ex.getMessage());
+////                            String topic = "smiu/DD" + this.name + ":" + slave.getName() + "/data";
+////                            messageService.send(topic, "SlaveErr");
+////                            ex.printStackTrace();
+////                            logger.error("\"" + slave + "\" " + ex.getMessage());
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            logger.error("\"" + slave + "\" " + ex.getMessage());
+                        }
+                    }
+                }
+            } catch (TCPConnectException e) {
+                e.printStackTrace();
+                logger.error("\"" + this.name + "\" Невозможно установить TCP соединение");
+            } finally {
+                closePort();
+            }
+        }
     }
 
     @Override
     public Map<String, ProtocolSlave> getSlaves() {
-        return null;
+        return this.slaves;
     }
 
     @Override
     public void stopInterview() {
-
+        this.interviewRun = false;
     }
 
     @Override

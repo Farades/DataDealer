@@ -10,6 +10,10 @@ import ru.entel.smiu.datadealer.db.entity.DeviceBlank;
 import ru.entel.smiu.datadealer.db.entity.Protocol;
 import ru.entel.smiu.datadealer.db.entity.TagBlank;
 import ru.entel.smiu.datadealer.db.util.DataHelper;
+import ru.entel.smiu.datadealer.protocols.modbus.tcp.master.ModbusTCPMaster;
+import ru.entel.smiu.datadealer.protocols.modbus.tcp.master.ModbusTCPMasterParams;
+import ru.entel.smiu.datadealer.protocols.modbus.tcp.master.ModbusTCPSlave;
+import ru.entel.smiu.datadealer.protocols.modbus.tcp.master.ModbusTCPSlaveParams;
 import ru.entel.smiu.msg.ConfigData;
 import ru.entel.smiu.msg.DeviceConfPackage;
 import ru.entel.smiu.msg.MqttService;
@@ -154,6 +158,42 @@ public class Configurator implements MqttCallback {
                     }
                     System.out.println();
                     res.put(protocolName, testMaster);
+                    break;
+                }
+                case "MODBUS_TCP_MASTER": {
+                    String masterName = protocol.getName();
+                    String ipAddress = (String) protocolParams.get("addr");
+                    int port = ((Double) protocolParams.get("port")).intValue();
+                    int timePause = ((Double) protocolParams.get("timePause")).intValue();
+
+                    ModbusTCPMasterParams masterParams = new ModbusTCPMasterParams(ipAddress, port, timePause);
+                    ModbusTCPMaster master = new ModbusTCPMaster(masterName, masterParams);
+
+                    for (Device device : protocol.getDevices()) {
+                        String jsonDevConf = device.getDeviceSettings();
+                        if (!JSONUtils.isJSONValid(jsonDevConf))
+                            throw new InvalidJSONException("Invalid json");
+
+                        Map slaveParams = (Map) gson.fromJson(jsonDevConf, Object.class);
+
+                        DeviceBlank deviceBlank = device.getDeviceBlank();
+                        for (TagBlank tagBlank : deviceBlank.getTagBlanks()) {
+                            String tagParams[] = tagBlank.getTagId().split(":");
+                            ModbusFunction mbFunc = ModbusFunction.valueOf(String.valueOf(tagParams[0]));
+                            RegType regType = RegType.valueOf(String.valueOf(tagParams[1]));
+                            int offset = Integer.valueOf(tagParams[2]);
+                            int length = 1;
+                            String slaveName = tagBlank.getTagName();
+
+                            ModbusTCPSlaveParams sp = new ModbusTCPSlaveParams(mbFunc, regType, offset,
+                                    length);
+                            master.addSlave(new ModbusTCPSlave(slaveName, sp, device, tagBlank));
+                        }
+
+                    }
+
+                    res.put(masterName, master);
+
                     break;
                 }
                 default:
