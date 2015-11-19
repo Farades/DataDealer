@@ -15,11 +15,10 @@ import java.util.TimerTask;
 public class DataSaver extends TimerTask {
     private static final Logger logger = Logger.getLogger(DataSaver.class);
 
-    private Map<String, ProtocolMaster> protocolMasterMap;
+    private Engine engine;
 
-
-    public DataSaver(Map<String, ProtocolMaster> protocolMasterMap) {
-        this.protocolMasterMap = protocolMasterMap;
+    public DataSaver(Engine engine) {
+        this.engine = engine;
     }
 
     @Override
@@ -31,8 +30,11 @@ public class DataSaver extends TimerTask {
 
         int count = 0;
         try {
-            for (ProtocolMaster protocolMaster : protocolMasterMap.values()) {
+            for (ProtocolMaster protocolMaster : engine.getProtocolMasterMap().values()) {
                 for (ProtocolSlave protocolSlave : protocolMaster.getSlaves().values()) {
+                    if (protocolSlave.getData() == null) {
+                        return;
+                    }
                     count++;
 
                     Tag tag = new Tag();

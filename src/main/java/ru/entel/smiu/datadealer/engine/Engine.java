@@ -111,16 +111,16 @@ public class Engine implements MqttCallback {
             }
 
             dataSaverTimer = new Timer("Data Saver");
-            ds = new DataSaver(protocolMasterMap);
+            ds = new DataSaver(this);
             dataSaverTimer.schedule(ds, 5000, 5000);
 
             alarmsCheckerTimer = new Timer("Alarms Checker");
             alarmsChecker = new AlarmsChecker(this);
-            alarmsCheckerTimer.schedule(alarmsChecker, 3000, 1000);
+            alarmsCheckerTimer.schedule(alarmsChecker, 5000, 1000);
 
-            messageTimer = new Timer();
+            messageTimer = new Timer("Mqtt Engine");
             mqttEngine = new MqttEngine(this);
-            messageTimer.schedule(mqttEngine, 3000, 1000);
+            messageTimer.schedule(mqttEngine, 5000, 1000);
 
             logger.debug("Data Dealer running.");
         } catch (RuntimeException ex) {

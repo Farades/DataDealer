@@ -27,6 +27,9 @@ public class AlarmsChecker extends TimerTask {
             activeAlarms.clear();
             for (ProtocolMaster protocolMaster : protocolMasterMap.values()) {
                 for (ProtocolSlave slave : protocolMaster.getSlaves().values()) {
+                    if (slave.getData() == null) {
+                        return;
+                    }
                     Set<Alarm> deviceAlarms = new HashSet<>();
                     for (AlarmBlank alarmBlank : slave.getTagBlank().getAlarmBlanks()) {
                         if (slave.getData() instanceof ErrRegister)

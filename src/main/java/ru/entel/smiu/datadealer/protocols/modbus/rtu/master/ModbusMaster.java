@@ -160,6 +160,7 @@ public class ModbusMaster extends ProtocolMaster {
         return this.slaves;
     }
 
+
     /**
      * Останавливает поток опроса слейвов
      */

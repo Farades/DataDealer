@@ -42,6 +42,9 @@ public class MqttEngine extends TimerTask implements MqttCallback {
         Map<String, DeviceBAO> allDevicesByName = new HashMap<>();
         for (ProtocolMaster master : engine.getProtocolMasterMap().values()) {
             for (ProtocolSlave slave : master.getSlaves().values()) {
+                if (slave.getData() == null) {
+                    return;
+                }
                 if (allDevicesByName.containsKey(slave.getDevice().getName())) {
                     DeviceBAO deviceBAO = allDevicesByName.get(slave.getDevice().getName());
                     deviceBAO.addChannel(slave.getTagBlank().getTagDescr(), slave.getData().toString());

@@ -14,6 +14,8 @@ import ru.entel.smiu.datadealer.protocols.registers.*;
 import ru.entel.smiu.datadealer.protocols.service.ProtocolSlave;
 import ru.entel.smiu.datadealer.protocols.service.ProtocolSlaveParams;
 
+import java.util.Date;
+
 public class ModbusTCPSlave extends ProtocolSlave {
     /**
      * Название Modbus мастера которому принадлежит данный Slave
@@ -84,62 +86,65 @@ public class ModbusTCPSlave extends ProtocolSlave {
 
     @Override
     public void request() throws Exception {
-        ModbusRequest req = null;
+            ModbusRequest req = null;
 
-        switch (mbFunc) {
-            case READ_HOLDING_REGS_3: {
-                req = new ReadMultipleRegistersRequest(offset, length);
-                break;
-            }
-            default:
-                throw new IllegalArgumentException("Modbus function incorrect by " + this.protocolName + ":" + this.name);
-        }
-
-        ModbusTCPTransaction trans = new ModbusTCPTransaction(con);
-        trans.setRequest(req);
-
-        switch (mbFunc) {
-            case READ_HOLDING_REGS_3: {
-                trans.execute();
-                ReadMultipleRegistersResponse resp = (ReadMultipleRegistersResponse) trans.getResponse();
-
-                if (resp == null) {
-                    throw new ModbusNoResponseException("No response by " + this.protocolName + ":" + this.name
-                            + " READ_INPUT_REGS_4 request.");
+            switch (mbFunc) {
+                case READ_HOLDING_REGS_3: {
+                    req = new ReadMultipleRegistersRequest(offset, length);
+//                    req = new ReadMultipleRegistersRequest(11, );
+                    break;
                 }
+                default:
+                    throw new IllegalArgumentException("Modbus function incorrect by " + this.protocolName + ":" + this.name);
+            }
 
-                if (this.mbRegType == RegType.INT16) {
-                    for (int n = 0; n < resp.getWordCount(); n++) {
-                        Int16Register reg = new Int16Register(this.offset + n, resp.getRegisterValue(n));
-//                            registers.put(offset + n, reg);
-                        register = reg;
+            ModbusTCPTransaction trans = new ModbusTCPTransaction(con);
+            trans.setRequest(req);
+
+            switch (mbFunc) {
+                case READ_HOLDING_REGS_3: {
+                    Date startTime = new Date();
+                    trans.execute();
+                    System.out.println(new Date().getTime() - startTime.getTime());
+                    ReadMultipleRegistersResponse resp = (ReadMultipleRegistersResponse) trans.getResponse();
+
+                    if (resp == null) {
+                        throw new ModbusNoResponseException("No response by " + this.protocolName + ":" + this.name
+                                + " READ_INPUT_REGS_4 request.");
                     }
-                } else if (this.mbRegType == RegType.FLOAT32) {
-                    for (int i = 0; i < resp.getWordCount()-1; i+=2) {
-                        Float32Register reg = new Float32Register(offset + i, resp.getRegisterValue(i), resp.getRegisterValue(i + 1));
+
+                    if (this.mbRegType == RegType.INT16) {
+                        for (int n = 0; n < resp.getWordCount(); n++) {
+                            Int16Register reg = new Int16Register(this.offset + n, resp.getRegisterValue(n));
+//                            registers.put(offset + n, reg);
+                            register = reg;
+                        }
+                    } else if (this.mbRegType == RegType.FLOAT32) {
+                        for (int i = 0; i < resp.getWordCount()-1; i+=2) {
+                            Float32Register reg = new Float32Register(offset + i, resp.getRegisterValue(i), resp.getRegisterValue(i + 1));
 //                            registers.put(this.offset + i, reg);
-                        register = reg;
-                    }
-                } else if (this.mbRegType == RegType.INT16DIV10) {
-                    for (int n = 0; n < resp.getWordCount(); n++) {
-                        Int16Div10Register reg = new Int16Div10Register(this.offset + n, resp.getRegisterValue(n));
+                            register = reg;
+                        }
+                    } else if (this.mbRegType == RegType.INT16DIV10) {
+                        for (int n = 0; n < resp.getWordCount(); n++) {
+                            Int16Div10Register reg = new Int16Div10Register(this.offset + n, resp.getRegisterValue(n));
 //                            registers.put(offset + n, reg);
-                        register = reg;
-                    }
-                } else if (this.mbRegType == RegType.INT16DIV100) {
-                    for (int n = 0; n < resp.getWordCount(); n++) {
-                        Int16Div100Register reg = new Int16Div100Register(this.offset + n, resp.getRegisterValue(n));
+                            register = reg;
+                        }
+                    } else if (this.mbRegType == RegType.INT16DIV100) {
+                        for (int n = 0; n < resp.getWordCount(); n++) {
+                            Int16Div100Register reg = new Int16Div100Register(this.offset + n, resp.getRegisterValue(n));
 //                            registers.put(offset + n, reg);
-                        register = reg;
+                            register = reg;
+                        }
+                    } else {
+                        throw new ModbusIllegalRegTypeException("Illegal reg type for "
+                                + this.protocolName + ":" +this.name + " READ_INPUT_REGS_4");
                     }
-                } else {
-                    throw new ModbusIllegalRegTypeException("Illegal reg type for "
-                            + this.protocolName + ":" +this.name + " READ_INPUT_REGS_4");
-                }
 
-                break;
+                    break;
+                }
             }
-        }
     }
 
     public void setCon(TCPMasterConnection con) {

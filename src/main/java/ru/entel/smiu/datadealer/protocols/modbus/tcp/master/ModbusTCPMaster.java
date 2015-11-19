@@ -66,12 +66,17 @@ public class ModbusTCPMaster extends ProtocolMaster {
         if (slaves.size() != 0) {
             try {
                 openPort();
-                while(interviewRun) {
+            } catch (TCPConnectException e) {
+                e.printStackTrace();
+                logger.error("\"" + this.name + "\" Невозможно установить TCP соединение");
+            }
+            while(interviewRun) {
+
                     for (Map.Entry<String, ProtocolSlave> entry : slaves.entrySet()) {
                         ProtocolSlave slave = entry.getValue();
                         try {
                             slave.request();
-                            Thread.sleep(timePause);
+//                            Thread.sleep(timePause);
 //                        } catch (ModbusRequestException ex) {
 //                            //TODO
 //                            slave.setNoResponse();
@@ -83,15 +88,12 @@ public class ModbusTCPMaster extends ProtocolMaster {
                         } catch (Exception ex) {
                             ex.printStackTrace();
                             logger.error("\"" + slave + "\" " + ex.getMessage());
+                        } finally {
+                            closePort();
                         }
                     }
+
                 }
-            } catch (TCPConnectException e) {
-                e.printStackTrace();
-                logger.error("\"" + this.name + "\" Невозможно установить TCP соединение");
-            } finally {
-                closePort();
-            }
         }
     }
 
