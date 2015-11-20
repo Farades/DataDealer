@@ -1,7 +1,7 @@
 package ru.entel.smiu.datadealer.hardware_engine.protocols.modbus_test;
 
-import ru.entel.smiu.datadealer.db.entity.Device;
-import ru.entel.smiu.datadealer.db.entity.TagBlank;
+import ru.entel.smiu.datadealer.db.entity.DeviceEntity;
+import ru.entel.smiu.datadealer.db.entity.TagBlankEntity;
 import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.rtu.master.ProtocolSlave;
 import ru.entel.smiu.datadealer.hardware_engine.protocols.registers.AbstractRegister;
 import ru.entel.smiu.datadealer.hardware_engine.protocols.registers.ErrRegister;
@@ -16,8 +16,8 @@ import java.util.concurrent.ThreadLocalRandom;
 public class ModbusTestSlave extends ProtocolSlave {
     private AbstractRegister register;
 
-    public ModbusTestSlave(String name, ProtocolSlaveParams params, Device device, TagBlank tagBlank) {
-        super(name, params, device, tagBlank);
+    public ModbusTestSlave(String name, ProtocolSlaveParams params, DeviceEntity deviceEntity, TagBlankEntity tagBlankEntity) {
+        super(name, params, deviceEntity, tagBlankEntity);
         this.register = new ErrRegister("Error");
     }
 

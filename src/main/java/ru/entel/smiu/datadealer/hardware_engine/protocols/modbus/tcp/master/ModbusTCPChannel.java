@@ -1,33 +1,34 @@
 package ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.tcp.master;
 
+import com.ghgande.j2mod.modbus.Modbus;
 import com.ghgande.j2mod.modbus.io.ModbusTCPTransaction;
 import com.ghgande.j2mod.modbus.msg.ModbusRequest;
 import com.ghgande.j2mod.modbus.msg.ReadMultipleRegistersRequest;
 import com.ghgande.j2mod.modbus.msg.ReadMultipleRegistersResponse;
 import com.ghgande.j2mod.modbus.net.TCPMasterConnection;
-import ru.entel.smiu.datadealer.db.entity.Device;
-import ru.entel.smiu.datadealer.db.entity.TagBlank;
 import ru.entel.smiu.datadealer.hardware_engine.Channel;
 import ru.entel.smiu.datadealer.hardware_engine.ChannelParams;
 import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.ModbusFunction;
 import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.exception.ModbusIllegalRegTypeException;
 import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.exception.ModbusNoResponseException;
-import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.rtu.master.ProtocolSlave;
 import ru.entel.smiu.datadealer.hardware_engine.protocols.registers.*;
-import ru.entel.smiu.datadealer.hardware_engine.protocols.service.ProtocolSlaveParams;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Date;
+import java.util.Map;
 
 public class ModbusTCPChannel extends Channel {
-    /**
-     * Название Modbus мастера которому принадлежит данный Slave
-     */
-    private String protocolName;
-
     /**
      * Объект для TCP коммуникации
      */
     private TCPMasterConnection con;
+
+    private ModbusTCPTransaction trans;
+    private ReadMultipleRegistersRequest req;
+    private ReadMultipleRegistersResponse res;
+
+    private String ipAddr;
 
     /**
      * Номер функции Modbus по которой происходит обращение к Slave устройству
@@ -49,13 +50,13 @@ public class ModbusTCPChannel extends Channel {
      */
     private int length;
 
-
-    public ModbusTCPChannel(String protocolName, String name, ModbusTCPChannelParams params) {
+    public ModbusTCPChannel(String protocolName, String name, String ipAddr, ModbusTCPChannelParams params) {
         super(protocolName, name, params);
     }
 
+
     @Override
-    public void init(ChannelParams params) {
+    public synchronized void init(ChannelParams params) {
         if (params instanceof ModbusTCPChannelParams) {
             ModbusTCPChannelParams mbParams = (ModbusTCPChannelParams) params;
             this.mbFunc     = mbParams.getMbFunc();
@@ -63,35 +64,56 @@ public class ModbusTCPChannel extends Channel {
             this.offset     = mbParams.getOffset();
             this.length     = mbParams.getLength();
         } else {
-            String msg = "Modbus slave params not instance of ModbusChannelParams by " + this.protocolName + ":" + this.name;
+            String msg = "Modbus slave params not instance of ModbusChannelParams by " + this.name;
             throw new IllegalArgumentException(msg);
         }
+        for (int i = offset; i < offset + length; i++) {
+            AbstractRegister register = RegisterFactory.getRegisterByType(mbRegType);
+            registers.put(i, register);
+        }
+
+        int port = Modbus.DEFAULT_PORT;
+        int slaveAddr = 1;
+        try {
+            InetAddress addr = InetAddress.getByName("192.168.10.189");
+            con = new TCPMasterConnection(addr);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+
+        req = new ReadMultipleRegistersRequest(offset, length);
+        res = new ReadMultipleRegistersResponse();
+
+        req.setUnitID(slaveAddr);
+        res.setUnitID(slaveAddr);
+
+        con.setPort(port);
+        try {
+            con.connect();
+        } catch (Exception e) {
+            e.printStackTrace();
+            //TODO Looger
+        }
+        con.setTimeout(2500);
+
+        trans = new ModbusTCPTransaction(con);
+        trans.setRetries(5);
+
+        trans.setReconnecting(true);
+        trans.setRequest(req);
     }
 
     @Override
-    public void request() throws Exception {
-            ModbusRequest req = null;
-
-            switch (mbFunc) {
-                case READ_HOLDING_REGS_3: {
-                    req = new ReadMultipleRegistersRequest(offset, length);
-                    break;
-                }
-                default:
-                    throw new IllegalArgumentException("Modbus function incorrect by " + this.protocolName + ":" + this.name);
-            }
-
-            ModbusTCPTransaction trans = new ModbusTCPTransaction(con);
-            trans.setRequest(req);
-
+    public synchronized void request() throws Exception {
+        Date startTime = new Date();
             switch (mbFunc) {
                 case READ_HOLDING_REGS_3: {
                     trans.execute();
                     ReadMultipleRegistersResponse resp = (ReadMultipleRegistersResponse) trans.getResponse();
 
                     if (resp == null) {
-                        throw new ModbusNoResponseException("No response by " + this.protocolName + ":" + this.name
-                                + " READ_INPUT_REGS_4 request.");
+                        throw new ModbusNoResponseException("No response by " + this.name
+                                + " request.");
                     }
 
                     if (this.mbRegType == RegType.INT16) {
@@ -116,15 +138,17 @@ public class ModbusTCPChannel extends Channel {
                         }
                     } else {
                         throw new ModbusIllegalRegTypeException("Illegal reg type for "
-                                + this.protocolName + ":" +this.name + " READ_INPUT_REGS_4");
+                                + this.name + " READ_INPUT_REGS_4");
                     }
 
                     break;
                 }
             }
-    }
-
-    public void setCon(TCPMasterConnection con) {
-        this.con = con;
+        long ellapsedTime = new Date().getTime() - startTime.getTime();
+        for (Map.Entry<Integer, AbstractRegister> entry : registers.entrySet()) {
+            System.out.println("[" + entry.getKey() + "] " + entry.getValue());
+        }
+        System.out.println("Ellapsed time: " + ellapsedTime);
+        System.out.println("----------------------");
     }
 }

@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 import org.apache.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-import ru.entel.smiu.datadealer.db.entity.Device;
+import ru.entel.smiu.datadealer.db.entity.DeviceEntity;
 import ru.entel.smiu.datadealer.db.entity.ProtocolEntity;
 import ru.entel.smiu.datadealer.db.util.DataHelper;
 import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.tcp.master.ModbusTCPMaster;
@@ -105,27 +105,27 @@ public class Configurator implements MqttCallback {
                             stopbits, encoding, echo, timePause);
                     ModbusMaster master = new ModbusMaster(masterName, masterParams);
 
-//                    for (Device device : protocolEntity.getDevices()) {
-//                        String jsonDevConf = device.getDeviceSettings();
+//                    for (DeviceEntity deviceEntity : protocolEntity.getDeviceEntities()) {
+//                        String jsonDevConf = deviceEntity.getDeviceSettings();
 //                        if (!JSONUtils.isJSONValid(jsonDevConf))
 //                            throw new InvalidJSONException("Invalid json");
 //
 //                        Map slaveParams = (Map) gson.fromJson(jsonDevConf, Object.class);
 //
 //                        int unitID = ((Double) slaveParams.get("unitId")).intValue();
-//                        DeviceBlank deviceBlank = device.getDeviceBlank();
-//                        for (TagBlank tagBlank : deviceBlank.getTagBlanks()) {
-//                            String tagParams[] = tagBlank.getTagId().split(":");
+//                        DeviceBlank deviceBlank = deviceEntity.getDeviceBlank();
+//                        for (TagBlankEntity tagBlankEntity : deviceBlank.getTagBlankEntities()) {
+//                            String tagParams[] = tagBlankEntity.getTagId().split(":");
 //                            ModbusFunction mbFunc = ModbusFunction.valueOf(String.valueOf(tagParams[0]));
 //                            RegType regType = RegType.valueOf(String.valueOf(tagParams[1]));
 //                            int offset = Integer.valueOf(tagParams[2]);
 //                            int length = 1;
-//                            int transDelay = tagBlank.getDelay();
-//                            String slaveName = tagBlank.getTagName();
+//                            int transDelay = tagBlankEntity.getDelay();
+//                            String slaveName = tagBlankEntity.getTagName();
 //
 //                            ModbusChannelParams sp = new ModbusChannelParams(unitID, mbFunc, regType, offset,
 //                                    length, transDelay);
-////                            master.addSlave(new ModbusChannel(slaveName, sp, device, tagBlank));
+////                            master.addSlave(new ModbusChannel(slaveName, sp, deviceEntity, tagBlankEntity));
 //                        }
 //
 //                    }
@@ -136,12 +136,12 @@ public class Configurator implements MqttCallback {
 //                    String protocolName = protocolEntity.getName();
 //                    ProtocolMasterParams masterParams = null;
 //                    ModbusTestMaster testMaster = new ModbusTestMaster(protocolName, masterParams);
-//                    for (Device device : protocolEntity.getDevices()) {
-//                        DeviceBlank deviceBlank = device.getDeviceBlank();
-//                        for (TagBlank tagBlank : deviceBlank.getTagBlanks()) {
-//                            String slaveName = tagBlank.getTagName();
+//                    for (DeviceEntity deviceEntity : protocolEntity.getDeviceEntities()) {
+//                        DeviceBlank deviceBlank = deviceEntity.getDeviceBlank();
+//                        for (TagBlankEntity tagBlankEntity : deviceBlank.getTagBlankEntities()) {
+//                            String slaveName = tagBlankEntity.getTagName();
 //                            ModbusTestSlaveParams sp = new ModbusTestSlaveParams();
-//                            testMaster.addSlave(new ModbusTestSlave(slaveName, sp, device, tagBlank));
+//                            testMaster.addSlave(new ModbusTestSlave(slaveName, sp, deviceEntity, tagBlankEntity));
 //                        }
 //                    }
                     System.out.println();
@@ -157,25 +157,25 @@ public class Configurator implements MqttCallback {
                     ModbusTCPMasterParams masterParams = new ModbusTCPMasterParams(ipAddress, port, timePause);
                     ModbusTCPMaster master = new ModbusTCPMaster(masterName, masterParams);
 
-//                    for (Device device : protocolEntity.getDevices()) {
-//                        String jsonDevConf = device.getDeviceSettings();
+//                    for (DeviceEntity deviceEntity : protocolEntity.getDeviceEntities()) {
+//                        String jsonDevConf = deviceEntity.getDeviceSettings();
 //                        if (!JSONUtils.isJSONValid(jsonDevConf))
 //                            throw new InvalidJSONException("Invalid json");
 //
 //                        Map slaveParams = (Map) gson.fromJson(jsonDevConf, Object.class);
 //
-//                        DeviceBlank deviceBlank = device.getDeviceBlank();
-//                        for (TagBlank tagBlank : deviceBlank.getTagBlanks()) {
-//                            String tagParams[] = tagBlank.getTagId().split(":");
+//                        DeviceBlank deviceBlank = deviceEntity.getDeviceBlank();
+//                        for (TagBlankEntity tagBlankEntity : deviceBlank.getTagBlankEntities()) {
+//                            String tagParams[] = tagBlankEntity.getTagId().split(":");
 //                            ModbusFunction mbFunc = ModbusFunction.valueOf(String.valueOf(tagParams[0]));
 //                            RegType regType = RegType.valueOf(String.valueOf(tagParams[1]));
 //                            int offset = Integer.valueOf(tagParams[2]);
 //                            int length = 1;
-//                            String slaveName = tagBlank.getTagName();
+//                            String slaveName = tagBlankEntity.getTagName();
 //
 //                            ModbusTCPChannelParams sp = new ModbusTCPChannelParams(mbFunc, regType, offset,
 //                                    length);
-//                            master.addSlave(new ModbusTCPChannel(slaveName, sp, device, tagBlank));
+//                            master.addSlave(new ModbusTCPChannel(slaveName, sp, deviceEntity, tagBlankEntity));
 //                        }
 //
 //                    }
@@ -215,11 +215,11 @@ public class Configurator implements MqttCallback {
      }
 
     public void sendConfig() {
-        List<Device> devices = DataHelper.getInstance().getAllDevices();
+        List<DeviceEntity> deviceEntities = DataHelper.getInstance().getAllDevices();
         Map<String, String> resProperties = new HashMap<>();
         Set<DeviceConfPackage> resDevices = new HashSet<>();
-        for (Device device : devices) {
-            DeviceConfPackage dcp = new DeviceConfPackage(device.getName(), device.getDeviceBlank().getDeviceType());
+        for (DeviceEntity deviceEntity : deviceEntities) {
+            DeviceConfPackage dcp = new DeviceConfPackage(deviceEntity.getName(), deviceEntity.getDeviceBlank().getDeviceType());
             resDevices.add(dcp);
         }
         ConfigData configData = new ConfigData(resProperties, resDevices);

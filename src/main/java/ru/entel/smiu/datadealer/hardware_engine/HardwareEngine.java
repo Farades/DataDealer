@@ -30,6 +30,9 @@ public class HardwareEngine {
 
     private Map<String, Protocol> protocols = new HashMap<>();
 
+    public Map<String, Protocol> getProtocols() {
+        return protocols;
+    }
 
     public synchronized void stop() {
         if (protocols.size() > 0) {
@@ -56,19 +59,6 @@ public class HardwareEngine {
         }
         logger.debug("Hardware Engine started.");
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    try {
-                        System.out.println(protocols);
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }).start();
     }
 
     public synchronized void configure() throws InvalidJSONException {
@@ -140,7 +130,7 @@ public class HardwareEngine {
                         int length = ((Double) channelParams.get("length")).intValue();
 
                         ModbusTCPChannelParams modbusTCPChannelParams = new ModbusTCPChannelParams(mbFunc, regType, offset, length);
-                        master.addChannel(new ModbusTCPChannel(master.getName(), channelEntity.getName(), modbusTCPChannelParams));
+                        master.addChannel(new ModbusTCPChannel(master.getName(), channelEntity.getName(), ipAddress, modbusTCPChannelParams));
                     }
                     protocols.put(masterName, master);
 
@@ -153,6 +143,10 @@ public class HardwareEngine {
     }
 
     public synchronized AbstractRegister getRegisterByID(String id) {
-        return null;
+        String[] splits = id.split("\\.");
+        Protocol protocol = protocols.get(splits[0]);
+        Channel channel = protocol.getChannels().get(splits[0] + "." + splits[1]);
+        AbstractRegister register = channel.getAbstractRegisterByNumber(Integer.valueOf(splits[2]));
+        return register;
     }
 }

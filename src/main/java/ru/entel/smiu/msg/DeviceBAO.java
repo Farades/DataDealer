@@ -1,6 +1,6 @@
 package ru.entel.smiu.msg;
 
-import ru.entel.smiu.datadealer.engine.Alarm;
+import ru.entel.smiu.datadealer.software_engine.Alarm;
 
 import java.io.Serializable;
 import java.util.HashMap;

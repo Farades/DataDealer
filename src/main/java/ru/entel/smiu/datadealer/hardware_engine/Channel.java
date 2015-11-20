@@ -20,7 +20,7 @@ public abstract class Channel {
 
     public abstract void init(ChannelParams params);
 
-    public void setNoResponse() {
+    public synchronized void setNoResponse() {
         for (AbstractRegister register : registers.values()) {
             register.setValid(false);
         }
@@ -28,7 +28,7 @@ public abstract class Channel {
 
     public abstract void request() throws Exception;
 
-    public AbstractRegister getAbstractRegisterByNumber(Integer number) {
+    public synchronized AbstractRegister getAbstractRegisterByNumber(Integer number) {
         return registers.get(number);
     }
 

@@ -15,8 +15,8 @@
         <mapping class="ru.entel.smiu.datadealer.db.entity.Properties"/>
         <mapping class="ru.entel.smiu.datadealer.db.entity.DeviceBlank"/>
         <mapping class="ru.entel.smiu.datadealer.db.entity.ProtocolEntity"/>
-        <mapping class="ru.entel.smiu.datadealer.db.entity.Device"/>
-        <mapping class="ru.entel.smiu.datadealer.db.entity.TagBlank"/>
+        <mapping class="ru.entel.smiu.datadealer.db.entity.DeviceEntity"/>
+        <mapping class="ru.entel.smiu.datadealer.db.entity.TagBlankEntity"/>
         <mapping class="ru.entel.smiu.datadealer.db.entity.Tag"/>
         <mapping class="ru.entel.smiu.datadealer.db.entity.AlarmBlank"/>
         <mapping class="ru.entel.smiu.datadealer.db.entity.ChannelEntity"/>

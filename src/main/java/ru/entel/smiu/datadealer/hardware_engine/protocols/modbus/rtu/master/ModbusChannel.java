@@ -87,6 +87,10 @@ public class ModbusChannel extends Channel {
             String msg = "Modbus slave params not instance of ModbusChannelParams by" + ": " + this.name;
             throw new IllegalArgumentException(msg);
         }
+        for (int i = offset; i < offset + length; i++) {
+            AbstractRegister register = RegisterFactory.getRegisterByType(mbRegType);
+            registers.put(i, register);
+        }
     }
 
     /**

@@ -29,27 +29,27 @@ public class DataSaver extends TimerTask {
 
         int count = 0;
         try {
-            for (ProtocolMaster protocolMaster : engine.getProtocolMasterMap().values()) {
-                for (ProtocolSlave protocolSlave : protocolMaster.getSlaves().values()) {
-                    if (protocolSlave.getData() == null) {
-                        return;
-                    }
-                    count++;
-
-                    Tag tag = new Tag();
-                    tag.setTagTime(new Date());
-                    tag.setDevice(protocolSlave.getDevice());
-                    tag.setTagBlank(protocolSlave.getTagBlank());
-                    tag.setValue(protocolSlave.getData().toString());
-
-                    session.save(tag);
-                    if (count % 20 == 0 ) { //20, same as the JDBC batch size
-                        //flush a batch of inserts and release memory:
-                        session.flush();
-                        session.clear();
-                    }
-                }
-            }
+//            for (ProtocolMaster protocolMaster : engine.getProtocolMasterMap().values()) {
+//                for (ProtocolSlave protocolSlave : protocolMaster.getSlaves().values()) {
+//                    if (protocolSlave.getData() == null) {
+//                        return;
+//                    }
+//                    count++;
+//
+//                    Tag tag = new Tag();
+//                    tag.setTagTime(new Date());
+//                    tag.setDeviceEntity(protocolSlave.getDeviceEntity());
+//                    tag.setTagBlankEntity(protocolSlave.getTagBlankEntity());
+//                    tag.setValue(protocolSlave.getData().toString());
+//
+//                    session.save(tag);
+//                    if (count % 20 == 0 ) { //20, same as the JDBC batch size
+//                        //flush a batch of inserts and release memory:
+//                        session.flush();
+//                        session.clear();
+//                    }
+//                }
+//            }
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {

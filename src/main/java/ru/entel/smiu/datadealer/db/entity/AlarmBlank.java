@@ -9,7 +9,7 @@ public class AlarmBlank {
     private String condition;
     private String description;
 
-    private TagBlank tagBlank;
+    private TagBlankEntity tagBlankEntity;
 
     @Id
     @Column(name = "id")
@@ -43,12 +43,12 @@ public class AlarmBlank {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "tag_blank_id")
-    public TagBlank getTagBlank() {
-        return tagBlank;
+    public TagBlankEntity getTagBlankEntity() {
+        return tagBlankEntity;
     }
 
-    public void setTagBlank(TagBlank tagBlank) {
-        this.tagBlank = tagBlank;
+    public void setTagBlankEntity(TagBlankEntity tagBlankEntity) {
+        this.tagBlankEntity = tagBlankEntity;
     }
 
     @Override

@@ -40,25 +40,25 @@ public class MqttEngine extends TimerTask implements MqttCallback {
     @Override
     public synchronized void run() {
         Map<String, DeviceBAO> allDevicesByName = new HashMap<>();
-        for (ProtocolMaster master : engine.getProtocolMasterMap().values()) {
-            for (ProtocolSlave slave : master.getSlaves().values()) {
-                if (slave.getData() == null) {
-                    return;
-                }
-                if (allDevicesByName.containsKey(slave.getDevice().getName())) {
-                    DeviceBAO deviceBAO = allDevicesByName.get(slave.getDevice().getName());
-                    deviceBAO.addChannel(slave.getTagBlank().getTagDescr(), slave.getData().toString());
-                } else {
-                    DeviceBAO deviceBAO = new DeviceBAO();
-                    deviceBAO.addChannel(slave.getTagBlank().getTagDescr(), slave.getData().toString());
-                    //Если для данного канала есть активные аварии
-                    if (engine.getAlarmsChecker().getActiveAlarms().containsKey(slave.getDevice())) {
-                        deviceBAO.setActiveAlarms(engine.getAlarmsChecker().getActiveAlarms().get(slave.getDevice()));
-                    }
-                    allDevicesByName.put(slave.getDevice().getName(), deviceBAO);
-                }
-            }
-        }
+//        for (ProtocolMaster master : engine.getProtocolMasterMap().values()) {
+//            for (ProtocolSlave slave : master.getSlaves().values()) {
+//                if (slave.getData() == null) {
+//                    return;
+//                }
+//                if (allDevicesByName.containsKey(slave.getDeviceEntity().getName())) {
+//                    DeviceBAO deviceBAO = allDevicesByName.get(slave.getDeviceEntity().getName());
+//                    deviceBAO.addChannel(slave.getTagBlankEntity().getTagDescr(), slave.getData().toString());
+//                } else {
+//                    DeviceBAO deviceBAO = new DeviceBAO();
+//                    deviceBAO.addChannel(slave.getTagBlankEntity().getTagDescr(), slave.getData().toString());
+//                    //Если для данного канала есть активные аварии
+//                    if (engine.getAlarmsChecker().getActiveAlarms().containsKey(slave.getDeviceEntity())) {
+//                        deviceBAO.setActiveAlarms(engine.getAlarmsChecker().getActiveAlarms().get(slave.getDeviceEntity()));
+//                    }
+//                    allDevicesByName.put(slave.getDeviceEntity().getName(), deviceBAO);
+//                }
+//            }
+//        }
 
         StatePackage statePackage = new StatePackage(allDevicesByName);
         String statePackageJson = gson.toJson(statePackage);

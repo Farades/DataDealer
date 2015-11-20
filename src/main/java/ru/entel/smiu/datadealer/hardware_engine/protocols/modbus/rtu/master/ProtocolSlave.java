@@ -1,24 +1,22 @@
 package ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.rtu.master;
 
-import ru.entel.smiu.datadealer.db.entity.Device;
-import ru.entel.smiu.datadealer.db.entity.TagBlank;
+import ru.entel.smiu.datadealer.db.entity.DeviceEntity;
+import ru.entel.smiu.datadealer.db.entity.TagBlankEntity;
 import ru.entel.smiu.datadealer.hardware_engine.protocols.registers.AbstractRegister;
 import ru.entel.smiu.datadealer.hardware_engine.protocols.service.ProtocolSlaveParams;
-
-import java.util.Map;
 
 /**
  * Created by farades on 07.05.2015.
  */
 public abstract class ProtocolSlave {
     protected String name;
-    protected Device device;
-    protected TagBlank tagBlank;
+    protected DeviceEntity deviceEntity;
+    protected TagBlankEntity tagBlankEntity;
 
-    public ProtocolSlave(String name, ProtocolSlaveParams params, Device device, TagBlank tagBlank) {
+    public ProtocolSlave(String name, ProtocolSlaveParams params, DeviceEntity deviceEntity, TagBlankEntity tagBlankEntity) {
         this.name = name;
-        this.device = device;
-        this.tagBlank = tagBlank;
+        this.deviceEntity = deviceEntity;
+        this.tagBlankEntity = tagBlankEntity;
         init(params);
     }
 
@@ -26,12 +24,12 @@ public abstract class ProtocolSlave {
 
     public abstract void setNoResponse();
 
-    public Device getDevice() {
-        return device;
+    public DeviceEntity getDeviceEntity() {
+        return deviceEntity;
     }
 
-    public TagBlank getTagBlank() {
-        return tagBlank;
+    public TagBlankEntity getTagBlankEntity() {
+        return tagBlankEntity;
     }
 
     public abstract void request() throws Exception;

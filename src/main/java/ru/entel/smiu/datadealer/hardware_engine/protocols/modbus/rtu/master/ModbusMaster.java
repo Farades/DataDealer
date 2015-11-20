@@ -35,11 +35,6 @@ public class ModbusMaster extends Protocol {
     private int timePause;
 
     /**
-     * Флаг для остановки отдельного потока опроса объектов ModbusChannel
-     */
-    private volatile boolean interviewRun = true;
-
-    /**
      * Конструктор
      * @param name название данного ModbusMaster (Например: modbus_in, modbus_1)
      * @param params объект, принадлежащий классу, унаследованному от ProtocolMasterParams.
@@ -125,14 +120,6 @@ public class ModbusMaster extends Protocol {
                 closePort();
             }
         }
-    }
-
-    /**
-     * Останавливает поток опроса слейвов
-     */
-    @Override
-    public synchronized void stopInterview() {
-        this.interviewRun = false;
     }
 
     @Override

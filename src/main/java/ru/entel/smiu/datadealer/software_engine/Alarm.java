@@ -1,4 +1,4 @@
-package ru.entel.smiu.datadealer.engine;
+package ru.entel.smiu.datadealer.software_engine;
 
 
 import ru.entel.smiu.datadealer.db.entity.AlarmBlank;
@@ -23,7 +23,7 @@ public class Alarm {
     }
 
     public String getDescription() {
-        return alarmBlank.getTagBlank().getTagDescr() + " " + alarmBlank.getDescription();
+        return alarmBlank.getTagBlankEntity().getTagDescr() + " " + alarmBlank.getDescription();
     }
 
     @Override

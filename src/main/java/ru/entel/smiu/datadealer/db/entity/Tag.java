@@ -17,8 +17,8 @@ public class Tag {
     @Temporal(TemporalType.TIMESTAMP)
     private Date tagTime;
 
-    private Device device;
-    private TagBlank tagBlank;
+    private DeviceEntity deviceEntity;
+    private TagBlankEntity tagBlankEntity;
 
     @Id
     @Column(name = "id", nullable = false, insertable = true, updatable = true)
@@ -54,22 +54,22 @@ public class Tag {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "device_id")
-    public Device getDevice() {
-        return device;
+    public DeviceEntity getDeviceEntity() {
+        return deviceEntity;
     }
 
-    public void setDevice(Device device) {
-        this.device = device;
+    public void setDeviceEntity(DeviceEntity deviceEntity) {
+        this.deviceEntity = deviceEntity;
     }
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "tag_blank_id")
-    public TagBlank getTagBlank() {
-        return tagBlank;
+    public TagBlankEntity getTagBlankEntity() {
+        return tagBlankEntity;
     }
 
-    public void setTagBlank(TagBlank tagBlank) {
-        this.tagBlank = tagBlank;
+    public void setTagBlankEntity(TagBlankEntity tagBlankEntity) {
+        this.tagBlankEntity = tagBlankEntity;
     }
 
     @Override
@@ -79,15 +79,15 @@ public class Tag {
 
         Tag tag = (Tag) o;
 
-        if (device != null ? !device.equals(tag.device) : tag.device != null) return false;
-        return !(tagBlank != null ? !tagBlank.equals(tag.tagBlank) : tag.tagBlank != null);
+        if (deviceEntity != null ? !deviceEntity.equals(tag.deviceEntity) : tag.deviceEntity != null) return false;
+        return !(tagBlankEntity != null ? !tagBlankEntity.equals(tag.tagBlankEntity) : tag.tagBlankEntity != null);
 
     }
 
     @Override
     public int hashCode() {
-        int result = device != null ? device.hashCode() : 0;
-        result = 31 * result + (tagBlank != null ? tagBlank.hashCode() : 0);
+        int result = deviceEntity != null ? deviceEntity.hashCode() : 0;
+        result = 31 * result + (tagBlankEntity != null ? tagBlankEntity.hashCode() : 0);
         return result;
     }
 }

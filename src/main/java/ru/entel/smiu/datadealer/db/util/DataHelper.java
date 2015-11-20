@@ -7,10 +7,10 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import ru.entel.smiu.datadealer.db.entity.Device;
+import ru.entel.smiu.datadealer.db.entity.DeviceEntity;
 import ru.entel.smiu.datadealer.db.entity.ProtocolEntity;
 import ru.entel.smiu.datadealer.db.entity.Tag;
-import ru.entel.smiu.datadealer.db.entity.TagBlank;
+import ru.entel.smiu.datadealer.db.entity.TagBlankEntity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -53,13 +53,13 @@ public class DataHelper {
 //    }
 
 
-    public synchronized List<Tag> getTagsByCriteria(Device device, TagBlank tagBlank, Date date, int first, int pageSize) {
+    public synchronized List<Tag> getTagsByCriteria(DeviceEntity deviceEntity, TagBlankEntity tagBlankEntity, Date date, int first, int pageSize) {
         Session session = getSession();
         List<Tag> res = new ArrayList<>(0);
         try {
             Criteria criteria = session.createCriteria(Tag.class, "t").addOrder(Order.desc("id"));
-            criteria.add(Restrictions.eq("t.tagBlank.id", tagBlank.getId()));
-            criteria.add(Restrictions.eq("t.device.id", device.getId()));
+            criteria.add(Restrictions.eq("t.tagBlankEntity.id", tagBlankEntity.getId()));
+            criteria.add(Restrictions.eq("t.deviceEntity.id", deviceEntity.getId()));
 
             Calendar cal = Calendar.getInstance();
             cal.setTime(date);
@@ -86,13 +86,13 @@ public class DataHelper {
         return res;
     }
 
-    public synchronized Long getLogsSizeByCriteria(Device device, TagBlank tagBlank, Date date) {
+    public synchronized Long getLogsSizeByCriteria(DeviceEntity deviceEntity, TagBlankEntity tagBlankEntity, Date date) {
         Session session = getSession();
         Long res = new Long(0);
         try {
             Criteria criteria = session.createCriteria(Tag.class, "t").addOrder(Order.desc("id"));
-            criteria.add(Restrictions.eq("t.tagBlank.id", tagBlank.getId()));
-            criteria.add(Restrictions.eq("t.device.id", device.getId()));
+            criteria.add(Restrictions.eq("t.tagBlankEntity.id", tagBlankEntity.getId()));
+            criteria.add(Restrictions.eq("t.deviceEntity.id", deviceEntity.getId()));
 
             Calendar cal = Calendar.getInstance();
             cal.setTime(date);
@@ -137,13 +137,13 @@ public class DataHelper {
         return res;
     }
 
-    public synchronized List<Device> getAllDevices() {
+    public synchronized List<DeviceEntity> getAllDevices() {
         Session session = getSession();
-        List<Device> res = new ArrayList<>(0);
+        List<DeviceEntity> res = new ArrayList<>(0);
         try {
             //TODO
             //Исправить баг с дупликатами
-            Criteria criteria = session.createCriteria(Device.class);
+            Criteria criteria = session.createCriteria(DeviceEntity.class);
             criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
             res = criteria.list();
         } catch (Exception ex) {

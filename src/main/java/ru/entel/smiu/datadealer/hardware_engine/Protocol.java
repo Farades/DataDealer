@@ -1,6 +1,5 @@
 package ru.entel.smiu.datadealer.hardware_engine;
 
-import ru.entel.smiu.datadealer.hardware_engine.protocols.registers.AbstractRegister;
 import ru.entel.smiu.datadealer.hardware_engine.protocols.service.ProtocolType;
 
 import java.util.HashMap;
@@ -13,6 +12,8 @@ public abstract class Protocol implements Runnable {
 
     protected Map<String, Channel> channels = new HashMap<>();
 
+    protected volatile boolean interviewRun = true;
+
     public Protocol(String name, ProtocolParams params) {
         this.name = name;
         init(params);
@@ -20,7 +21,9 @@ public abstract class Protocol implements Runnable {
 
     protected abstract void init(ProtocolParams params);
 
-    public abstract void stopInterview();
+    public void stopInterview() {
+        this.interviewRun = false;
+    }
 
     public abstract void addChannel(Channel channel);
 
@@ -30,13 +33,6 @@ public abstract class Protocol implements Runnable {
 
     public Map<String, Channel> getChannels() {
         return channels;
-    }
-
-    public synchronized AbstractRegister getRegisterByName(String name) {
-//        modbus_in.device1_1.1
-//        String
-//        return channels.get;
-        return null;
     }
 
     @Override

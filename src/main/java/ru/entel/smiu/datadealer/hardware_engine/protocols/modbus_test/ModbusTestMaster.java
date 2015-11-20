@@ -53,7 +53,7 @@ public class ModbusTestMaster extends ProtocolMaster {
     @Override
     public void addSlave(ProtocolSlave slave) {
         ModbusTestSlave tSlave = (ModbusTestSlave) slave;
-        String channelName = this.name + "." + slave.getDevice().getId() + "." + slave.getName();
+        String channelName = this.name + "." + slave.getDeviceEntity().getId() + "." + slave.getName();
         slaves.put(channelName, slave);
     }
 

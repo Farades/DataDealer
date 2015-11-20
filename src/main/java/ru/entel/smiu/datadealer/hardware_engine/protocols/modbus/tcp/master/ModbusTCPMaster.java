@@ -22,9 +22,6 @@ public class ModbusTCPMaster extends Protocol {
 
     private int timePause;
 
-    private volatile boolean interviewRun = true;
-
-
     public ModbusTCPMaster(String name, ModbusTCPMasterParams params) {
         super(name, params);
         this.type = ProtocolType.MODBUS_TCP_MASTER;
@@ -45,57 +42,31 @@ public class ModbusTCPMaster extends Protocol {
         }
     }
 
-    private void openPort() throws TCPConnectException {
-        try {
-            this.con.connect();
-        } catch (Exception e) {
-            throw new TCPConnectException("Невозможно установить соединение с TCP: " + e.getMessage());
-        }
-    }
-
-    private void closePort() {
-        this.con.close();
-    }
 
     @Override
     public void run() {
         interviewRun = true;
         if (channels.size() != 0) {
-            try {
-                openPort();
-            } catch (TCPConnectException e) {
-                e.printStackTrace();
-                logger.error("\"" + this.name + "\" Невозможно установить TCP соединение");
-            }
             while(interviewRun) {
-                    for (Channel channel : channels.values()) {
-                        try {
-                            channel.request();
-                            Thread.sleep(timePause);
-                        } catch (ModbusRequestException ex) {
-                            channel.setNoResponse();
-                            logger.error("\"" + channel + "\" " + ex.getMessage());
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                            logger.error("\"" + channel + "\" " + ex.getMessage());
-                        } finally {
-                            closePort();
-                        }
+                for (Channel channel : channels.values()) {
+                    try {
+                        channel.request();
+                        Thread.sleep(timePause);
+                    } catch (ModbusRequestException ex) {
+                        channel.setNoResponse();
+                        logger.error("\"" + channel + "\" " + ex.getMessage());
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        logger.error("\"" + channel + "\" " + ex.getMessage());
                     }
-
                 }
+            }
         }
-    }
-
-    @Override
-    public void stopInterview() {
-        this.interviewRun = false;
     }
 
     @Override
     public void addChannel(Channel channel) {
         ModbusTCPChannel modbusTCPChannel = (ModbusTCPChannel) channel;
-        modbusTCPChannel.setCon(this.con);
         channels.put(modbusTCPChannel.getName(), modbusTCPChannel);
         logger.trace("Add slave: " + modbusTCPChannel.getName());
     }

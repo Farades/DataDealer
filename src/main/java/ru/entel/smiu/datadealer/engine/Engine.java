@@ -1,19 +1,12 @@
 package ru.entel.smiu.datadealer.engine;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.apache.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-import ru.entel.smiu.msg.MessageService;
-import ru.entel.smiu.msg.MessageServiceFactory;
-import ru.entel.smiu.msg.MessageServiceType;
-import ru.entel.smiu.msg.MqttService;
-import ru.entel.smiu.datadealer.hardware_engine.protocols.registers.AbstractRegister;
-import ru.entel.smiu.datadealer.hardware_engine.protocols.service.InvalidProtocolTypeException;
-import ru.entel.smiu.datadealer.hardware_engine.protocols.service.ProtocolMaster;
+import ru.entel.smiu.datadealer.hardware_engine.HardwareEngine;
+import ru.entel.smiu.datadealer.software_engine.SoftwareEngine;
 import ru.entel.smiu.datadealer.utils.InvalidJSONException;
-import ru.entel.smiu.datadealer.utils.RegisterSerializer;
+import ru.entel.smiu.msg.MqttService;
 
 import java.util.*;
 
@@ -27,10 +20,7 @@ import java.util.*;
 public class Engine implements MqttCallback {
     private static final Logger logger = Logger.getLogger(Engine.class);
 
-    /**
-     * Объект MessageService предназначен для отправки данных
-     */
-    private MessageService messageService = MessageServiceFactory.getMessageService(MessageServiceType.MQTT);
+    private static Engine instance;
 
     /**
      * Основной объект для работы с MQTT
@@ -48,28 +38,8 @@ public class Engine implements MqttCallback {
      */
     private final String ENGINE_TOPIC = "smiu/DD/engine";
 
-    /**
-     * Ветка, которую слушает MQTT client для отдачи данных
-     */
-    private final String ENGINE_DATA = "smiu/DD/engine/data";
-
-    /**
-     * Ветка в которую Engine возвращает данные по конкретному DevID
-     */
-    @SuppressWarnings("FieldCanBeLocal")
-    private final String ENGINE_OUT = "smiu/DD/engine/out";
-
-    /**
-     * Объект gson для десериализации и отправки DDPacket по MQTT
-     */
-    private Gson gson;
-
-    /**
-     * Словарь, содержащий все ProtocolMaster'ы, готовые к запуску
-     */
-    private Map<String, ProtocolMaster> protocolMasterMap;
-
-    private MqttEngine handler;
+    private HardwareEngine hardwareEngine;
+    private SoftwareEngine softwareEngine;
 
     private DataSaver ds;
     private AlarmsChecker alarmsChecker;
@@ -78,35 +48,22 @@ public class Engine implements MqttCallback {
     private Timer alarmsCheckerTimer;
     private Timer messageTimer;
 
-    /**
-     * Объект, занимающийся конфигурированием словаря protocolMasterMap. Получает данные от MQTT сервера.
-     */
-    private Configurator configurator;
+    public static synchronized Engine getInstance() {
+        if (instance == null) {
+            instance = new Engine();
+        }
+        return instance;
+    }
 
-    public Engine() {
-        configurator = new Configurator(this);
+    private Engine() {
         mqttInit();
-        this.gson = new GsonBuilder().registerTypeAdapter(AbstractRegister.class, new RegisterSerializer()).create();
-
         System.out.println("DataDealer started! Wait for command by MQTT.");;
         System.out.println("Topic: \"smiu/DD/engine\"");
 
     }
 
-    public Map<String, ProtocolMaster> getProtocolMasterMap() {
-        return protocolMasterMap;
-    }
-
-    /**
-     * Запуск опроса всех ProtocolMaster'ов в отдельных потоках
-     */
     public synchronized void run() {
         try {
-//            configure();
-            for (ProtocolMaster pm : protocolMasterMap.values()) {
-                new Thread(pm, pm.getName()).start();
-                logger.debug(pm.getName() + " started");
-            }
 
             dataSaverTimer = new Timer("Data Saver");
             ds = new DataSaver(this);
@@ -127,54 +84,39 @@ public class Engine implements MqttCallback {
         }
     }
 
-    public synchronized void configure() {
+    public synchronized void stop() {
+        if (hardwareEngine != null) {
+            hardwareEngine.stop();
+        }
+
+        if (softwareEngine != null) {
+            softwareEngine.stop();
+        }
+    }
+
+    public synchronized void start() {
+        if (hardwareEngine != null) {
+            hardwareEngine.start();
+        }
+
+        if (softwareEngine != null) {
+            softwareEngine.start();
+        }
+    }
+
+    private synchronized void configure() {
         try {
-            protocolMasterMap = configurator.getProtocolMasters();
-        } catch (InvalidProtocolTypeException | InvalidJSONException e) {
-            logger.error("Ошибка при создании ProtocolMaster'ов в конфигураторе: " + e.getMessage());
+            hardwareEngine = new HardwareEngine();
+            hardwareEngine.configure();
+
+            softwareEngine = new SoftwareEngine();
+            softwareEngine.configure();
+        } catch (InvalidJSONException e) {
             e.printStackTrace();
         }
     }
 
-    /**
-     * Остановка опроса всех ProtocolMaster'ов
-     */
-    public synchronized void stopEngine() {
-        if (ds != null && dataSaverTimer != null) {
-            dataSaverTimer.cancel();
-            dataSaverTimer.purge();
-            ds = null;
-            dataSaverTimer = null;
-        }
-
-        if (alarmsChecker != null && alarmsCheckerTimer != null) {
-            alarmsCheckerTimer.cancel();
-            alarmsCheckerTimer.purge();
-            alarmsChecker = null;
-            alarmsCheckerTimer = null;
-        }
-        if (mqttEngine != null && messageTimer != null) {
-            messageTimer.cancel();
-            messageTimer.purge();
-            try {
-                mqttEngine.finalize();
-            } catch (Throwable throwable) {
-                throwable.printStackTrace();
-            }
-            mqttEngine = null;
-            messageTimer = null;
-        }
-        if (protocolMasterMap != null) {
-            protocolMasterMap.forEach((k, v) -> v.stopInterview());
-        }
-        logger.debug("Data Dealer stopping.");
-    }
-
     public synchronized void reConfigure() {
-        if (protocolMasterMap != null) {
-            protocolMasterMap.forEach((k, v) -> v.stopInterview());
-            protocolMasterMap = null;
-        }
         if (ds != null && dataSaverTimer != null) {
             dataSaverTimer.cancel();
             dataSaverTimer.purge();
@@ -192,6 +134,10 @@ public class Engine implements MqttCallback {
         logger.debug("Data Dealer reconfigure.");
     }
 
+    public HardwareEngine getHardwareEngine() {
+        return hardwareEngine;
+    }
+
     /**
      * Инициализация MQTT клиента. Подпись на ветку ENGINE_TOPIC
      */
@@ -204,15 +150,10 @@ public class Engine implements MqttCallback {
             client.setCallback(this);
             client.connect(connectOptions);
             client.subscribe(ENGINE_TOPIC, 0);
-            client.subscribe(ENGINE_DATA, 0);
         } catch (MqttException e) {
             logger.error("Ошибка в функции mqttInit(): " + e.getMessage());
             e.printStackTrace();
         }
-    }
-
-    public AlarmsChecker getAlarmsChecker() {
-        return alarmsChecker;
     }
 
     /**
@@ -237,11 +178,8 @@ public class Engine implements MqttCallback {
         if (s.equals(ENGINE_TOPIC)) {
             switch (mqttMessage.toString()) {
                 case "run":
-                    configurator.updateConfig();
-                    run();
                     break;
                 case "stop":
-                    stopEngine();
                     logger.debug("Data Dealer stopping.");
                     break;
             }
