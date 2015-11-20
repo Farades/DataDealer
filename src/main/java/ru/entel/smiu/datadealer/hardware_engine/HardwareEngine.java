@@ -129,8 +129,8 @@ public class HardwareEngine {
                         int offset = ((Double) channelParams.get("offset")).intValue();
                         int length = ((Double) channelParams.get("length")).intValue();
 
-                        ModbusTCPChannelParams modbusTCPChannelParams = new ModbusTCPChannelParams(mbFunc, regType, offset, length);
-                        master.addChannel(new ModbusTCPChannel(master.getName(), channelEntity.getName(), ipAddress, modbusTCPChannelParams));
+                        ModbusTCPChannelParams modbusTCPChannelParams = new ModbusTCPChannelParams(mbFunc, regType, offset, length, ipAddress);
+                        master.addChannel(new ModbusTCPChannel(master.getName(), channelEntity.getName(), modbusTCPChannelParams));
                     }
                     protocols.put(masterName, master);
 

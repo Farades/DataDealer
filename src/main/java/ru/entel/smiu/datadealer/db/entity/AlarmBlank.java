@@ -59,17 +59,14 @@ public class AlarmBlank {
         AlarmBlank that = (AlarmBlank) o;
 
         if (id != that.id) return false;
-        if (condition != null ? !condition.equals(that.condition) : that.condition != null) return false;
-        if (description != null ? !description.equals(that.description) : that.description != null) return false;
+        return !(tagBlankEntity != null ? !tagBlankEntity.equals(that.tagBlankEntity) : that.tagBlankEntity != null);
 
-        return true;
     }
 
     @Override
     public int hashCode() {
         int result = id;
-        result = 31 * result + (condition != null ? condition.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (tagBlankEntity != null ? tagBlankEntity.hashCode() : 0);
         return result;
     }
 

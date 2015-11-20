@@ -12,6 +12,8 @@ public class ModbusTCPChannelParams extends ChannelParams {
      */
     private ModbusFunction mbFunc;
 
+    private String addres;
+
     /**
      * Тип регистра Modbus
      * Подробнее https://ru.wikipedia.org/wiki/Modbus
@@ -29,11 +31,12 @@ public class ModbusTCPChannelParams extends ChannelParams {
      */
     private int length;
 
-    public ModbusTCPChannelParams(ModbusFunction mbFunc, RegType mbRegType, int offset, int length) {
+    public ModbusTCPChannelParams(ModbusFunction mbFunc, RegType mbRegType, int offset, int length, String addres) {
         this.mbFunc = mbFunc;
         this.mbRegType = mbRegType;
         this.offset = offset;
         this.length = length;
+        this.addres = addres;
     }
 
     public ModbusFunction getMbFunc() {
@@ -50,5 +53,9 @@ public class ModbusTCPChannelParams extends ChannelParams {
 
     public int getLength() {
         return length;
+    }
+
+    public String getAddres() {
+        return addres;
     }
 }

@@ -6,6 +6,7 @@ import com.ghgande.j2mod.modbus.msg.ModbusRequest;
 import com.ghgande.j2mod.modbus.msg.ReadMultipleRegistersRequest;
 import com.ghgande.j2mod.modbus.msg.ReadMultipleRegistersResponse;
 import com.ghgande.j2mod.modbus.net.TCPMasterConnection;
+import org.apache.log4j.Logger;
 import ru.entel.smiu.datadealer.hardware_engine.Channel;
 import ru.entel.smiu.datadealer.hardware_engine.ChannelParams;
 import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.ModbusFunction;
@@ -19,6 +20,8 @@ import java.util.Date;
 import java.util.Map;
 
 public class ModbusTCPChannel extends Channel {
+    private static final Logger logger = Logger.getLogger(ModbusTCPChannel.class);
+
     /**
      * Объект для TCP коммуникации
      */
@@ -50,7 +53,7 @@ public class ModbusTCPChannel extends Channel {
      */
     private int length;
 
-    public ModbusTCPChannel(String protocolName, String name, String ipAddr, ModbusTCPChannelParams params) {
+    public ModbusTCPChannel(String protocolName, String name, ModbusTCPChannelParams params) {
         super(protocolName, name, params);
     }
 
@@ -63,6 +66,7 @@ public class ModbusTCPChannel extends Channel {
             this.mbRegType  = mbParams.getMbRegType();
             this.offset     = mbParams.getOffset();
             this.length     = mbParams.getLength();
+            this.ipAddr     = mbParams.getAddres();
         } else {
             String msg = "Modbus slave params not instance of ModbusChannelParams by " + this.name;
             throw new IllegalArgumentException(msg);
@@ -75,7 +79,8 @@ public class ModbusTCPChannel extends Channel {
         int port = Modbus.DEFAULT_PORT;
         int slaveAddr = 1;
         try {
-            InetAddress addr = InetAddress.getByName("192.168.10.189");
+            //TODO Исправить IP
+            InetAddress addr = InetAddress.getByName(this.ipAddr);
             con = new TCPMasterConnection(addr);
         } catch (UnknownHostException e) {
             e.printStackTrace();
@@ -145,10 +150,11 @@ public class ModbusTCPChannel extends Channel {
                 }
             }
         long ellapsedTime = new Date().getTime() - startTime.getTime();
-        for (Map.Entry<Integer, AbstractRegister> entry : registers.entrySet()) {
-            System.out.println("[" + entry.getKey() + "] " + entry.getValue());
-        }
-        System.out.println("Ellapsed time: " + ellapsedTime);
-        System.out.println("----------------------");
+//        logger.trace();
+//        for (Map.Entry<Integer, AbstractRegister> entry : registers.entrySet()) {
+//            System.out.println("[" + entry.getKey() + "] " + entry.getValue());
+//        }
+//        System.out.println("Ellapsed time: " + ellapsedTime);
+//        System.out.println("----------------------");
     }
 }

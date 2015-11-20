@@ -3,7 +3,6 @@ package ru.entel.smiu.datadealer.software_engine;
 import org.apache.log4j.Logger;
 import ru.entel.smiu.datadealer.db.entity.DeviceEntity;
 import ru.entel.smiu.datadealer.db.util.DataHelper;
-import ru.entel.smiu.datadealer.engine.Engine;
 
 import java.util.*;
 
@@ -26,6 +25,10 @@ public class SoftwareEngine {
         logger.debug("Software Engine configured");
     }
 
+    public Map<String, SDevice> getDevices() {
+        return devices;
+    }
+
     public synchronized void start() {
         updateTimer = new Timer("Software Engine");
         Scheduller scheduller = new Scheduller();
@@ -39,13 +42,13 @@ public class SoftwareEngine {
     private class Scheduller extends TimerTask {
         @Override
         public void run() {
-//            for (SDevice device : devices.values()) {
-//                device.update();
-//            }
+            for (SDevice device : devices.values()) {
+                device.update();
+//                System.out.println(device.getActiveAlarms());
+            }
 
 //            System.out.println(devices);
 
-//            System.out.println(Engine.getInstance().getHardwareEngine().getProtocols());
         }
     }
 }

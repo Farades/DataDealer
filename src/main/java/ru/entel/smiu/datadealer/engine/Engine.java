@@ -42,10 +42,8 @@ public class Engine implements MqttCallback {
     private SoftwareEngine softwareEngine;
 
     private DataSaver ds;
-    private AlarmsChecker alarmsChecker;
     private MqttEngine mqttEngine;
     private Timer dataSaverTimer;
-    private Timer alarmsCheckerTimer;
     private Timer messageTimer;
 
     public static synchronized Engine getInstance() {
@@ -65,13 +63,7 @@ public class Engine implements MqttCallback {
     public synchronized void run() {
         try {
 
-            dataSaverTimer = new Timer("Data Saver");
-            ds = new DataSaver(this);
-            dataSaverTimer.schedule(ds, 5000, 5000);
 
-            alarmsCheckerTimer = new Timer("Alarms Checker");
-            alarmsChecker = new AlarmsChecker(this);
-            alarmsCheckerTimer.schedule(alarmsChecker, 5000, 1000);
 
             messageTimer = new Timer("Mqtt Engine");
             mqttEngine = new MqttEngine(this);
@@ -102,6 +94,11 @@ public class Engine implements MqttCallback {
         if (softwareEngine != null) {
             softwareEngine.start();
         }
+
+        dataSaverTimer = new Timer("Data Saver");
+        ds = new DataSaver(this);
+        dataSaverTimer.schedule(ds, 5000, 5000);
+
     }
 
     private synchronized void configure() {
@@ -124,18 +121,16 @@ public class Engine implements MqttCallback {
             dataSaverTimer = null;
         }
 
-        if (alarmsChecker != null && alarmsCheckerTimer != null) {
-            alarmsCheckerTimer.cancel();
-            alarmsCheckerTimer.purge();
-            alarmsChecker = null;
-            alarmsCheckerTimer = null;
-        }
         configure();
         logger.debug("Data Dealer reconfigure.");
     }
 
     public HardwareEngine getHardwareEngine() {
         return hardwareEngine;
+    }
+
+    public SoftwareEngine getSoftwareEngine() {
+        return softwareEngine;
     }
 
     /**

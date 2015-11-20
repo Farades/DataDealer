@@ -34,6 +34,7 @@ public class Alarm {
         Alarm alarm = (Alarm) o;
 
         return !(alarmBlank != null ? !alarmBlank.equals(alarm.alarmBlank) : alarm.alarmBlank != null);
+
     }
 
     @Override

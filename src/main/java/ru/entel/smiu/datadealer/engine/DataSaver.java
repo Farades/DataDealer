@@ -5,8 +5,9 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import ru.entel.smiu.datadealer.db.entity.Tag;
 import ru.entel.smiu.datadealer.db.util.DataHelper;
-import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.rtu.master.ProtocolSlave;
-import ru.entel.smiu.datadealer.hardware_engine.protocols.service.ProtocolMaster;
+import ru.entel.smiu.datadealer.hardware_engine.protocols.registers.AbstractRegister;
+import ru.entel.smiu.datadealer.software_engine.SDevice;
+import ru.entel.smiu.datadealer.software_engine.Value;
 
 import java.util.Date;
 import java.util.TimerTask;
@@ -29,27 +30,30 @@ public class DataSaver extends TimerTask {
 
         int count = 0;
         try {
-//            for (ProtocolMaster protocolMaster : engine.getProtocolMasterMap().values()) {
-//                for (ProtocolSlave protocolSlave : protocolMaster.getSlaves().values()) {
-//                    if (protocolSlave.getData() == null) {
-//                        return;
-//                    }
-//                    count++;
-//
-//                    Tag tag = new Tag();
-//                    tag.setTagTime(new Date());
-//                    tag.setDeviceEntity(protocolSlave.getDeviceEntity());
-//                    tag.setTagBlankEntity(protocolSlave.getTagBlankEntity());
-//                    tag.setValue(protocolSlave.getData().toString());
-//
-//                    session.save(tag);
-//                    if (count % 20 == 0 ) { //20, same as the JDBC batch size
-//                        //flush a batch of inserts and release memory:
-//                        session.flush();
-//                        session.clear();
-//                    }
-//                }
-//            }
+            for (SDevice device : Engine.getInstance().getSoftwareEngine().getDevices().values()) {
+                for (Value value : device.getValues().values()) {
+                    AbstractRegister register = value.getRegister();
+                    if (register == null) {
+                        continue;
+                    }
+
+                    count++;
+
+                    Tag tag = new Tag();
+                    tag.setTagTime(new Date());
+                    tag.setDeviceEntity(device.getDeviceEntity());
+                    tag.setTagBlankEntity(value.getTagBlankEntity());
+                    tag.setValue(register.toString());
+
+                    session.save(tag);
+                    if (count % 20 == 0 ) { //20, same as the JDBC batch size
+                        //flush a batch of inserts and release memory:
+                        session.flush();
+                        session.clear();
+                    }
+                }
+            }
+
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
