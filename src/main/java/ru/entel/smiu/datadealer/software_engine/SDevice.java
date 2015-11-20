@@ -1,15 +1,14 @@
 package ru.entel.smiu.datadealer.software_engine;
 
 import ru.entel.smiu.datadealer.db.entity.AlarmBlank;
+import ru.entel.smiu.datadealer.db.entity.AlarmEntity;
 import ru.entel.smiu.datadealer.db.entity.DeviceEntity;
 import ru.entel.smiu.datadealer.db.entity.TagBlankEntity;
+import ru.entel.smiu.datadealer.db.util.DataHelper;
 import ru.entel.smiu.datadealer.engine.Engine;
 
 import javax.script.ScriptException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class SDevice {
     private DeviceEntity deviceEntity;
@@ -47,6 +46,10 @@ public class SDevice {
                             continue;
                         } else {
                             activeAlarms.add(alarm);
+                            AlarmEntity alarmEntity = new AlarmEntity();
+                            alarmEntity.setAlarmBlank(alarmBlank);
+                            alarmEntity.setAlarmTime(alarm.getStartTime());
+                            DataHelper.getInstance().saveAlarm(alarmEntity);
                         }
                     } else {
                         if (activeAlarms.contains(alarm)) {

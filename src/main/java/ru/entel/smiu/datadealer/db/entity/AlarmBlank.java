@@ -1,6 +1,8 @@
 package ru.entel.smiu.datadealer.db.entity;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "alarm_blank", schema = "", catalog = "smiu")
@@ -10,6 +12,8 @@ public class AlarmBlank {
     private String description;
 
     private TagBlankEntity tagBlankEntity;
+
+    private Set<AlarmEntity> alarmEntitySet = new HashSet<>(0);
 
     @Id
     @Column(name = "id")
@@ -49,6 +53,15 @@ public class AlarmBlank {
 
     public void setTagBlankEntity(TagBlankEntity tagBlankEntity) {
         this.tagBlankEntity = tagBlankEntity;
+    }
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "alarmBlank")
+    public Set<AlarmEntity> getAlarmEntitySet() {
+        return alarmEntitySet;
+    }
+
+    public void setAlarmEntitySet(Set<AlarmEntity> alarmEntitySet) {
+        this.alarmEntitySet = alarmEntitySet;
     }
 
     @Override

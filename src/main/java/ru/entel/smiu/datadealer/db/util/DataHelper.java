@@ -4,13 +4,11 @@ package ru.entel.smiu.datadealer.db.util;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import ru.entel.smiu.datadealer.db.entity.DeviceEntity;
-import ru.entel.smiu.datadealer.db.entity.ProtocolEntity;
-import ru.entel.smiu.datadealer.db.entity.Tag;
-import ru.entel.smiu.datadealer.db.entity.TagBlankEntity;
+import ru.entel.smiu.datadealer.db.entity.*;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -164,6 +162,23 @@ public class DataHelper {
             ex.printStackTrace();
         } finally {
             if (session!= null && session.isOpen()) {
+                session.close();
+            }
+        }
+    }
+
+    public synchronized void saveAlarm(AlarmEntity alarmEntity) {
+        Session session = DataHelper.getInstance().getSession();
+        Transaction tx = session.beginTransaction();
+        try {
+            session.save(alarmEntity);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            session.flush();
+            session.clear();
+            if (session!= null && session.isOpen()) {
+                tx.commit();
                 session.close();
             }
         }

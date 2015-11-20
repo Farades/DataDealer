@@ -20,6 +20,7 @@
         <mapping class="ru.entel.smiu.datadealer.db.entity.Tag"/>
         <mapping class="ru.entel.smiu.datadealer.db.entity.AlarmBlank"/>
         <mapping class="ru.entel.smiu.datadealer.db.entity.ChannelEntity"/>
+        <mapping class="ru.entel.smiu.datadealer.db.entity.AlarmEntity"/>
 
     </session-factory>
 </hibernate-configuration>
