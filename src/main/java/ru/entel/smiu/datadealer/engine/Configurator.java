@@ -6,28 +6,17 @@ import org.apache.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import ru.entel.smiu.datadealer.db.entity.Device;
-import ru.entel.smiu.datadealer.db.entity.DeviceBlank;
 import ru.entel.smiu.datadealer.db.entity.ProtocolEntity;
-import ru.entel.smiu.datadealer.db.entity.TagBlank;
 import ru.entel.smiu.datadealer.db.util.DataHelper;
 import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.tcp.master.ModbusTCPMaster;
 import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.tcp.master.ModbusTCPMasterParams;
-import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.tcp.master.ModbusTCPSlave;
-import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.tcp.master.ModbusTCPSlaveParams;
 import ru.entel.smiu.msg.ConfigData;
 import ru.entel.smiu.msg.DeviceConfPackage;
 import ru.entel.smiu.msg.MqttService;
-import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.ModbusFunction;
 import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.rtu.master.ModbusMaster;
 import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.rtu.master.ModbusMasterParams;
-import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.rtu.master.ModbusChannelParams;
-import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus_test.ModbusTestMaster;
-import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus_test.ModbusTestSlave;
-import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus_test.ModbusTestSlaveParams;
-import ru.entel.smiu.datadealer.hardware_engine.protocols.registers.RegType;
 import ru.entel.smiu.datadealer.hardware_engine.protocols.service.InvalidProtocolTypeException;
 import ru.entel.smiu.datadealer.hardware_engine.protocols.service.ProtocolMaster;
-import ru.entel.smiu.datadealer.hardware_engine.protocols.service.ProtocolMasterParams;
 import ru.entel.smiu.datadealer.utils.InvalidJSONException;
 import ru.entel.smiu.datadealer.utils.JSONNaturalDeserializer;
 import ru.entel.smiu.datadealer.utils.JSONUtils;
@@ -184,14 +173,14 @@ public class Configurator implements MqttCallback {
 //                            int length = 1;
 //                            String slaveName = tagBlank.getTagName();
 //
-//                            ModbusTCPSlaveParams sp = new ModbusTCPSlaveParams(mbFunc, regType, offset,
+//                            ModbusTCPChannelParams sp = new ModbusTCPChannelParams(mbFunc, regType, offset,
 //                                    length);
-//                            master.addSlave(new ModbusTCPSlave(slaveName, sp, device, tagBlank));
+//                            master.addSlave(new ModbusTCPChannel(slaveName, sp, device, tagBlank));
 //                        }
 //
 //                    }
 
-                    res.put(masterName, master);
+//                    res.put(masterName, master);
 
                     break;
                 }

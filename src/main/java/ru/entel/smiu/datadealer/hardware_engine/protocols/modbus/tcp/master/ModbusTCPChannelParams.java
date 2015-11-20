@@ -1,13 +1,10 @@
 package ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.tcp.master;
 
+import ru.entel.smiu.datadealer.hardware_engine.ChannelParams;
 import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.ModbusFunction;
 import ru.entel.smiu.datadealer.hardware_engine.protocols.registers.RegType;
-import ru.entel.smiu.datadealer.hardware_engine.protocols.service.ProtocolSlaveParams;
 
-/**
- * Created by farades on 18.11.15.
- */
-public class ModbusTCPSlaveParams extends ProtocolSlaveParams {
+public class ModbusTCPChannelParams extends ChannelParams {
     /**
      * Код функции Modbus. Хранится в enum'e ModbusFunction
      * Подробнее https://ru.wikipedia.org/wiki/Modbus
@@ -32,7 +29,7 @@ public class ModbusTCPSlaveParams extends ProtocolSlaveParams {
      */
     private int length;
 
-    public ModbusTCPSlaveParams(ModbusFunction mbFunc, RegType mbRegType, int offset, int length) {
+    public ModbusTCPChannelParams(ModbusFunction mbFunc, RegType mbRegType, int offset, int length) {
         this.mbFunc = mbFunc;
         this.mbRegType = mbRegType;
         this.offset = offset;

@@ -1,8 +1,8 @@
 package ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.tcp.master;
 
-import ru.entel.smiu.datadealer.hardware_engine.protocols.service.ProtocolMasterParams;
+import ru.entel.smiu.datadealer.hardware_engine.ProtocolParams;
 
-public class ModbusTCPMasterParams extends ProtocolMasterParams {
+public class ModbusTCPMasterParams extends ProtocolParams {
     private String ipAddress;
 
     private int port;

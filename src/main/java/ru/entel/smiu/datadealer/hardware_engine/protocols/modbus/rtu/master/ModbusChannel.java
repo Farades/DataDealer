@@ -84,7 +84,7 @@ public class ModbusChannel extends Channel {
             this.length     = mbParams.getLength();
             this.transDelay = mbParams.getTransDelay();
         } else {
-            String msg = "Modbus slave params not instance of ModbusChannelParams by " + ":" + this.name;
+            String msg = "Modbus slave params not instance of ModbusChannelParams by" + ": " + this.name;
             throw new IllegalArgumentException(msg);
         }
     }
@@ -148,7 +148,6 @@ public class ModbusChannel extends Channel {
                         BitRegister reg = new BitRegister(resp.getCoils().getBit(i));
                         registers.put(offset + i, reg);
                     }
-                    sendData();
                 } catch (ModbusException ex) {
                     throw new ModbusRequestException(ex.getMessage());
                 }
@@ -170,7 +169,6 @@ public class ModbusChannel extends Channel {
                         BitRegister reg = new BitRegister(resp.getDiscretes().getBit(i));
                         registers.put(offset + i, reg);
                     }
-                    sendData();
                 } catch (ModbusException ex) {
                     throw new ModbusRequestException(ex.getMessage());
                 }
@@ -196,25 +194,21 @@ public class ModbusChannel extends Channel {
                                 Int16Register reg = new Int16Register(values[i].getValue());
                                 registers.put(this.offset + i, reg);
                             }
-                            sendData();
                         } else if (this.mbRegType == RegType.INT16DIV100) {
                             for (int i = 0; i < values.length; i++) {
                                 Int16Div100Register reg = new Int16Div100Register(values[i].getValue());
                                 registers.put(this.offset + i, reg);
                             }
-                            sendData();
                         } else if(this.mbRegType == RegType.INT16DIV10) {
                             for (int i = 0; i < values.length; i++) {
                                 Int16Div10Register reg = new Int16Div10Register(values[i].getValue());
                                 registers.put(this.offset + i, reg);
                             }
-                            sendData();
                         } else if (this.mbRegType == RegType.FLOAT32) {
                             for (int i = 0; i < resp.getWordCount() - 1; i+=2) {
                                 Float32Register reg = new Float32Register(values[i].getValue(), values[i + 1].getValue());
                                 registers.put(this.offset + i, reg);
                             }
-                            sendData();
                         } else {
                             throw new ModbusIllegalRegTypeException("Illegal reg type for "
                                     + this.name + " READ_HOLDING_REGS_3");
@@ -238,25 +232,21 @@ public class ModbusChannel extends Channel {
                             Int16Register reg = new Int16Register(resp.getRegisterValue(n));
                             registers.put(offset + n, reg);
                         }
-                        sendData();
                     } else if (this.mbRegType == RegType.FLOAT32) {
                         for (int i = 0; i < resp.getWordCount()-1; i+=2) {
                             Float32Register reg = new Float32Register(resp.getRegisterValue(i), resp.getRegisterValue(i+1));
                             registers.put(this.offset + i, reg);
                         }
-                        sendData();
                     } else if (this.mbRegType == RegType.INT16DIV10) {
                         for (int n = 0; n < resp.getWordCount(); n++) {
                             Int16Div10Register reg = new Int16Div10Register(resp.getRegisterValue(n));
                             registers.put(offset + n, reg);
                         }
-                        sendData();
                     } else if (this.mbRegType == RegType.INT16DIV100) {
                         for (int n = 0; n < resp.getWordCount(); n++) {
                             Int16Div100Register reg = new Int16Div100Register(resp.getRegisterValue(n));
                             registers.put(offset + n, reg);
                         }
-                        sendData();
                     } else {
                         throw new ModbusIllegalRegTypeException("Illegal reg type for "
                                 + this.name + " READ_INPUT_REGS_4");
@@ -269,13 +259,6 @@ public class ModbusChannel extends Channel {
         }
 
         logger.trace("\"" + this.name + "\" response register " + this.registers);
-    }
-
-    /**
-     * Отправка считанных регистров в MessageService
-     */
-    private void sendData() {
-
     }
 
     public void setCon(SerialConnection con) {

@@ -11,6 +11,10 @@ import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.rtu.master.Modb
 import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.rtu.master.ModbusChannelParams;
 import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.rtu.master.ModbusMaster;
 import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.rtu.master.ModbusMasterParams;
+import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.tcp.master.ModbusTCPChannel;
+import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.tcp.master.ModbusTCPChannelParams;
+import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.tcp.master.ModbusTCPMaster;
+import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.tcp.master.ModbusTCPMasterParams;
 import ru.entel.smiu.datadealer.hardware_engine.protocols.registers.AbstractRegister;
 import ru.entel.smiu.datadealer.hardware_engine.protocols.registers.RegType;
 import ru.entel.smiu.datadealer.utils.InvalidJSONException;
@@ -117,7 +121,30 @@ public class HardwareEngine {
                     break;
                 }
                 case "MODBUS_TCP_MASTER" : {
-                    
+                    String masterName = protocolEntity.getName();
+                    String ipAddress = (String) protocolParams.get("addr");
+                    int port = ((Double) protocolParams.get("port")).intValue();
+                    int timePause = ((Double) protocolParams.get("timePause")).intValue();
+
+                    ModbusTCPMasterParams masterParams = new ModbusTCPMasterParams(ipAddress, port, timePause);
+                    ModbusTCPMaster master = new ModbusTCPMaster(masterName, masterParams);
+
+                    for (ChannelEntity channelEntity : protocolEntity.getChannelEntities()) {
+                        if (!JSONUtils.isJSONValid(channelEntity.getSettings()))
+                            throw new InvalidJSONException("Invalid json");
+
+                        Map channelParams = (Map) gson.fromJson(channelEntity.getSettings(), Object.class);
+                        ModbusFunction mbFunc = ModbusFunction.valueOf(channelParams.get("mbFunc").toString());
+                        RegType regType = RegType.valueOf(channelParams.get("regType").toString());
+                        int offset = ((Double) channelParams.get("offset")).intValue();
+                        int length = ((Double) channelParams.get("length")).intValue();
+
+                        ModbusTCPChannelParams modbusTCPChannelParams = new ModbusTCPChannelParams(mbFunc, regType, offset, length);
+                        master.addChannel(new ModbusTCPChannel(master.getName(), channelEntity.getName(), modbusTCPChannelParams));
+                    }
+                    protocols.put(masterName, master);
+
+                    break;
                 }
             }
         }
