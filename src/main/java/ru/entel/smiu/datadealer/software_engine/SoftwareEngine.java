@@ -47,6 +47,8 @@ public class SoftwareEngine {
 //                System.out.println(device.getActiveAlarms());
             }
 
+            MqttUtil.getInstance().sendDevices();
+
 //            System.out.println(devices);
 
         }

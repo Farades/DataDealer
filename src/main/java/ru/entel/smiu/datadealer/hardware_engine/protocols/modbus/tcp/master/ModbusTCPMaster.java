@@ -11,6 +11,7 @@ import ru.entel.smiu.datadealer.hardware_engine.protocols.service.ProtocolType;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Date;
 
 public class ModbusTCPMaster extends Protocol {
     private static final Logger logger = Logger.getLogger(ModbusTCPMaster.class);
@@ -48,6 +49,7 @@ public class ModbusTCPMaster extends Protocol {
         interviewRun = true;
         if (channels.size() != 0) {
             while(interviewRun) {
+                Date start = new Date();
                 for (Channel channel : channels.values()) {
                     try {
                         channel.request();
@@ -60,6 +62,7 @@ public class ModbusTCPMaster extends Protocol {
                         logger.error("\"" + channel + "\" " + ex.getMessage());
                     }
                 }
+                System.out.println(new Date().getTime() - start.getTime());
             }
         }
     }

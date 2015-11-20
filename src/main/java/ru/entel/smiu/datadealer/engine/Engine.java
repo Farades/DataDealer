@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import ru.entel.smiu.datadealer.hardware_engine.HardwareEngine;
+import ru.entel.smiu.datadealer.software_engine.MqttUtil;
 import ru.entel.smiu.datadealer.software_engine.SoftwareEngine;
 import ru.entel.smiu.datadealer.utils.InvalidJSONException;
 import ru.entel.smiu.msg.MqttService;
@@ -42,7 +43,7 @@ public class Engine implements MqttCallback {
     private SoftwareEngine softwareEngine;
 
     private DataSaver ds;
-    private MqttEngine mqttEngine;
+    private MqttUtil mqttUtil;
     private Timer dataSaverTimer;
     private Timer messageTimer;
 
@@ -64,10 +65,6 @@ public class Engine implements MqttCallback {
         try {
 
 
-
-            messageTimer = new Timer("Mqtt Engine");
-            mqttEngine = new MqttEngine(this);
-            messageTimer.schedule(mqttEngine, 5000, 1000);
 
             logger.debug("Data Dealer running.");
         } catch (RuntimeException ex) {

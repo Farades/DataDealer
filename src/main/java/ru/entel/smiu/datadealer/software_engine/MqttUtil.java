@@ -1,12 +1,11 @@
-package ru.entel.smiu.datadealer.engine;
+package ru.entel.smiu.datadealer.software_engine;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-import ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.rtu.master.ProtocolSlave;
-import ru.entel.smiu.datadealer.hardware_engine.protocols.service.ProtocolMaster;
+import ru.entel.smiu.datadealer.engine.Engine;
 import ru.entel.smiu.msg.DeviceBAO;
 import ru.entel.smiu.msg.MqttService;
 import ru.entel.smiu.msg.StatePackage;
@@ -16,10 +15,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TimerTask;
 
-public class MqttEngine extends TimerTask implements MqttCallback {
-    private Engine engine;
+public class MqttUtil extends TimerTask implements MqttCallback {
+    private static MqttUtil instance;
 
-    private static final Logger logger = Logger.getLogger(MqttEngine.class);
+    private static final Logger logger = Logger.getLogger(MqttUtil.class);
 
     private MqttClient client;
 
@@ -30,16 +29,42 @@ public class MqttEngine extends TimerTask implements MqttCallback {
     private final String MAIN_TOPIC = "smiu/DD/msg";
     private final String DEVICES_OUT_TOPIC = "smiu/DD/devices/out";
 
-    public MqttEngine(Engine engine) {
-        this.engine = engine;
+    public static synchronized MqttUtil getInstance() {
+        if (instance == null) {
+            instance = new MqttUtil();
+        }
+        return instance;
+    }
+
+    private MqttUtil() {
         mqttInit();
         GsonBuilder builder = new GsonBuilder();
-        gson = builder.create();
+        gson = builder.setPrettyPrinting().create();
+    }
+
+    public synchronized void sendDevices() {
+        Map<String, DeviceBAO> allDevicesByName = new HashMap<>();
+
+        for (Map.Entry<String, SDevice> entry : Engine.getInstance().getSoftwareEngine().getDevices().entrySet()) {
+            DeviceBAO deviceBAO = new DeviceBAO();
+            for (Map.Entry<String, Value> entryValues : entry.getValue().getValues().entrySet()) {
+                deviceBAO.addChannel(entryValues.getKey(), entryValues.getValue().getRegister().toString());
+            }
+            deviceBAO.setActiveAlarms(entry.getValue().getActiveAlarms());
+            allDevicesByName.put(entry.getKey(), deviceBAO);
+        }
+        StatePackage statePackage = new StatePackage(allDevicesByName);
+
+        String json = gson.toJson(statePackage);
+        Charset.forName("UTF-8").encode(json);
+        send(DEVICES_OUT_TOPIC, json);
     }
 
     @Override
     public synchronized void run() {
-        Map<String, DeviceBAO> allDevicesByName = new HashMap<>();
+
+
+//        Map<String, DeviceBAO> allDevicesByName = new HashMap<>();
 //        for (ProtocolMaster master : engine.getProtocolMasterMap().values()) {
 //            for (ProtocolSlave slave : master.getSlaves().values()) {
 //                if (slave.getData() == null) {
@@ -60,11 +85,9 @@ public class MqttEngine extends TimerTask implements MqttCallback {
 //            }
 //        }
 
-        StatePackage statePackage = new StatePackage(allDevicesByName);
-        String statePackageJson = gson.toJson(statePackage);
-        Charset.forName("UTF-8").encode(statePackageJson);
+//        StatePackage statePackage = new StatePackage(allDevicesByName);
 //        logger.debug(gson.toJson(statePackage));
-        send(DEVICES_OUT_TOPIC, statePackageJson);
+//        send(DEVICES_OUT_TOPIC, statePackageJson);
     }
 
     private void mqttInit() {

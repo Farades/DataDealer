@@ -11,7 +11,8 @@ import javax.script.ScriptException;
 import java.util.*;
 
 public class SDevice {
-    private DeviceEntity deviceEntity;
+
+    private transient DeviceEntity deviceEntity;
     private Map<String, Value> values = new HashMap<>();
     private Set<Alarm> activeAlarms = new HashSet<>();
 
