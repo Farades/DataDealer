@@ -4,6 +4,14 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Класс ProtocolEntity - класс-сущность, хранит в себе один физический протокол для опроса.
+ * Агрегирует в себя дочерние экземпляры устройств из которых берет необходимые параметры
+ * для их опроса.
+ * Необходим для связи с JPA (Java Persistence API)
+ * @author Мацепура Артем
+ * @version 0.2
+ */
 @Entity
 @Table(name = "protocol", schema = "", catalog = "smiu")
 public class ProtocolEntity {

@@ -1,0 +1,15 @@
+ru.entel.smiu.datadealer
+ru.entel.smiu.datadealer.db.entity
+ru.entel.smiu.datadealer.db.util
+ru.entel.smiu.datadealer.engine
+ru.entel.smiu.datadealer.hardware_engine
+ru.entel.smiu.datadealer.hardware_engine.protocols.modbus
+ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.exception
+ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.rtu.master
+ru.entel.smiu.datadealer.hardware_engine.protocols.modbus.tcp.master
+ru.entel.smiu.datadealer.hardware_engine.protocols.modbus_test
+ru.entel.smiu.datadealer.hardware_engine.protocols.registers
+ru.entel.smiu.datadealer.hardware_engine.protocols.service
+ru.entel.smiu.datadealer.software_engine
+ru.entel.smiu.datadealer.utils
+ru.entel.smiu.msg

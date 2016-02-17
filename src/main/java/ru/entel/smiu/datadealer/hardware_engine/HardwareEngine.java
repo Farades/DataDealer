@@ -25,6 +25,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * HardwareEngine - основной класс приложения. Необходим для перввоначальной конфигурации и запуска
+ * опроса всех экземпляров устройств в отдельных потоках.
+ * @author Мацепура Артем
+ * @version 0.2
+ */
 public class HardwareEngine {
     private static final Logger logger = Logger.getLogger(HardwareEngine.class);
 
@@ -61,6 +67,10 @@ public class HardwareEngine {
 
     }
 
+    /**
+     * Метод, собирающий объекты класса Protocol. Собираются из JSON'ов, хранящихся в базе данных
+     * @throws InvalidJSONException
+     */
     public synchronized void configure() throws InvalidJSONException {
         List<ProtocolEntity> protocolEntities = DataHelper.getInstance().getAllProtocols();
         Gson gson = new GsonBuilder().registerTypeAdapter(Object.class, new JSONNaturalDeserializer()).create();
@@ -142,6 +152,11 @@ public class HardwareEngine {
         logger.debug("Hardware Engine configure");
     }
 
+    /**
+     * Метод, возвращающий конкретный регистер по ID.
+     * @param id ID конкретного регистра
+     * @return Ссылка типа AbstractRegister, указывающий на объект конкретного класса-потомка
+     */
     public synchronized AbstractRegister getRegisterByID(String id) {
         String[] splits = id.split("\\.");
         Protocol protocol = protocols.get(splits[0]);

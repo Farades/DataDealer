@@ -3,7 +3,10 @@ package ru.entel.smiu.datadealer.db.entity;
 import javax.persistence.*;
 
 /**
- * Created by farades on 06.11.15.
+ * Класс Properties - класс-сущность, хранит в себе одно свойство проекта.
+ * Необходим для связи с JPA (Java Persistence API)
+ * @author Мацепура Артем
+ * @version 0.2
  */
 @Entity
 @Table(name = "properties", schema = "", catalog = "smiu")

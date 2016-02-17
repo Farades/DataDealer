@@ -4,7 +4,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
 /**
- * Created by farades on 20.11.15.
+ * AlarmUtil - класс-синглтон. Возвращает движок JavaScript для обработки скриптов аварий
  */
 public class AlarmUtil {
     private static AlarmUtil instance;

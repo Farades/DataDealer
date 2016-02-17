@@ -10,6 +10,13 @@ import ru.entel.smiu.datadealer.engine.Engine;
 import javax.script.ScriptException;
 import java.util.*;
 
+/**
+ * SDevice - класс, необходимый для SoftwareEngined. Агрегирует в себе сущность конкретного устройства,
+ * все актуальные значения по сконфигурированным каналам и коллекцию активный аварий. Необходим для связи
+ * с другими приложениями по MQTT
+ * @author Мацепура Артем
+ * @version 0.2
+ */
 public class SDevice {
 
     private transient DeviceEntity deviceEntity;

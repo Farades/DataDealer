@@ -2,6 +2,12 @@ package ru.entel.smiu.datadealer.db.entity;
 
 import javax.persistence.*;
 
+/**
+ * Класс ChannelEntity - класс-сущность, хранит в описание одного канала опроса
+ * Необходим для связи с JPA (Java Persistence API)
+ * @author Мацепура Артем
+ * @version 0.2
+ */
 @Entity
 @Table(name = "channel", schema = "", catalog = "smiu")
 public class ChannelEntity {

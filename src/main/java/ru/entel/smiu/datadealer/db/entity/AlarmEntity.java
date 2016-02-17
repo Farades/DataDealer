@@ -4,6 +4,12 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Date;
 
+/**
+ * Класс AlarmEntity - класс-сущность, хранит в себе одну конкретную (произошедшую) аварию с отметкой времени.
+ * Необходим для связи с JPA (Java Persistence API)
+ * @author Мацепура Артем
+ * @version 0.2
+ */
 @Entity
 @Table(name = "alarm", schema = "", catalog = "smiu")
 public class AlarmEntity {

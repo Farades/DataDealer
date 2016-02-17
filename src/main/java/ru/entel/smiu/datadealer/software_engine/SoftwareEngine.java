@@ -6,6 +6,10 @@ import ru.entel.smiu.datadealer.db.util.DataHelper;
 
 import java.util.*;
 
+/**
+ * SoftwareEngine - движок, отвечающий за работу с данными, полученными от HardwareEngine.
+ * Необходим для обработки аварий и т.д.
+ */
 public class SoftwareEngine {
     private static final Logger logger = Logger.getLogger(SoftwareEngine.class);
 

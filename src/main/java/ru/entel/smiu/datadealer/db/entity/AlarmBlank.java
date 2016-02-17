@@ -4,6 +4,12 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Класс AlarmBlank - класс-сущность, хранит в себе одну возможную аварию.
+ * Необходим для связи с JPA (Java Persistence API)
+ * @author Мацепура Артем
+ * @version 0.2
+ */
 @Entity
 @Table(name = "alarm_blank", schema = "", catalog = "smiu")
 public class AlarmBlank {

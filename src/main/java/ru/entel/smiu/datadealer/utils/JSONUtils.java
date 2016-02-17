@@ -2,9 +2,7 @@ package ru.entel.smiu.datadealer.utils;
 
 import com.google.gson.Gson;
 
-/**
- * Created by farades on 27.08.15.
- */
+
 public class JSONUtils {
     private static final Gson gson = new Gson();
 

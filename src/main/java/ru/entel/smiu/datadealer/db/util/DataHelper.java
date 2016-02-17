@@ -15,6 +15,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Класс DataHelper - синглтон для работы с Hibernate API
+ * Необходим для реализации с JPA (Java Persistence API)
+ * @author Мацепура Артем
+ * @version 0.2
+ */
 public class DataHelper {
     private SessionFactory sessionFactory = null;
     private static DataHelper dataHelper;
@@ -30,34 +36,29 @@ public class DataHelper {
         return dataHelper;
     }
 
+    /**
+     * @return Сессия для работы с Hibernate API
+     */
     public synchronized Session getSession() {
         return sessionFactory.openSession();
     }
 
-//    public synchronized String getProperty(String value) {
-//        Session session = getSession();
-//        String res = "";
-//        try {
-//            Properties property = (Properties)session.createCriteria(Properties.class).add(Restrictions.ilike("name", value)).list().get(0);
-//            res = property.getValue();
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        } finally {
-//            if (session!= null && session.isOpen()) {
-//                session.close();
-//            }
-//        }
-//        return res;
-//    }
-
-
+    /**
+     * Метод, возвращающий коллекцию конкретных тэгов по заданным в параметрах критериям
+     * @param deviceEntity Объект, хранящий в себе необходимую информацию по устройсту
+     * @param tagBlankEntity Объект, хранящий в себе необходимую информацию по шаблону тэга
+     * @param date Дата по которой необходимо сделать выборку тэгов
+     * @param first Номер первого элемента
+     * @param pageSize Количество элементов, которые необходимо вернуть
+     * @return Коллекция (ArrayList) конкретных тэгов, соответствующих заданным параметрам
+     */
     public synchronized List<Tag> getTagsByCriteria(DeviceEntity deviceEntity, TagBlankEntity tagBlankEntity, Date date, int first, int pageSize) {
-        Session session = getSession();
-        List<Tag> res = new ArrayList<>(0);
-        try {
-            Criteria criteria = session.createCriteria(Tag.class, "t").addOrder(Order.desc("id"));
-            criteria.add(Restrictions.eq("t.tagBlankEntity.id", tagBlankEntity.getId()));
-            criteria.add(Restrictions.eq("t.deviceEntity.id", deviceEntity.getId()));
+        Session session = getSession();\n" +
+                    "        List<Tag> res = new ArrayList<>(0);\n" +
+                    "        try {\n" +
+                    "            Criteria criteria = session.createCriteria(Tag.class, \"t\").addOrder(Order.desc(\"id\"));\n" +
+                    "            criteria.add(Restrictions.eq(\"t.tagBlankEntity.id\", tagBlankEntity.getId()));\n" +
+                    "            criteria.add(Restrictions.eq(\"t.deviceEntity.id", deviceEntity.getId()));
 
             Calendar cal = Calendar.getInstance();
             cal.setTime(date);
@@ -84,6 +85,13 @@ public class DataHelper {
         return res;
     }
 
+    /**
+     * Метод, возвращающий количество строк в таблице логов
+     * @param deviceEntity Объект, хранящий в себе необходимую информацию по устройсту
+     * @param tagBlankEntity Объект, хранящий в себе необходимую информацию по шаблону тэга
+     * @param date Дата по которой необходимо сделать выборку тэгов
+     * @return Количество строк в таблице логов
+     */
     public synchronized Long getLogsSizeByCriteria(DeviceEntity deviceEntity, TagBlankEntity tagBlankEntity, Date date) {
         Session session = getSession();
         Long res = new Long(0);
@@ -116,6 +124,10 @@ public class DataHelper {
         return res;
     }
 
+    /**
+     * Метод, возвращающий все объекты-сущности, хранящиеся в таблице ProtocolEntity
+     * @return Коллекция (ArrayList), хранящая все объекты класса ProtocolEntity
+     */
     public synchronized List<ProtocolEntity> getAllProtocols() {
         Session session = getSession();
         List<ProtocolEntity> res = new ArrayList<>(0);
@@ -135,6 +147,10 @@ public class DataHelper {
         return res;
     }
 
+    /**
+     * Метод, возвращающий все объекты-сущности, хранящиеся в таблице DeviceEntity
+     * @return Коллекция (ArrayList), хранящая все объекты класса DeviceEntity
+     */
     public synchronized List<DeviceEntity> getAllDevices() {
         Session session = getSession();
         List<DeviceEntity> res = new ArrayList<>(0);
@@ -154,6 +170,9 @@ public class DataHelper {
         return res;
     }
 
+    /**
+     * Метод, очищающий таблицу тэгов
+     */
     public synchronized void clearTags() {
         Session session = getSession();
         try {
@@ -167,6 +186,10 @@ public class DataHelper {
         }
     }
 
+    /**
+     * Метод, сохраняющий объект-сущность alarmEntity в базу данных
+     * @param alarmEntity Объект класса-сущности AlarmEntity
+     */
     public synchronized void saveAlarm(AlarmEntity alarmEntity) {
         Session session = DataHelper.getInstance().getSession();
         Transaction tx = session.beginTransaction();
@@ -184,6 +207,10 @@ public class DataHelper {
         }
     }
 
+    /**
+     * Метод, сохраняющий объект-сущность tag в базу данных
+     * @param tag Объект класса-сущности tag
+     */
     public synchronized void saveTag(Tag tag) {
         Session session = getSession();
 

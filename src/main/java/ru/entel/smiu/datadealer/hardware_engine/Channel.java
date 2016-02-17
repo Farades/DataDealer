@@ -5,6 +5,11 @@ import ru.entel.smiu.datadealer.hardware_engine.protocols.registers.AbstractRegi
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Channel - абстрактный класс, хранящий в себе последние актуальные значения для конкретного биндинга(тэга)
+ * @author Мацепура Артем
+ * @version 0.2
+ */
 public abstract class Channel {
     protected String name;
 

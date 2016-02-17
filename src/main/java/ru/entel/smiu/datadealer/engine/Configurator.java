@@ -24,8 +24,7 @@ import ru.entel.smiu.datadealer.utils.JSONUtils;
 import java.util.*;
 
 /**
- * Configurator - Слушает MQTT (ветка smiu/DD/updateConfig), хранит конфигурацию в JSON.
- * По запросу парсит JSON конфиг и возвращает коллекцию объектов ProtocolMaster
+ * Configurator - класс-конфигуратор. необходим для инициализации всего приложения
  * @author Мацепура Артем
  * @version 0.2
  */
@@ -71,8 +70,8 @@ public class Configurator implements MqttCallback {
     }
 
     /**
-     * Основной метод класса. Парсит jsonConfig и создает возвращаемый словарь
-     * @return словарь: ключ - название мастера протокола; значение - объект ProtocolMaster, готовый к запуску.
+     * Основной метод класса. Использует синглтон DataHelper для получения настроек проекта.
+     * @return Словарь(HashMap): ключ - название мастера протокола; значение - объект ProtocolMaster, готовый к запуску.
      * @throws InvalidJSONException Невалидный JSON
      * @throws InvalidProtocolTypeException Неизвестный типа протокола
      */

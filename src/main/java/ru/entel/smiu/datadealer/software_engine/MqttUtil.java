@@ -15,6 +15,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TimerTask;
 
+/**
+ * MqttUtil - Класс, необходимый для работы с MQTT брокером.
+ * Хранит в себе все необходимые настройки для работы с MQTT
+ * @author Мацепура Артем
+ * @version 0.2
+ */
 public class MqttUtil extends TimerTask implements MqttCallback {
     private static MqttUtil instance;
 

@@ -12,6 +12,12 @@ import ru.entel.smiu.datadealer.software_engine.Value;
 import java.util.Date;
 import java.util.TimerTask;
 
+/**
+ * DataSaver - наследник класса TimerTask. Сохраняет актуальные значения всех экземпляров устройств
+ * в отдельном потоке.
+ * @author Мацепура Артем
+ * @version 0.2
+ */
 public class DataSaver extends TimerTask {
     private static final Logger logger = Logger.getLogger(DataSaver.class);
 

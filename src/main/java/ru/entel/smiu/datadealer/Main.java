@@ -4,6 +4,9 @@ import ru.entel.smiu.datadealer.engine.Engine;
 
 import java.io.IOException;
 
+/**
+ * Класс, запускающий работу приложения
+ */
 public class Main {
 
     public static void main(String[] args) throws IOException {

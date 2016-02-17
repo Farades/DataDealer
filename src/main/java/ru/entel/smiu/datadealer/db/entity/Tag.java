@@ -6,7 +6,11 @@ import javax.persistence.*;
 import java.util.Date;
 
 /**
- * Created by farades on 07.11.15.
+ * Класс Tag - класс-сущность, хранит в себе один тэг.
+ * Тэг представляет из себя композицию значения, ссылки на шаблон тэга и временной отметки.
+ * Необходим для связи с JPA (Java Persistence API)
+ * @author Мацепура Артем
+ * @version 0.2
  */
 @Entity
 @Table(name = "tag", schema = "", catalog = "smiu")

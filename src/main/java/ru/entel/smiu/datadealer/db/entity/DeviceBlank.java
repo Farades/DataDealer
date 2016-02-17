@@ -4,6 +4,12 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Класс DeviceBlank - класс-сущность, хранит в себе описание шаблона устройства
+ * Необходим для связи с JPA (Java Persistence API)
+ * @author Мацепура Артем
+ * @version 0.2
+ */
 @Entity
 @Table(name = "device_blank", schema = "", catalog = "smiu")
 public class DeviceBlank {

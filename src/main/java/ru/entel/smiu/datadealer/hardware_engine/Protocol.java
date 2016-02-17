@@ -5,6 +5,11 @@ import ru.entel.smiu.datadealer.hardware_engine.protocols.service.ProtocolType;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Protocol - класс, необходимый для опроса по конкретному физическому протоколу в отдельном потоке.
+ * @author Мацепура Артем
+ * @version 0.2
+ */
 public abstract class Protocol implements Runnable {
     protected String name;
 

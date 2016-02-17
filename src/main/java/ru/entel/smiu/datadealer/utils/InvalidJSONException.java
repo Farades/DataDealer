@@ -1,7 +1,9 @@
 package ru.entel.smiu.datadealer.utils;
 
 /**
- * Created by farades on 27.08.15.
+ * Исключение, сообщающее о не валидности JSON
+ * @author Мацепура Артем
+ * @version 0.2
  */
 public class InvalidJSONException extends Exception {
 

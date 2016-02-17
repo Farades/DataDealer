@@ -5,6 +5,11 @@ import ru.entel.smiu.datadealer.db.entity.AlarmBlank;
 
 import java.util.Date;
 
+/**
+ * Alarm - хранит в себе композицию объекта класса-сущности АlarmBlank и временную отметку
+ * @author Мацепура Артем
+ * @version 0.2
+ */
 public class Alarm {
     private AlarmBlank alarmBlank;
     private Date startTime;

@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by farades on 27.08.15.
+ * JSONNaturalDeserializer - класс, предназначенный для десереализации JSON в Map.
  */
 public class JSONNaturalDeserializer implements JsonDeserializer<Object> {
     public Object deserialize(JsonElement json, Type typeOfT,

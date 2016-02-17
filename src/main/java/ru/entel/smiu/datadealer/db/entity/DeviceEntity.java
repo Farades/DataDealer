@@ -4,6 +4,12 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
 
+/**
+ * Класс DeviceBlank - класс-сущность, хранит в себе один конкретный экземпляр устройства.
+ * Необходим для связи с JPA (Java Persistence API)
+ * @author Мацепура Артем
+ * @version 0.2
+ */
 @Entity
 @Table(name = "device", schema = "", catalog = "smiu")
 public class DeviceEntity implements Serializable {

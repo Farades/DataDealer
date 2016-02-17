@@ -3,6 +3,13 @@ package ru.entel.smiu.datadealer.db.entity;
 import javax.persistence.*;
 import java.util.Set;
 
+/**
+ * Класс TagBlankEntity - класс-сущность, хранит в себе один шаблон тэга.
+ * Шаблон тэга представляет из себя биндинг для получения конкретного значения с экземпляра устройства.
+ * Необходим для связи с JPA (Java Persistence API)
+ * @author Мацепура Артем
+ * @version 0.2
+ */
 @Entity
 @Table(name = "tag_blank", schema = "", catalog = "smiu")
 public class TagBlankEntity {
